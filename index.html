@@ -1,0 +1,88 @@
+<html>
+  <head>
+     <title>Ajax Test</title>
+     <link rel="stylesheet" type="text/css" href="jquery-ui-1.8.16.custom/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
+	 <link rel="stylesheet" href="css/jgauge.css" type="text/css" /> <!-- CSS for jGauge styling. -->
+		<!--[if IE]><script type="text/javascript" language="javascript" src="js/excanvas.min.js"></script><![endif]-->
+     <script type="text/javascript" src="jquery-ui-1.8.16.custom/js/jquery-1.6.2.min.js"></script>
+	
+
+     <script type="text/javascript" src="jquery-ui-1.8.16.custom/js/jquery-ui-1.8.16.custom.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jQueryRotate.min.js"></script> <!-- jQueryRotate plugin used for needle movement. -->
+		<script language="javascript" type="text/javascript" src="js/jgauge-0.3.0.a3.js"></script> <!-- jGauge JavaScript. -->
+  	<script type="text/javascript" src="Receiver.js"></script>
+	<script type="text/javascript" src="Sender.js"></script>
+	
+	
+     <script type="text/javascript">
+      var demoGauge1 = new jGauge(); // Create a new jGauge.
+				demoGauge1.id = 'jGaugeDemo'; // Link the new jGauge to the placeholder DIV.
+				
+				demoGauge1.ticks.start = 0;
+                                demoGauge1.ticks.end = 255;
+				demoGauge1.width= 160;
+				demoGauge1.height=114;
+				demoGauge1.ticks.count=3;
+				demoGauge1.labelPrecision = 0;
+     $( document).ready( function(){
+       demoGauge1.init(); // Put the jGauge on the page by initializing it.
+	/*  $( "#msg" ).slider({
+			orientation: "vertical",
+			range: "min",
+			min: 0,
+			max: 255,
+			value: 0,
+			slide: function( event, ui ) {
+				$( "#amount" ).val( ui.value );
+			}
+		});*/
+		
+		
+		//$( "#amount" ).val( "0" );
+		//$('#msg').css({ "background-color" : "red"});
+		
+	  
+		
+	   $("#msg2").slider({
+	     orientation: "horizontal",
+		 range: "min",
+		 min: 0,
+		 max: 255,
+		 value: 0,
+		 slide: function( event, ui ){
+		    $("#amount2").val(ui.value);
+		 }
+	 
+	 });
+      var t = new Receiver( "test.php", "#jGaugeDemo", demoGauge1, 100);
+      var s = new Sender("test.php","#msg2","#amount2");
+	  
+	  $('#jGaugeDemo').bind( "myCustomEvent",  function( event ){
+	      window.setTimeout(function(){ t.connect()}, t.refreshRate );
+		 
+		
+	  });
+	 
+     
+	
+	     t.connect();
+		
+	
+     });
+     </script>
+     
+     
+     
+  
+  </head>
+<body>
+  
+ 
+ <div id="jGaugeDemo" class="jgauge"></div>
+ <br/>
+  <div id="msg2" style="position: absolute; top: 165px; width: 255px">
+ 
+</div>
+  <!--<div id="msg3">...</div>-->
+</body>
+</html>

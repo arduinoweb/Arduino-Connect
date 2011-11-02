@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/css" href="http://localhost/~gary/arduino/rss.css" ?>
+<rss version="2.0">
+ <channel>
+  <title>Arduino Info</title>
+  <description>Testing the Arduino</description>
+  <link>http://localhost/~gary/arduino</link>
+  <lastBuildDate>Sat, 22 Oct 2011 17:00:00 GMT</lastBuildDate>
+
+  <language>en-gb</language>
+   <item>
+    <title>Arduino Light Bulb Value = 2</title>
+	<description>This is a test.</description>
+    <link>http://localhost/~gary/arduino/testfeed.rss</link>
+   </item>
+ </channel>
+ </rss>

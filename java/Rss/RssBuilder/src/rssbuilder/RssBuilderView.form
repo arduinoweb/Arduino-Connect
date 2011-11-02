@@ -1,0 +1,578 @@
+<?xml version="1.1" encoding="UTF-8" ?>
+
+<Form version="1.5" maxVersion="1.7">
+  <NonVisualComponents>
+    <Container class="javax.swing.JPanel" name="mainPanel">
+      <Properties>
+        <Property name="background" type="java.awt.Color" resourceKey="mainPanel.background"/>
+        <Property name="name" type="java.lang.String" value="mainPanel" noResource="true"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[620, 737]"/>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="itemPanel" alignment="0" min="-2" max="-2" attributes="1"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="channelPanel" alignment="0" max="32767" attributes="1"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="fileNameLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="fileNameTextField" min="-2" pref="259" max="-2" attributes="1"/>
+                              </Group>
+                              <Component id="arduinoPanel" alignment="0" max="32767" attributes="1"/>
+                          </Group>
+                          <EmptySpace pref="221" max="32767" attributes="0"/>
+                          <Component id="generateFeedButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="fileNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="fileNameTextField" alignment="3" min="-2" pref="19" max="-2" attributes="0"/>
+                      <Component id="generateFeedButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Component id="arduinoPanel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Component id="channelPanel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="itemPanel" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Container class="javax.swing.JPanel" name="channelPanel">
+          <Properties>
+            <Property name="background" type="java.awt.Color" resourceKey="channelDescriptionTextField.background"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                <TitledBorder position="2" title="Channel">
+                  <Property name="titleX" resourceKey="channelDescriptionTextField.border.title"/>
+                  <Property name="font" resourceKey="channelDescriptionTextField.border.titleFont"/>
+                </TitledBorder>
+              </Border>
+            </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[80, 100]"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="channelDescriptionTextField" noResource="true"/>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="channelDescriptionLabel" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="channelLinkLabel" min="-2" max="-2" attributes="0"/>
+                                  <Component id="channelTitleLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jScrollPane1" pref="314" max="32767" attributes="0"/>
+                          <Component id="channelTitleTextField" pref="314" max="32767" attributes="1"/>
+                          <Component id="channelLinkTextField" pref="314" max="32767" attributes="1"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="channelTitleLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="channelTitleTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="channelLinkLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="channelLinkTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="channelDescriptionLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="channelTitleLabel">
+              <Properties>
+                <Property name="font" type="java.awt.Font" resourceKey="channelNameLabel.font"/>
+                <Property name="text" type="java.lang.String" resourceKey="channelNameLabel.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="channelNameLabel.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="channelNameLabel" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="channelTitleTextField">
+              <Properties>
+                <Property name="font" type="java.awt.Font" resourceKey="channelTitleTextField.font"/>
+                <Property name="foreground" type="java.awt.Color" resourceKey="channelTitleTextField.foreground"/>
+                <Property name="text" type="java.lang.String" resourceKey="channelTitleTextField.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="channelTitleTextField.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="channelTitleTextField" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="channelLinkLabel">
+              <Properties>
+                <Property name="font" type="java.awt.Font" resourceKey="channelLinkLabel.font"/>
+                <Property name="text" type="java.lang.String" resourceKey="channelLinkLabel.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="channelLinkLabel.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="channelLinkLabel" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="channelLinkTextField">
+              <Properties>
+                <Property name="font" type="java.awt.Font" resourceKey="channelLinkTextField.font"/>
+                <Property name="foreground" type="java.awt.Color" resourceKey="channelLinkTextField.foreground"/>
+                <Property name="text" type="java.lang.String" resourceKey="channelLinkTextField.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="channelLinkTextField.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="channelLinkTextField" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="channelDescriptionLabel">
+              <Properties>
+                <Property name="font" type="java.awt.Font" resourceKey="channelDescriptionLabel.font"/>
+                <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                  <ComponentRef name="channelDescriptionTextArea"/>
+                </Property>
+                <Property name="text" type="java.lang.String" resourceKey="channelDescriptionLabel.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="channelDescriptionLabel.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="channelDescriptionLabel" noResource="true"/>
+              </Properties>
+            </Component>
+            <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="jScrollPane1" noResource="true"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+              </AuxValues>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JTextArea" name="channelDescriptionTextArea">
+                  <Properties>
+                    <Property name="columns" type="int" value="20"/>
+                    <Property name="foreground" type="java.awt.Color" resourceKey="channelDescriptionTextArea.foreground"/>
+                    <Property name="rows" type="int" value="5"/>
+                    <Property name="name" type="java.lang.String" value="channelDescriptionTextArea" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="itemPanel">
+          <Properties>
+            <Property name="background" type="java.awt.Color" resourceKey="itemPanel.background"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                <TitledBorder position="2" title="Item">
+                  <Property name="titleX" resourceKey="itemPanel.border.title"/>
+                  <Property name="font" resourceKey="itemPanel.border.titleFont"/>
+                  <Property name="color" resourceKey="itemPanel.border.titleColor"/>
+                </TitledBorder>
+              </Border>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" resourceKey="itemPanel.toolTipText"/>
+            <Property name="name" type="java.lang.String" value="itemPanel" noResource="true"/>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="createItemButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="itemDescriptionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
+                                      <Component id="itemTitleLabel" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="itemTitleTextField" alignment="0" pref="314" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane2" alignment="0" min="-2" pref="314" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                      <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="deleteItemButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="itemListScrollPane" min="-2" pref="313" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="itemTitleLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="itemTitleTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="itemDescriptionLabel" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jScrollPane2" min="-2" pref="101" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Component id="itemListScrollPane" min="-2" pref="144" max="-2" attributes="1"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="createItemButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="deleteItemButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JButton" name="createItemButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="createItemButton.text"/>
+                <Property name="name" type="java.lang.String" value="createItemButton" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="createMessage"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="itemTitleLabel">
+              <Properties>
+                <Property name="font" type="java.awt.Font" resourceKey="itemTitleLabel.font"/>
+                <Property name="text" type="java.lang.String" resourceKey="itemTitleLabel.text"/>
+                <Property name="name" type="java.lang.String" value="itemTitleLabel" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="itemTitleTextField">
+              <Properties>
+                <Property name="foreground" type="java.awt.Color" resourceKey="itemTitleTextField.foreground"/>
+                <Property name="text" type="java.lang.String" resourceKey="itemTitleTextField.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="itemTitleTextField.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="itemTitleTextField" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="itemDescriptionLabel">
+              <Properties>
+                <Property name="font" type="java.awt.Font" resourceKey="itemDescriptionLabel.font"/>
+                <Property name="text" type="java.lang.String" resourceKey="itemDescriptionLabel.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="itemDescriptionLabel.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="itemDescriptionLabel" noResource="true"/>
+              </Properties>
+            </Component>
+            <Container class="javax.swing.JScrollPane" name="jScrollPane2">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="jScrollPane2" noResource="true"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+              </AuxValues>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JTextArea" name="itemDescriptionTextArea">
+                  <Properties>
+                    <Property name="columns" type="int" value="20"/>
+                    <Property name="foreground" type="java.awt.Color" resourceKey="itemDescriptionTextArea.foreground"/>
+                    <Property name="rows" type="int" value="5"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                        <EmptyBorder/>
+                      </Border>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="itemDescriptionTextArea" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JScrollPane" name="itemListScrollPane">
+              <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="null"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="itemListScrollPane" noResource="true"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+              </AuxValues>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JList" name="itemList">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" resourceKey="itemList.background"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                        <TitledBorder title="Items">
+                          <Border PropertyName="innerBorder" info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+                            <EtchetBorder/>
+                          </Border>
+                          <Property name="titleX" resourceKey="itemList.border.title"/>
+                        </TitledBorder>
+                      </Border>
+                    </Property>
+                    <Property name="font" type="java.awt.Font" resourceKey="itemList.font"/>
+                    <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
+                      <StringArray count="0"/>
+                    </Property>
+                    <Property name="selectionMode" type="int" value="0"/>
+                    <Property name="toolTipText" type="java.lang.String" resourceKey="itemList.toolTipText"/>
+                    <Property name="name" type="java.lang.String" value="itemList" noResource="true"/>
+                    <Property name="valueIsAdjusting" type="boolean" value="true"/>
+                    <Property name="visibleRowCount" type="int" value="4"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="itemSelected"/>
+                  </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Item&gt;"/>
+                  </AuxValues>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Component class="javax.swing.JButton" name="deleteItemButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="deleteItemButton.text"/>
+                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="name" type="java.lang.String" value="deleteItemButton" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteItem"/>
+              </Events>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Component class="javax.swing.JButton" name="generateFeedButton">
+          <Properties>
+            <Property name="font" type="java.awt.Font" resourceKey="generateFeedButton.font"/>
+            <Property name="text" type="java.lang.String" resourceKey="generateFeedButton.text"/>
+            <Property name="toolTipText" type="java.lang.String" resourceKey="generateFeedButton.toolTipText"/>
+            <Property name="name" type="java.lang.String" value="generateFeedButton" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="generateFeed"/>
+          </Events>
+        </Component>
+        <Container class="javax.swing.JPanel" name="arduinoPanel">
+          <Properties>
+            <Property name="background" type="java.awt.Color" resourceKey="arduinoPanel.background"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                <TitledBorder title="Arduino">
+                  <Property name="titleX" resourceKey="arduinoPanel.border.title"/>
+                  <Property name="font" resourceKey="arduinoPanel.border.titleFont"/>
+                </TitledBorder>
+              </Border>
+            </Property>
+            <Property name="name" type="java.lang.String" value="arduinoPanel" noResource="true"/>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="arduinoPortLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="arduinoAddressLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="arduinoPortTextField" min="-2" pref="91" max="-2" attributes="0"/>
+                          <Component id="arduinoAddressTextField" alignment="0" pref="237" max="32767" attributes="1"/>
+                      </Group>
+                      <EmptySpace pref="96" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace pref="25" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="arduinoAddressLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="arduinoAddressTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="arduinoPortLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="arduinoPortTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="arduinoAddressLabel">
+              <Properties>
+                <Property name="font" type="java.awt.Font" resourceKey="arduinoAddressLabel.font"/>
+                <Property name="text" type="java.lang.String" resourceKey="arduinoAddressLabel.text"/>
+                <Property name="name" type="java.lang.String" value="arduinoAddressLabel" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="arduinoAddressTextField">
+              <Properties>
+                <Property name="font" type="java.awt.Font" resourceKey="arduinoAddressTextField.font"/>
+                <Property name="foreground" type="java.awt.Color" resourceKey="arduinoAddressTextField.foreground"/>
+                <Property name="text" type="java.lang.String" resourceKey="arduinoAddressTextField.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="arduinoAddressTextField.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="arduinoAddressTextField" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="arduinoPortLabel">
+              <Properties>
+                <Property name="font" type="java.awt.Font" resourceKey="arduinoPortLabel.font"/>
+                <Property name="text" type="java.lang.String" resourceKey="arduinoPortLabel.text"/>
+                <Property name="name" type="java.lang.String" value="arduinoPortLabel" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="arduinoPortTextField">
+              <Properties>
+                <Property name="font" type="java.awt.Font" resourceKey="arduinoPortTextField.font"/>
+                <Property name="foreground" type="java.awt.Color" resourceKey="arduinoPortTextField.foreground"/>
+                <Property name="text" type="java.lang.String" resourceKey="arduinoPortTextField.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="arduinoPortTextField.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="arduinoPortTextField" noResource="true"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Component class="javax.swing.JTextField" name="fileNameTextField">
+          <Properties>
+            <Property name="text" type="java.lang.String" resourceKey="fileNameTextField.text"/>
+            <Property name="name" type="java.lang.String" value="fileNameTextField" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="fileNameLabel">
+          <Properties>
+            <Property name="font" type="java.awt.Font" resourceKey="fileNameLabel.font"/>
+            <Property name="text" type="java.lang.String" resourceKey="fileNameLabel.text"/>
+            <Property name="toolTipText" type="java.lang.String" resourceKey="fileNameLabel.toolTipText"/>
+            <Property name="name" type="java.lang.String" value="fileNameLabel" noResource="true"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JMenuBar" name="menuBar">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="menuBar" noResource="true"/>
+      </Properties>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
+        <Property name="useNullLayout" type="boolean" value="true"/>
+      </Layout>
+      <SubComponents>
+        <Menu class="javax.swing.JMenu" name="fileMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" resourceKey="fileMenu.text"/>
+            <Property name="name" type="java.lang.String" value="fileMenu" noResource="true"/>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+          </AuxValues>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="exitMenuItem">
+              <Properties>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
+                  <action class="org.jdesktop.application.Application" id="quit" methodName="quit"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="exitMenuItem" noResource="true"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="helpMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" resourceKey="helpMenu.text"/>
+            <Property name="name" type="java.lang.String" value="helpMenu" noResource="true"/>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+          </AuxValues>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="aboutMenuItem">
+              <Properties>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
+                  <action class="rssbuilder.RssBuilderView" id="showAboutBox" methodName="showAboutBox"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="aboutMenuItem" noResource="true"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+      </SubComponents>
+    </Container>
+  </NonVisualComponents>
+  <Properties>
+    <Property name="component" type="javax.swing.JComponent" editor="org.netbeans.modules.form.ComponentChooserEditor">
+      <ComponentRef name="mainPanel"/>
+    </Property>
+    <Property name="menuBar" type="javax.swing.JMenuBar" editor="org.netbeans.modules.form.ComponentChooserEditor">
+      <ComponentRef name="menuBar"/>
+    </Property>
+  </Properties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="2"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,118,0,0,3,76"/>
+  </AuxValues>
+</Form>

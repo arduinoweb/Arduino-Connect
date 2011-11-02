@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+ <channel>
+  <title>Arduino Info</title>
+  <description>Testing the Arduino</description>
+  <link>http://localhost/~gary/arduino/rss.html</link>
+   <item>
+    <title>Arduino Light Bulb Value = 1</title>
+	<description>This is a test.</description>
+    <link>http://localhost/~gary/arduino/rss.html</link>
+   </item>
+   
+   <item>
+     <title>This is another arduino bit = 2</title>
+	 <description>Yup another item</description>
+	 <link>http://localhost/~gary/arduino/rss.html</link>
+   
+   </item>
+   
+    <item>
+     <title>And this is the third one = 3</title>
+	 <description>Yup another item</description>
+	 <link>http://localhost/~gary/arduino/rss.html</link>
+   
+   </item>
+ </channel>
+ </rss>

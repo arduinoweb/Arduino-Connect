@@ -1,0 +1,64 @@
+<project name="Test" basedir=".">
+
+  <property name="lib.dir" value="lib" />
+  <property name="src.dir" value="src" />
+  <property name="build.dir" value="build/classes" />
+  <property name="dist.dir" value="dist" />
+  <property name="jar.file" value="Arduino.jar" />
+  <property name="main.class" value="ucc.arduino.main.Arduino" />
+  
+  <path id="classpath">
+    <fileset dir="${lib.dir}" includes="**/*.jar" />
+  </path>
+  
+  <target name ="clean">
+    <delete dir="${build.dir}" />
+    <delete dir="${dist.dir}" />
+  </target>
+
+  <target name = "init">
+    <mkdir dir="${build.dir}" />
+    <mkdir dir="${dist.dir}" />
+  </target>
+  
+  <target name="compile" depends = "init">
+    <javac srcdir="${src.dir}" 
+            destdir = "${build.dir}" 
+            includeantruntime = "false"
+            classpathref="classpath" />
+  </target>
+  
+  
+  <target name = "jar" depends="compile">
+  
+   
+   <jar destfile = "${dist.dir}/${jar.file}" basedir="${build.dir}">
+   <archives>
+      <zips>
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+   </zips>
+   </archives>
+   
+   <fileset dir="${lib.dir}" includes="**/*.dll" /> 
+   <manifest>
+      <attribute name="Main-Class" value="${main.class}" />
+   </manifest>
+  </jar>
+  
+  </target>
+  
+  <target name="run" depends = "jar">
+     <java jar="${dist.dir}/${jar.file}" fork="true" >
+      <jvmarg value="-Djava.library.path=${lib.dir}" />
+     </java>
+  </target>
+  
+  <target name="RssBuilder" depends="compile">
+    <java classname="ucc.arduino.rss.RssBuilder" fork="true">
+	  <classpath>
+	    <pathelement path="build/classes" />
+	  </classpath>
+	</java>
+  </target>
+
+</project>

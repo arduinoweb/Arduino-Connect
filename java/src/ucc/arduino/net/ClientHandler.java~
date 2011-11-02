@@ -1,0 +1,138 @@
+package ucc.arduino.net;
+
+import ucc.arduino.main.Arduino;
+
+import ucc.arduino.net.ClientConnection;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> implements Runnable
+{
+  private static final String UNKNOWN_PIN = "UNKNOWN PIN";
+  private static final String END_OF_REQUEST = "E";
+  private static final String BAD_MESSAGE_FORMAT = "BAD MESSAGE FORMAT";
+  private static final String READ_MESSAGE = "R";
+  private static final char WRITE_MESSAGE = 'W';
+  
+  private boolean stayAlive;
+   
+  public ClientHandler()
+  {
+     super();
+     stayAlive = true;
+  
+  }
+
+  public void run()
+  {
+     ClientConnection clientConnection = null;
+     String clientReply;
+     
+	 
+     while( stayAlive )
+	 {
+	    clientReply = BAD_MESSAGE_FORMAT;
+	  
+	    
+	    if( ( clientConnection = this.poll() ) != null )
+		{
+		
+		    String msg = clientConnection.getMessage();
+		 
+			String[] msgParts = msg.split(" " );
+
+	                if( msgParts.length > 2 && ( msgParts[ msgParts.length -1 ].equalsIgnoreCase( END_OF_REQUEST ) ) )
+	                {
+	                      
+	                    if( msgParts[ 0 ].equalsIgnoreCase( READ_MESSAGE ) )
+	                    {
+	                         clientReply = processRead( msgParts );
+	                         
+	                    }
+	                    
+	                    else if( msgParts[ 0 ].equals( WRITE_MESSAGE )  )
+	                    {
+	                            
+	                    }
+	                }
+	               	 clientConnection.sendMessage( clientReply );
+
+	                                          
+			 /* 
+			    if( msgParts.length == 4 && msgParts[0].equals( "W"))
+			   {
+			      System.out.println("Browser sent this message: " + clientConnection.getMessage() );
+			      try{
+				     
+				     Integer pin = Integer.parseInt( msgParts[2] );
+					 Integer value = Integer.parseInt( msgParts[3]);
+					 
+					 byte mode = (byte) msgParts[1].charAt(0);
+					 
+					 if( mode == 'A' || mode == 'D' )
+					 {
+					   Arduino.writeQueueAdd( mode, pin, value );
+					   System.out.println("Added to Queue: " + mode + " " + pin + " " + value );
+					 }
+				  
+				  }catch( NumberFormatException nfe){
+				  
+				     System.err.println( nfe );
+				  }
+			   }*/
+			 
+			
+			clientConnection.close();
+		}
+	 
+	 }
+  
+  }
+  
+  
+  private String processRead( String[] msg )
+  {
+    Integer pinValue = 1 ;
+    String clientReply = BAD_MESSAGE_FORMAT;
+    StringBuffer replyBuilder = new StringBuffer();
+    int indexer = 1;
+    
+    while( indexer < msg.length -1 && pinValue != null )
+    {
+	                            
+       try{
+	    Integer pinNumber = Integer.parseInt( msg[ indexer ] );
+	                             
+	    pinValue = Arduino.getPin( pinNumber );
+	                              
+	    if( pinValue == null )
+	    {
+	       clientReply = UNKNOWN_PIN; 
+	    }
+	    else
+	    {
+	       replyBuilder.append( pinValue + " " );
+	    }
+	                             
+	    indexer++;
+	                             
+	}catch( NumberFormatException nfe ){
+	     pinValue = null;        
+	}
+    }
+	                       
+    if( pinValue != null )
+    {
+        clientReply = replyBuilder.toString().trim();
+    }
+	                            
+    return clientReply;      
+  }
+  
+  public void stop()
+  {
+        stayAlive = false;
+  
+  }
+
+}
