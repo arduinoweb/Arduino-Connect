@@ -7,34 +7,23 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
-public class ClientConnection  {
+public class ClientConnection  implements Runnable{
 
    private final BufferedReader DATA_IN;
    private final PrintWriter    DATA_OUT;
    private final Socket         SOCKET;
    private String message;
+   private boolean stayAlive;
    
-  
-   private boolean communicationComplete;
-  
    public ClientConnection( final Socket socket ) throws IOException
    {
       DATA_IN =  new BufferedReader( new InputStreamReader( socket.getInputStream() ) );
-	  
-	  DATA_OUT = new PrintWriter( socket.getOutputStream() );
-	  
-	  SOCKET = socket;
-	  
-	  communicationComplete = false;
-	  message = null;
-	  retrieveMessage();
-	  
-   }
-   
-   public synchronized boolean isComplete()
-   {
-       return communicationComplete;
+      DATA_OUT = new PrintWriter( socket.getOutputStream() );
+      SOCKET = socket;
+      message = null;  
+      stayAlive = true;
    }
    
    public synchronized String getMessage() 
@@ -45,39 +34,46 @@ public class ClientConnection  {
    public synchronized void sendMessage( String msg )
    {
         DATA_OUT.println( msg );
-        communicationComplete = true;
+        stayAlive = false;
    }
    
    public synchronized void close( )
    {
        try{
-	       DATA_OUT.flush();
-	       DATA_IN.close();
-		   DATA_OUT.close();
-		   SOCKET.close();
+	    
+            DATA_OUT.flush();
+	    DATA_IN.close();
+	    DATA_OUT.close();
+	    SOCKET.close();
 	      
 	   }catch( IOException ioe ){
 	      System.err.println( ioe );
 	   }
+    
+      stayAlive = false;
+   }
    
+ public void run()
+ {
+   try{
+       message = DATA_IN.readLine();
+   }catch(SocketTimeoutException soe){
+      System.err.println( soe.getMessage() );
+      close();
+   }catch( IOException ioe ){
+      System.err.println( ioe.getMessage() );   
+      close();
    }
    
 
-   public void retrieveMessage()
-   {
-       try{
-	       message = DATA_IN.readLine();
-		   
-	   
-	   }catch( IOException ioe ){
-	      System.err.println( ioe );
-		  communicationComplete = true;
-		  close();
-	   }
-   
-   
-   }
-   
+ while( stayAlive ) { };
 
+   
+ }
+
+public synchronized boolean isAlive()
+{
+   return stayAlive;
+}
 
 }

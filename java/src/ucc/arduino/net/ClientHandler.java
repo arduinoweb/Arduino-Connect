@@ -1,12 +1,9 @@
 package ucc.arduino.net;
 
 import ucc.arduino.main.Arduino;
-
 import ucc.arduino.net.ClientConnection;
-
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import java.util.Scanner;
 
 public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> implements Runnable
 {
@@ -18,9 +15,7 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> imple
   private static final String DIGITAL_WRITE = "D";
   private static final String ANALOG_WRITE = "A";
   private static final String OK = "OK";
-  private static final int MIN_MESSAGE_SIZE =  3;
-  private static final int MAX_MESSAGE_SIZE = 100;
-  
+
   private boolean stayAlive;
    
   public ClientHandler()
@@ -43,13 +38,14 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> imple
 	if( ( clientConnection = this.poll() ) != null )
         {
           String msg = clientConnection.getMessage();
-         
-          String[] msgParts = msg.split(" " );
+          if( msg != null)
+          {
+           String[] msgParts = msg.split(" " );
 
 	  if( msgParts.length > 2 && 
-	     ( msgParts[ msgParts.length -1 ].equalsIgnoreCase( END_OF_MESSAGE ) ) )
+	     ( msgParts[ msgParts.length -1 ].equals( END_OF_MESSAGE ) ) )
 	  {
-	     if( msgParts[ 0 ].equalsIgnoreCase( READ_MESSAGE ) )
+	     if( msgParts[ 0 ].equals( READ_MESSAGE ) )
 	     {
 	       clientReply = processRead( msgParts );
 	     }
@@ -57,11 +53,17 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> imple
 	     {
 	        clientReply = processWrite( msgParts );
 	     }
-	  }
-	    
-	  clientConnection.sendMessage( clientReply );
+            clientConnection.sendMessage( clientReply );
 
 	    clientConnection.close();
+	  }
+         }
+         else if( clientConnection.isAlive() )
+         {
+           this.add( clientConnection);
+         }
+	    
+	
         }
 	 
      }
@@ -87,10 +89,6 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> imple
               Integer pinNumber = Integer.parseInt(  msg[ indexer ] );
               indexer++;
               Integer pinValue = Integer.parseInt( msg[ indexer ] );
-                               
-              System.out.println("Write Request: " + ((char) mode) + " "
-                                                   + pinNumber + " "
-                                                   + pinValue + " ");
               Arduino.writeQueueAdd( mode, pinNumber, pinValue );       
                     
             }catch( NumberFormatException nfe ){

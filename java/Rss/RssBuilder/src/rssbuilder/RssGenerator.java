@@ -52,8 +52,8 @@ public class RssGenerator {
                                        new FileWriter( fileName ) ), true );
           PINS_REFERENCED.clear();
         
-          checkForPinReference( channelTitle );
-          checkForPinReference( channelDescription );
+        //  checkForPinReference( channelTitle );
+        //  checkForPinReference( channelDescription );
          
           rssFile.println("<?php");
           rssFile.println("header(\"ContentType: text/xml\");");
@@ -77,7 +77,7 @@ public class RssGenerator {
               for( Item item: itemsList )
               {
                
-               checkForPinReference( item.getTitle());
+              // checkForPinReference( item.getTitle());
                checkForPinReference( item.getDescription());
                
                rssFile.println("'"+sanitise( item.getTitle() )+"'=>'"+
@@ -118,6 +118,43 @@ public class RssGenerator {
                   rssFile.println( "$message = \"" + message.toString() + "E\";");
               }
           }
+          
+          rssFile.println("$sock = socket_create( AF_INET, SOCK_STREAM, 0);");
+          rssFile.println("$success = socket_connect( $sock, $address, $port);");
+          
+          rssFile.println( "if( $success){");
+          rssFile.println("   if(socket_write( $sock,$message.\"\\n\", strlen( $message ) + 1)){");
+          rssFile.println("    if( ( $reply = socket_read( $sock, 10000, PHP_NORMAL_READ))){");
+          rssFile.println("         $valueArray = explode( \" \", $reply);");
+          rssFile.println("         $index = 0;");
+          rssFile.println("         foreach( $pinsReferenced as $key => $value ){");
+          rssFile.println("           $pinsReferenced[$key]= $valueArray[$index];");
+       //   rssFile.println("           $feed['channelTitle']= str_replace( $pinStartDelimiter.$key.$pinEndDelimiter,");
+       //   rssFile.println("                                               $valueArray[$index],\n");
+       //   rssFile.println("                                               $feed['channelTitle'] );");
+       //   rssFile.println("           $feed['channelDescription'] = str_replace( $pinStartDelimiter.$key.$pinEndDelimiter,");
+       //   rssFile.println("                                                      $valueArray[ $index],\n");
+      //    rssFile.println("                                                      $feed['channelDescription']);");
+          rssFile.println("           $items = $feed['items'];");
+          rssFile.println("           foreach( $items as $itemKey => $itemValue ){");
+          rssFile.println("             $feed['items'][$itemKey] = str_replace( $pinStartDelimiter.$key.$pinEndDelimiter,");
+          rssFile.println("                                                     $valueArray[$index],");
+          rssFile.println("                                                     $feed['items'][$itemKey]);");
+          rssFile.println("             }");
+          rssFile.println("        $index++;");
+          rssFile.println("       }");
+          rssFile.println("    $reply = trim( $reply );");
+          rssFile.println("   }");
+          rssFile.println(" }");
+         
+          
+          
+          
+          
+          
+          
+          
+          rssFile.println("}");
           
           
           

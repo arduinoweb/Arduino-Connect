@@ -11,178 +11,163 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
+
 
 public class SerialComm implements Runnable
 {
-    private final static int  READ_BUFFER_SIZE = 1024;
+    private final static int  READ_BUFFER_SIZE = 256;
     private final static byte[]  READ_BUFFER =  new byte[ READ_BUFFER_SIZE ];
-    private final static int WAIT_TIMEOUT = 50;
-
- 
+    
+    private final static String MESSAGE_DELIMITER = " ";
     private final static byte READ_SYNC = 'R';
-	private final static byte WRITE_SYNC = 'W';
-	private final static byte ARRAY_CLEAR = 0;
-    private final static byte SPACE = ' ';
-	private final static byte END_OF_MESSAGE = 'E';
-	private final static byte NOTHING_TO_SEND = 'N';
-	
-	private static SerialPort serialPort;
-	
-	private   InputStream inputStream;
-	private   OutputStream outputStream;
-	private   boolean stayAlive;
-
-	
-	
-    public SerialComm(  )
+    private final static byte WRITE_SYNC = 'W';
+    private final static byte END_OF_MESSAGE = 'E';
+    private final static byte NOTHING_TO_SEND = 'N';
+   
+    private final static int SERIAL_TIMEOUT = 10; 	
+    private static SerialPort serialPort;
+    private InputStream inputStream;
+    private OutputStream outputStream;
+    private boolean stayAlive;
+    private static String portName;
+   
+    public SerialComm( String portName )
     {
-        super();
-		
-		stayAlive = true;
-		
-		
+        super();	
+        this.portName  = portName;
+	stayAlive = true;
     }
     
-
-    public void connect ( String portName ) throws Exception
+    public void connect ( ) throws Exception
     {
         CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
+        
         if ( portIdentifier.isCurrentlyOwned() )
         {
             System.out.println("Error: Port is currently in use");
         }
         else
         {
-            CommPort commPort = portIdentifier.open(this.getClass().getName(),2000);
+          CommPort commPort = portIdentifier.open(this.getClass().getName(),2000);
             
-            if ( commPort instanceof SerialPort )
-            {
-                serialPort = (SerialPort) commPort;
-                serialPort.setSerialPortParams(57600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
+          if ( commPort instanceof SerialPort )
+          {
+           serialPort = (SerialPort) commPort;
+           serialPort.setSerialPortParams(9600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
                 
-                 inputStream = serialPort.getInputStream();
-                 outputStream = serialPort.getOutputStream();
-	    }
-            else
-            {
-                System.out.println("Error: Only serial ports are handled by this example.");
-            }
+           inputStream = serialPort.getInputStream();
+           outputStream = serialPort.getOutputStream();
+	  }
+          else
+          {
+            System.out.println("Error: Only serial ports are handled by this example.");
+          }
         }     
     }
 	
-	public void stop()
-	{
-	     stayAlive = false;
+    public void stop()
+    { 
+      stayAlive = false;
+    }
 	
-	}
-	
-	public void run()
-	{
-		try{
-		outputStream.write( (byte) 1 );
-		}catch(IOException ioe ){ System.err.println(ioe);}
-		
-                int bytesAvailable = 0;
+    public void run()
+    {
+       try{
+	   outputStream.write( (byte) 1 );
+	}catch(IOException ioe ){ 
+             System.err.println(ioe);
+        }
+	 long startTime = 0;
+         long elapsedTime = 0;
          int index = 0;
-         Pin pin = null;
+         
+         byte byteRead = '\0';
+
          byte[] writeMsg = new byte[4];
+         
          writeMsg[0] = WRITE_SYNC;
+         
 
-		while( stayAlive )
-		{
-     	         try{
+	while( stayAlive )
+	{
+     	  try{
         
-          pin = null;
-
-	  if( ( bytesAvailable = inputStream.available() )> 0 )
-          {
+	    if( inputStream.available() > 0 )
+            {
               index = 0;
-              byte b = (byte)inputStream.read();
-              System.out.println( "Bytes Available: " + bytesAvailable );
-	      if( b == READ_SYNC )
+              byteRead = (byte)inputStream.read();
+              
+	      if( byteRead == READ_SYNC )
               {
-		System.out.println("Write Sync Recieved");
 		outputStream.write( READ_SYNC );
-                byte temp = ' ';
-                long startTime = System.currentTimeMillis();
-                long elapsedTime = 0;
-		while( elapsedTime < WAIT_TIMEOUT && temp != END_OF_MESSAGE )
+               
+                startTime = System.currentTimeMillis();
+                elapsedTime = 0;
+		
+                while( byteRead != END_OF_MESSAGE 
+                       && index < READ_BUFFER_SIZE 
+                       && elapsedTime < SERIAL_TIMEOUT )
 	        {
-                     if( inputStream.available() > 0 )
-	             {
-			     temp = ( byte)inputStream.read();
-			     READ_BUFFER[index] = temp;
-			     index++;
-		     }
-                  elapsedTime = System.currentTimeMillis() - startTime;
+                  if( inputStream.available() > 0 )
+	          {
+		     byteRead = ( byte)inputStream.read();
+	             READ_BUFFER[index] = byteRead;
+	             index++;
+		  }
 
+                  elapsedTime = System.currentTimeMillis() - startTime;
 		}
 		
-               if( temp == END_OF_MESSAGE)
-		{String message = new String( READ_BUFFER, 0, index - 1 );
-                 String[] parts = message.split(" ");
+               if( byteRead == END_OF_MESSAGE)
+	       {
+                 String message = new String( READ_BUFFER, 0, index - 1 );
+                 String[] parts = message.split( MESSAGE_DELIMITER );
 
-                try{
-                 if( parts.length == 2 ){
-                   Arduino.setPin( Integer.parseInt( parts[0] ),
-                                   Integer.parseInt( parts[1] ) );
-                   }
-                }catch( NumberFormatException nfe ) { }
-              
-	        System.out.println( message );
-                 }
-                 else
-              {
-                 System.out.println( "Java program timed out reading from Arduino");
-              }
+                 try{
+                       if( parts.length == 2 ){
+                                Arduino.setPin( Integer.parseInt( parts[0] ),
+                                                Integer.parseInt( parts[1] ) );
+                       }
+
+                    }catch( NumberFormatException nfe ) { }
+               }
+             
 	      }
-              
-              else if( b == WRITE_SYNC )
+              else if( byteRead == WRITE_SYNC )
               {
-                System.out.println( "Okay to write");
+                Pin pin = null;
+                
 		if( ( pin = Arduino.writeQueuePoll()) == null )
 		{
-                  System.out.println("Nothing to send to Arduino");
 		  outputStream.write( NOTHING_TO_SEND );
                   outputStream.flush();
 	       }
 	       else
 	       {
-                    System.out.println( "Writing to Arduino");
-                   
-		    
-		    writeMsg[ 1 ] = (byte)pin.getMode();
-		    writeMsg[ 2 ] = (byte)pin.getName();
-		    writeMsg[ 3 ] = (byte)pin.getValue();
+                  writeMsg[ 1 ] = (byte)pin.getMode();
+		  writeMsg[ 2 ] = (byte)pin.getName();
+		  writeMsg[ 3 ] = (byte)pin.getValue();
 	   	   
-		   outputStream.write( writeMsg );
-		   outputStream.flush();
+		  outputStream.write( writeMsg );
+		  outputStream.flush();
+                  writeMsg[ 1 ] = '\0';
+                  writeMsg[ 2 ] = '\0';
+                  writeMsg[ 3 ] = '\0';
 	       }
 
              }
-	}
-      }catch( IOException ioe ){ System.err.println( ioe ); }
+	   }
 
-	    	
+          }catch( IOException ioe ){ System.err.println( ioe ); }
 
-		  
-		
-		}	
-	
-	}
- 
-    public  void  readyToReceive()
-    {
-      
-
+      }	// End of While Loop
+	close();
     }
-   
- 	    
+ 
     private void close()
 	{
 	   try{
-	        outputStream.flush();
+	    outputStream.flush();
             inputStream.close();
             serialPort.close();			
 	   

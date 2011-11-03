@@ -13,119 +13,106 @@ import java.io.IOException;
 
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 public class Arduino{
 
     private static final HashMap< Integer, Integer> PINS = new HashMap<Integer, Integer>();
-	private static final ClientHandler clientHandler = new ClientHandler();
-	private static final ConcurrentLinkedQueue<Pin> WRITE_QUEUE = new ConcurrentLinkedQueue<Pin>();
-	
+    private static final ClientHandler CLIENT_HANDLER = new ClientHandler();
+    private static final ConcurrentLinkedQueue<Pin> WRITE_QUEUE = new ConcurrentLinkedQueue<Pin>();
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
+
     private static SerialComm serialComm;
-	
+    private static final int CLIENT_TIMEOUT = 30000;	
    // private static Serial serial;
     private Socket client;
+    private static int serverPortNumber = 10002;
+	
+    //private ClientConnection testClientConnection;
+    private static  ServerSocket serverSocket;
+    private String serialPort ="/dev/ttyUSB3";
+	
+    public Arduino() throws IOException {
+	
+        serverSocket = new ServerSocket( serverPortNumber );
+        new Thread( CLIENT_HANDLER ).start();
+	
+		   
+     }
+	
+     public void start()
+     {
+	 serialComm = new SerialComm( serialPort );
+	
+         try{
+	     serialComm.connect( );
+	     new Thread( serialComm).start();
 
-	
-	//private ClientConnection testClientConnection;
-    private ServerSocket serverSocket;
-	
-	public Arduino() throws IOException {
-	
-	  setPin( 9, 0);
-	  setPin( 10, 255);
-	  setPin( 4, 23 );
-	   
-	 serverSocket = new ServerSocket( 10002);
-
-
-	   new Thread( clientHandler).start();
-	   
-	   accept();
-	  
-	   
-	   
-	}
-	
-	private void accept()
-	{
-	    serialComm = new SerialComm(  );
-		  try{
-	   
-	    serialComm.connect( "/dev/ttyUSB0");
-		new Thread( serialComm).start();
 	   }catch( Exception e ){
 	     System.err.println( e );
-		 System.err.println("Exception in thread creation");
-		 System.exit( 1 );
-		 
-	  }
+	     System.err.println("Exception in thread creation");
+	     System.exit( 1 );
+	   }
 	 
-		
-		int count = 0;
-		while( true )
-		{
-		
-		  try{
-		   
-		    client = serverSocket.accept();
-		    System.out.println("Client Connected");
-			clientHandler.add( new ClientConnection( client ) );
-			
-			}catch( IOException ioe ){
-			   System.err.println( ioe );
-			   shutdown();
-			  }
-			
-          		
-	
+        System.out.println("Arduino Connect Started.");
+	while( true )
+	{
+	  try{
+		client = serverSocket.accept();
+		System.out.println("Client Connected");
+                client.setSoTimeout( CLIENT_TIMEOUT);
+                ClientConnection tmp = new ClientConnection( client );
+              
+                EXECUTOR_SERVICE.execute( tmp );
+                
+                CLIENT_HANDLER.add( tmp  );
+		 
+	}catch( IOException ioe ){
+		System.err.println( ioe );
+		shutdown();
 	}
-	
-	
+     }
   }
 	
-	private void shutdown()
-	{
-	   try{
-	    clientHandler.stop();
-		serialComm.stop();
-		serverSocket.close();
-		
-		}catch( Exception e ){
-		 
-		}
-		
-		
-	}
+  private void shutdown()
+  {
+    try{
+	CLIENT_HANDLER.stop();
+	serialComm.stop();
+        serverSocket.close();
+        EXECUTOR_SERVICE.shutdown();
+     
+    
+	
+    }catch( Exception e ){ }
+  }
 	
 	
-	public synchronized static void setPin( Integer pin, Integer value )
-	{
-	      PINS.put( pin, value );
+ public synchronized static void setPin( Integer pin, Integer value )
+ {
+    PINS.put( pin, value );
+ }
 	
-	}
+ public synchronized static Integer  getPin( Integer pin )
+ {
+    return PINS.get( pin );
+  }
 	
-	public synchronized static Integer  getPin( Integer pin )
-	{
-	     return PINS.get( pin );
-	 
-	}
+ public static synchronized void writeQueueAdd( byte mode, int pin, int value )
+ {
+    WRITE_QUEUE.add( new Pin( mode, pin, value) );
+ }
 	
-	public static synchronized void writeQueueAdd( byte mode, int pin, int value )
-	{
-	     WRITE_QUEUE.add( new Pin( mode, pin, value) );
-	
-	}
-	
-	public static synchronized Pin writeQueuePoll( )
-	{
-	    return WRITE_QUEUE.poll();
-	}
-	public static void main(String[] args) throws Exception {
-		new Arduino();
-		
-		
-		System.out.println("Started");
-	}
+ public static synchronized Pin writeQueuePoll( )
+ {
+    return WRITE_QUEUE.poll();
+ }
+
+ public static void main(String[] args) throws Exception {
+   new Arduino().start();
+ }
+
 }
  
 

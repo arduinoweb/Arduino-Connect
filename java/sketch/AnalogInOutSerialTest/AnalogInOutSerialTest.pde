@@ -38,7 +38,7 @@ byte outputValue = 0;        // value output to the PWM (analog out)
 #define DIGITAL 'D'
 #define SPACE ' '
 #define UNSET '\0'
-#define TIMEOUT 50
+#define TIMEOUT 10
 
 int value1 = 255;
 int value2 = 10;
@@ -51,7 +51,7 @@ int value9 = 10;
 
 void setup() {
   // initialize serial communications at 9600 bps:
- Serial.begin(57600); 
+ Serial.begin(9600); 
  pinMode( 7, OUTPUT );
  while( Serial.available() == 0 );
  Serial.read();

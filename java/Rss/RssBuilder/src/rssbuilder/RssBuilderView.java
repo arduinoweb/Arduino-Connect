@@ -129,6 +129,7 @@ public class RssBuilderView extends FrameView {
         channelDescriptionTextArea.setColumns(20);
         channelDescriptionTextArea.setForeground(resourceMap.getColor("channelDescriptionTextArea.foreground")); // NOI18N
         channelDescriptionTextArea.setRows(5);
+        channelDescriptionTextArea.setText(resourceMap.getString("channelDescriptionTextArea.text")); // NOI18N
         channelDescriptionTextArea.setName("channelDescriptionTextArea"); // NOI18N
         jScrollPane1.setViewportView(channelDescriptionTextArea);
 
