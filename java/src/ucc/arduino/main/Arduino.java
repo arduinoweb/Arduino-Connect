@@ -1,6 +1,13 @@
+/**
+  * @author: Gary Smith
+  ** <p>The entry point to the Arduino program,
+  * Handles initialisation and
+  * the connecting of clients via sockets</p>
+  */
+
+
 package ucc.arduino.main;
 
-//import ucc.arduino.Serial;
 import ucc.arduino.net.ClientConnection;
 import ucc.arduino.serial.SerialComm;
 import ucc.arduino.net.ClientHandler;
@@ -17,22 +24,28 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 
 public class Arduino{
-
+    /**The map of (pin,value) that clients are fed data from/*/
     private static final HashMap< Integer, Integer> PINS = new HashMap<Integer, Integer>();
+    /**Thread that handles the processing of messages from clients*/
     private static final ClientHandler CLIENT_HANDLER = new ClientHandler();
+    /**A Queue of the write requests received from clients*/
     private static final ConcurrentLinkedQueue<Pin> WRITE_QUEUE = new ConcurrentLinkedQueue<Pin>();
+    /**Handles the creation/reuse of client threads*/
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
-
+    /**Provides the communication link from the usb port to the Arduino*/
     private static SerialComm serialComm;
+    /**The amount of time to wait to receive data from clients*/
     private static final int CLIENT_TIMEOUT = 30000;	
-   // private static Serial serial;
+    /**Temporarily stores a newly connected client before it is passed onto CLIENT_HANDLER*/
     private Socket client;
+    /**The port that the ServerSocket will listen on*/
     private static int serverPortNumber = 10002;
-	
-    //private ClientConnection testClientConnection;
+    /**The socket that listens for client connections*/
     private static  ServerSocket serverSocket;
+    /**The serial port to communicate with the Arduino through*/
     private String serialPort ="/dev/ttyUSB3";
 	
+    /**Constructor*/
     public Arduino() throws IOException {
 	
         serverSocket = new ServerSocket( serverPortNumber );
@@ -40,9 +53,12 @@ public class Arduino{
 	
 		   
      }
-	
-     public void start()
-     {
+   
+  /** Main routine that waits for a client connection, assigns it a new thread
+   *  and passes the client connection onto CLIENT_HANDLER
+   */	
+  public void start()
+ {
 	 serialComm = new SerialComm( serialPort );
 	
          try{
@@ -75,6 +91,7 @@ public class Arduino{
      }
   }
 	
+  /** Close the program and exit */
   private void shutdown()
   {
     try{
@@ -82,33 +99,49 @@ public class Arduino{
 	serialComm.stop();
         serverSocket.close();
         EXECUTOR_SERVICE.shutdown();
-     
-    
+        System.exit( 0 );
 	
     }catch( Exception e ){ }
   }
 	
-	
+ /** Add/Update a (pin,value) entry in the PINS map
+  *  @param: pin - the pin number
+  *  @param: value - the value to assign to the pin
+  */
  public synchronized static void setPin( Integer pin, Integer value )
  {
     PINS.put( pin, value );
  }
-	
+
+ /** Retreives a (pin,value) entry from the PINS map
+  *  @param: pin - the pin number
+  *  @return: Pin the (pin,value) entry or null if no entry
+  */	
  public synchronized static Integer  getPin( Integer pin )
  {
     return PINS.get( pin );
   }
 	
+ /** Adds a new write request to the write message to Arduino queue
+  *  @param: byte mode - A = Analog pin, D = Digital pin
+  *  @param: int pin   - the pin number
+  *  @param: int value - the value to assign to the pin
+  */
  public static synchronized void writeQueueAdd( byte mode, int pin, int value )
  {
     WRITE_QUEUE.add( new Pin( mode, pin, value) );
  }
 	
+ /** Retreive the next write message from the head of the write queue
+  *  @return: Pin - the (pin,value) entry at the head of the queue
+  *                otherwise null if the queue is empty
+  */
  public static synchronized Pin writeQueuePoll( )
  {
     return WRITE_QUEUE.poll();
  }
 
+/** Main entry point */
  public static void main(String[] args) throws Exception {
    new Arduino().start();
  }
