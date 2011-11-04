@@ -33,7 +33,7 @@ public class SerialComm implements Runnable
     // End of message definitions
 
     /** The amount of time to wait between each byte received */
-    private final static int SERIAL_TIMEOUT = 10; 	
+    private int serialTimeout;
     /** Communicator between USB and Arduino */
     private static SerialPort serialPort;
 
@@ -50,11 +50,12 @@ public class SerialComm implements Runnable
     /** Constructor
       * @param: portName - the port to be used for serial communication
       */
-    public SerialComm( String portName )
+    public SerialComm( )
     {
-        super();	
-        this.portName  = portName;
+        super();
+
 	stayAlive = true;
+        serialTimeout = Arduino.CONFIGURATION.getSerialTimeout();
     }
     
     /** Boiler plate code that initialises the serial communication
@@ -62,7 +63,8 @@ public class SerialComm implements Runnable
       */
       public void connect ( ) throws Exception
     {
-        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
+        CommPortIdentifier portIdentifier = 
+                    CommPortIdentifier.getPortIdentifier(Arduino.CONFIGURATION.getSerialPort());
         
         if ( portIdentifier.isCurrentlyOwned() )
         {
@@ -75,7 +77,11 @@ public class SerialComm implements Runnable
           if ( commPort instanceof SerialPort )
           {
            serialPort = (SerialPort) commPort;
-           serialPort.setSerialPortParams(9600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
+           serialPort.setSerialPortParams(Arduino.CONFIGURATION.getBaudRate(),
+                                          Arduino.CONFIGURATION.getDataBits(),
+                                          Arduino.CONFIGURATION.getStopBits(), 
+                                          Arduino.CONFIGURATION.getParity() 
+                                         );
                 
            inputStream = serialPort.getInputStream();
            outputStream = serialPort.getOutputStream();
@@ -140,7 +146,7 @@ public class SerialComm implements Runnable
                 // the READ_BUFFER
                 while( byteRead != END_OF_MESSAGE 
                        && index < READ_BUFFER_SIZE 
-                       && elapsedTime < SERIAL_TIMEOUT )
+                       && elapsedTime < serialTimeout )
 	        {
                   if( inputStream.available() > 0 )
 	          {

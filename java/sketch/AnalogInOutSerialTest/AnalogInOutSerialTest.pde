@@ -38,7 +38,7 @@ byte outputValue = 0;        // value output to the PWM (analog out)
 #define DIGITAL 'D'
 #define SPACE ' '
 #define UNSET '\0'
-#define TIMEOUT 10
+#define TIMEOUT 50
 
 int value1 = 255;
 int value2 = 10;

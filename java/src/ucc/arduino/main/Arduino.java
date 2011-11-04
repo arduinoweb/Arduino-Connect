@@ -8,6 +8,8 @@
 
 package ucc.arduino.main;
 
+import ucc.arduino.configuration.Configuration;
+
 import ucc.arduino.net.ClientConnection;
 import ucc.arduino.serial.SerialComm;
 import ucc.arduino.net.ClientHandler;
@@ -17,13 +19,18 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import java.io.IOException;
+import java.io.File;
 
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.Properties;
+
 
 public class Arduino{
+
+    public static Configuration CONFIGURATION = new Configuration( );
     /**The map of (pin,value) that clients are fed data from/*/
     private static final HashMap< Integer, Integer> PINS = new HashMap<Integer, Integer>();
     /**Thread that handles the processing of messages from clients*/
@@ -46,9 +53,10 @@ public class Arduino{
     private String serialPort ="/dev/ttyUSB3";
 	
     /**Constructor*/
-    public Arduino() throws IOException {
-	
-        serverSocket = new ServerSocket( serverPortNumber );
+    public Arduino( File configurationFile ) throws IOException {
+        CONFIGURATION = new Configuration( configurationFile );
+        
+        serverSocket = new ServerSocket( CONFIGURATION.getArduinoPort() );
         new Thread( CLIENT_HANDLER ).start();
 	
 		   
@@ -59,7 +67,8 @@ public class Arduino{
    */	
   public void start()
  {
-	 serialComm = new SerialComm( serialPort );
+         
+	 serialComm = new SerialComm( );
 	
          try{
 	     serialComm.connect( );
@@ -77,7 +86,8 @@ public class Arduino{
 	  try{
 		client = serverSocket.accept();
 		System.out.println("Client Connected");
-                client.setSoTimeout( CLIENT_TIMEOUT);
+             
+                client.setSoTimeout( CONFIGURATION.getClientTimeout() );
                 ClientConnection tmp = new ClientConnection( client );
               
                 EXECUTOR_SERVICE.execute( tmp );
@@ -143,7 +153,7 @@ public class Arduino{
 
 /** Main entry point */
  public static void main(String[] args) throws Exception {
-   new Arduino().start();
+   new Arduino( new File( "/home/gary/public_html/arduino/Arduino-Connect/java/configuration.properties") ).start();
  }
 
 }
