@@ -3,9 +3,10 @@
   */
 
 package ucc.arduino.serial;
-
 import ucc.arduino.main.Arduino;
 import ucc.arduino.main.Pin;
+import ucc.arduino.configuration.Protocol;
+
 
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
@@ -23,14 +24,6 @@ public class SerialComm implements Runnable
     private final static int  READ_BUFFER_SIZE = 256;
     /** The buffer to use when reading from Arduino */
     private final static byte[]  READ_BUFFER =  new byte[ READ_BUFFER_SIZE ];
-    
-    // Message definitions, these will be moved eventually
-    private final static String MESSAGE_DELIMITER = " ";
-    private final static byte READ_SYNC = 'R';
-    private final static byte WRITE_SYNC = 'W';
-    private final static byte END_OF_MESSAGE = 'E';
-    private final static byte NOTHING_TO_SEND = 'N';
-    // End of message definitions
 
     /** The amount of time to wait between each byte received */
     private int serialTimeout;
@@ -43,12 +36,9 @@ public class SerialComm implements Runnable
     private OutputStream outputStream;
     /** Whether to keep the thread alive or not */
     private boolean stayAlive;
-    /** The port name to be used for serial communication */
-    private static String portName;
    
 
     /** Constructor
-      * @param: portName - the port to be used for serial communication
       */
     public SerialComm( )
     {
@@ -76,11 +66,12 @@ public class SerialComm implements Runnable
             
           if ( commPort instanceof SerialPort )
           {
+
            serialPort = (SerialPort) commPort;
-           serialPort.setSerialPortParams(Arduino.CONFIGURATION.getBaudRate(),
-                                          Arduino.CONFIGURATION.getDataBits(),
-                                          Arduino.CONFIGURATION.getStopBits(), 
-                                          Arduino.CONFIGURATION.getParity() 
+           serialPort.setSerialPortParams(Arduino.CONFIGURATION.getSerialBaudRate(),
+                                          Arduino.CONFIGURATION.getSerialDataBits(),
+                                          Arduino.CONFIGURATION.getSerialStopBits(), 
+                                          Arduino.CONFIGURATION.getSerialParity() 
                                          );
                 
            inputStream = serialPort.getInputStream();
@@ -105,7 +96,7 @@ public class SerialComm implements Runnable
        // Send a single byte to Arduino to let it know we're here.
        // Probably remove this eventually.
        try{
-	   outputStream.write( (byte) 1 );
+	   outputStream.write( (byte) Protocol.NULL_BYTE );
 	}catch(IOException ioe ){ 
              System.err.println(ioe);
         }
@@ -123,7 +114,7 @@ public class SerialComm implements Runnable
         // The message to send to the Arduino
         byte[] writeMsg = new byte[4];
         // Every write message starts with a WRITE_SYNC byte 
-        writeMsg[0] = WRITE_SYNC;
+        writeMsg[0] = Protocol.WRITE_SYNC;
          
 	while( stayAlive )
 	{
@@ -134,9 +125,9 @@ public class SerialComm implements Runnable
               index = 0;
               byteRead = (byte)inputStream.read();
               
-	      if( byteRead == READ_SYNC )
+	      if( byteRead == Protocol.READ_SYNC )
               {
-		outputStream.write( READ_SYNC );
+		outputStream.write( Protocol.READ_SYNC );
                
                 startTime = System.currentTimeMillis();
                 elapsedTime = 0;
@@ -144,7 +135,7 @@ public class SerialComm implements Runnable
                 // check we haven't waited to long and
                 // make sure we don't run over the end of 
                 // the READ_BUFFER
-                while( byteRead != END_OF_MESSAGE 
+                while( byteRead != Protocol.END_OF_MESSAGE 
                        && index < READ_BUFFER_SIZE 
                        && elapsedTime < serialTimeout )
 	        {
@@ -160,10 +151,10 @@ public class SerialComm implements Runnable
 		
                // If this is true then we should have received a complete
                // message.
-               if( byteRead == END_OF_MESSAGE)
+               if( byteRead == Protocol.END_OF_MESSAGE)
 	       {
                  String message = new String( READ_BUFFER, 0, index - 1 );
-                 String[] parts = message.split( MESSAGE_DELIMITER );
+                 String[] parts = message.split( Protocol.MESSAGE_DELIMITER );
 
                  try{
                        // Belt and braces here, add the (pin,value) pair
@@ -177,13 +168,13 @@ public class SerialComm implements Runnable
                }
              
 	      }
-              else if( byteRead == WRITE_SYNC )
+              else if( byteRead == Protocol.WRITE_SYNC )
               {
                 Pin pin = null;
                 //Check if we have any messages to write to the Arduino
 		if( ( pin = Arduino.writeQueuePoll()) == null )
 		{
-		  outputStream.write( NOTHING_TO_SEND );
+		  outputStream.write( Protocol.NOTHING_TO_SEND );
                   outputStream.flush();
 	       }
 	       else
@@ -195,9 +186,9 @@ public class SerialComm implements Runnable
 	   	   
 		  outputStream.write( writeMsg );
 		  outputStream.flush();
-                  writeMsg[ 1 ] = '\0';
-                  writeMsg[ 2 ] = '\0';
-                  writeMsg[ 3 ] = '\0';
+                  writeMsg[ 1 ] = Protocol.NULL_BYTE;
+                  writeMsg[ 2 ] = Protocol.NULL_BYTE;
+                  writeMsg[ 3 ] = Protocol.NULL_BYTE;
 	       }
 
              }

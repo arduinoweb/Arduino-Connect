@@ -51,7 +51,7 @@ public class ClientConnection  implements Runnable{
    public synchronized void sendMessage( String msg )
    {
         DATA_OUT.println( msg );
-        stayAlive = false;
+        close();
    }
    
    /** Shuts down the client and terminate the thread */
@@ -81,6 +81,12 @@ public class ClientConnection  implements Runnable{
  {
    try{
        message = DATA_IN.readLine();
+       message = message.trim();
+
+       if( message.length() == 0 )
+       {
+           close();    
+       }
    }catch(SocketTimeoutException soe){
       System.err.println( soe.getMessage() );
       close();

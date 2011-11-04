@@ -7,21 +7,13 @@ package ucc.arduino.net;
 
 import ucc.arduino.main.Arduino;
 import ucc.arduino.net.ClientConnection;
+import ucc.arduino.configuration.Protocol;
+
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> implements Runnable
 {
-  // Message definitions, move them somewhere else eventually
-  private static final String UNKNOWN_PIN = "UNKNOWN PIN";
-  private static final String END_OF_MESSAGE = "E";
-  private static final String BAD_MESSAGE_FORMAT = "BAD MESSAGE FORMAT";
-  private static final String READ_MESSAGE = "R";
-  private static final String WRITE_MESSAGE = "W";
-  private static final String DIGITAL_WRITE = "D";
-  private static final String ANALOG_WRITE = "A";
-  private static final String OK = "OK";
-  // End of Message definitions
 
   /** Stores whether to keep the thread alive or not */
   private boolean stayAlive;
@@ -43,7 +35,7 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> imple
 	 
      while( stayAlive )
      {
-        clientReply = BAD_MESSAGE_FORMAT;
+        clientReply = Protocol.BAD_MESSAGE_FORMAT;
 	  
         // Check if we have any outstanding write requests in the queue
 	if( ( clientConnection = this.poll() ) != null )
@@ -56,25 +48,25 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> imple
           if( msg != null)
           {
             String[] msgParts = msg.split(" " );
-
+            System.out.println("Message parts length: " + msgParts.length);
             // Any message has a minimum length and end of message marker
 	    if( msgParts.length > 2 && 
-	     ( msgParts[ msgParts.length -1 ].equals( END_OF_MESSAGE ) ) )
+	     ( msgParts[ msgParts.length -1 ].equals( Protocol.END_OF_CLIENT_MESSAGE ) ) )
 	    {
 	     
-             if( msgParts[ 0 ].equals( READ_MESSAGE ) )
+             if( msgParts[ 0 ].equals( Protocol.READ_MESSAGE) )
 	     {
 	       clientReply = processRead( msgParts );
 	     }
-	     else if( msgParts[ 0 ].equals( WRITE_MESSAGE )  )
+	     else if( msgParts[ 0 ].equals( Protocol.WRITE_MESSAGE )  )
 	     {
 	        clientReply = processWrite( msgParts );
 	     }
-             
+           }  
             clientConnection.sendMessage( clientReply );
 
 	    clientConnection.close();
-	  }
+	  
          }
          else if( clientConnection.isAlive() )
          {
@@ -99,14 +91,14 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> imple
   {
 
     boolean noError = true;
-    String clientReply = OK;
+    String clientReply = Protocol.OK;
     int indexer = 1;
     
     while( indexer < msg.length - 1 && noError )
      {      
         // Check if the message starts with a valid character
-        if( msg[indexer].equals( DIGITAL_WRITE ) ||
-            msg[indexer].equals( ANALOG_WRITE ) )
+        if( msg[indexer].equals( Protocol.DIGITAL_WRITE ) ||
+            msg[indexer].equals( Protocol.ANALOG_WRITE ) )
         {
             byte mode = (byte) msg[indexer].charAt( 0 );
 
@@ -119,15 +111,14 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> imple
               Arduino.writeQueueAdd( mode, pinNumber, pinValue );       
                     
             }catch( NumberFormatException nfe ){
-                    System.err.println( nfe );
                     noError = false;
-                    clientReply = BAD_MESSAGE_FORMAT;
+                    clientReply = Protocol.BAD_MESSAGE_FORMAT;
             }
         }
         else
         {
           noError = false;
-          clientReply = BAD_MESSAGE_FORMAT;
+          clientReply = Protocol.BAD_MESSAGE_FORMAT;
         }
         
         indexer++;
@@ -143,7 +134,7 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> imple
   private String processRead( String[] msg )
   {
     Integer pinValue = 1 ;
-    String clientReply = BAD_MESSAGE_FORMAT;
+    String clientReply = Protocol.BAD_MESSAGE_FORMAT;
     StringBuffer replyBuilder = new StringBuffer();
     int indexer = 1;
     
@@ -155,11 +146,12 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> imple
 	                             
 	    pinValue = Arduino.getPin( pinNumber );
 	
-            // We through an error if a pin is unknown to us.
-            // Probably change this approach.                              
+            // If we don't have a record of the pin requested
+            // mark it's place in the reply with a 'x'                              
 	    if( pinValue == null )
 	    {
-	       clientReply = UNKNOWN_PIN; 
+	       //clientReply = Protocol.UNKNOWN_PIN; 
+               replyBuilder.append( Protocol.UNKNOWN_PIN + " " );
 	    }
 	    else
 	    {

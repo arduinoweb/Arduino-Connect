@@ -8,14 +8,18 @@ import java.io.FileInputStream;
 
 import java.io.IOException;
 
-public class Configuration {
+import java.net.InetAddress;
 
-  
-  private static final DefaultConfiguration DEFAULT_CONFIGURATION = new DefaultConfiguration();
-  private static final Properties configuration = new Properties( DEFAULT_CONFIGURATION);
- 
+public class Configuration {
+  /** Stores the configuration details */
+  private Properties configuration;
+  /** Stores the network address to bind to*/
+  private InetAddress inetAddress;
+
   public Configuration( File configurationFile )
   {
+    this();
+
     try{    
        FileInputStream fileInputStream = new FileInputStream( configurationFile.toString() );
        configuration.load( fileInputStream );
@@ -28,26 +32,44 @@ public class Configuration {
       }
   }
 
-  public Configuration(){ }
+  public Configuration(){ configuration = new Properties( new DefaultConfiguration()); }
 
-  private static void validateProperties()
+  private void validateProperties()
   {
      boolean validEntries = false;
 
-     if( ! isInt( "ARDUINO_PORT")   ||
-         ! isInt( "CLIENT_TIMEOUT") ||
-         ! isInt( "BAUD_RATE")      ||
-         ! isInt( "SERIAL_TIMEOUT") ||
-         ! isInt( "DATA_BITS")      ||
-         ! isInt( "STOP_BITS")      ||
-         ! isInt( "PARITY") )
+     if( ! isInt( "NETWORK_PORT")                ||
+         ! isInt( "NETWORK_TIMEOUT")             ||
+         ! isInt( "SERIAL_BAUD_RATE")            ||
+         ! isInt( "SERIAL_TIMEOUT")              ||
+         ! isInt( "SERIAL_DATA_BITS")            ||
+         ! isInt( "SERIAL_STOP_BITS")            ||
+         ! isInt( "SERIAL_PARITY")               ||
+         ! isValidAddress( "NETWORK_ADDRESS")    ||
+         ! isInt( "NETWORK_QUEUE_LENGTH") )
      {
         System.out.println("Please check your configuration file. Exiting...");
         System.exit( 1 );
      }
   }
 
-  private static boolean isInt( String property )
+  private boolean isValidAddress( String address )
+  {
+     boolean isValid = true;
+
+     try{
+          
+        inetAddress = InetAddress.getByName( configuration.getProperty( "ARDUINO_ADDRESS") );
+
+     }catch( Exception e ){
+         isValid = false;
+         System.out.println("Unable to verify ARDUINO_ADDRESS");
+     }
+
+     return isValid;
+  }
+
+  private boolean isInt( String property )
   {
      boolean isInteger = true;
 
@@ -61,44 +83,56 @@ public class Configuration {
 
      return isInteger;
   }
-  public static Integer getArduinoPort()
+  public Integer getNetworkPort()
   {
-      return Integer.parseInt( configuration.getProperty( "ARDUINO_PORT") );
+      return Integer.parseInt( configuration.getProperty( "NETWORK_PORT") );
 
   }
 
-  public static String getSerialPort()
+  public String getSerialPort()
   {
       return configuration.getProperty( "SERIAL_PORT");
 
   }
 
-  public static Integer getClientTimeout()
+  public Integer getNetworkTimeout()
   {
-      return Integer.parseInt( configuration.getProperty( "CLIENT_TIMEOUT"));
+      return Integer.parseInt( configuration.getProperty( "NETWORK_TIMEOUT"));
   }
 
-  public static Integer getBaudRate(){
-      return Integer.parseInt( configuration.getProperty( "BAUD_RATE"));
+  public  Integer getSerialBaudRate(){
+    
+      return Integer.parseInt( configuration.getProperty( "SERIAL_BAUD_RATE"));
   }
 
-  public static Integer getSerialTimeout()
+  public  Integer getSerialTimeout()
   {
      return Integer.parseInt( configuration.getProperty( "SERIAL_TIMEOUT") );
   }
 
-  public static Integer getDataBits()
+  public Integer getSerialDataBits()
   {
-    return Integer.parseInt( configuration.getProperty( "DATA_BITS") );
+    return Integer.parseInt( configuration.getProperty( "SERIAL_DATA_BITS") );
   }
 
-  public static Integer getStopBits()
+  public Integer getSerialStopBits()
   {
-    return Integer.parseInt( configuration.getProperty( "STOP_BITS") );
+    return Integer.parseInt( configuration.getProperty( "SERIAL_STOP_BITS") );
   }
 
-  public static Integer getParity()
+  public Integer getSerialParity()
   {
-    return Integer.parseInt( configuration.getProperty( "PARITY") );
+    return Integer.parseInt( configuration.getProperty( "SERIAL_PARITY") );
   }
+
+  public InetAddress getNetworkAddress()
+  {
+    return inetAddress;
+  }
+
+  public Integer getNetworkQueueLength()
+  {
+    return Integer.parseInt( configuration.getProperty( "NETWORK_QUEUE_LENGTH" ));
+  }
+ 
 }

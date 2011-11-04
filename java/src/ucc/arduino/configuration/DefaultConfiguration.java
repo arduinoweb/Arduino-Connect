@@ -8,23 +8,21 @@ public class DefaultConfiguration extends Properties{
    public DefaultConfiguration()
    {
       super();
-      this.setProperty( "ARDUINO_ADDRESS", "127.0.0.1" );
-      this.setProperty( "ARDUINO_PORT", "10002" );
-      
-      this.setProperty( "CLIENT_TIMEOUT", "60000");
+      //Default Network Related Properties
+      this.setProperty( "NETWORK_ADDRESS", "127.0.0.1" );
+      this.setProperty( "NETWORK_PORT", "10002" );
+      this.setProperty( "NETWORK_QUEUE_LENGTH", "50");
+      this.setProperty( "NETWORK_TIMEOUT", "60000");
 
 
-      //Serial Port Related Properties
+      //Default Serial Port Properties
       this.setProperty( "SERIAL_PORT", "/dev/ttyUSB0");
-      this.setProperty( "BAUD_RATE", "9600");
+      this.setProperty( "SERIAL_BAUD_RATE", "9600");
       this.setProperty( "SERIAL_TIMEOUT", "50" );
-      this.setProperty( "DATA_BITS", "8" );
-      this.setProperty( "STOP_BITS", "1" );
-      this.setProperty( "PARITY", "0");
-
+      this.setProperty( "SERIAL_DATA_BITS", "8" );
+      this.setProperty( "SERIAL_STOP_BITS", "1" );
+      this.setProperty( "SERIAL_PARITY", "0");
+      
    }
-
-
-
 
 }

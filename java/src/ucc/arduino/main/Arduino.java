@@ -40,23 +40,19 @@ public class Arduino{
     /**Handles the creation/reuse of client threads*/
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
     /**Provides the communication link from the usb port to the Arduino*/
-    private static SerialComm serialComm;
-    /**The amount of time to wait to receive data from clients*/
-    private static final int CLIENT_TIMEOUT = 30000;	
+    private static SerialComm serialComm;	
     /**Temporarily stores a newly connected client before it is passed onto CLIENT_HANDLER*/
     private Socket client;
-    /**The port that the ServerSocket will listen on*/
-    private static int serverPortNumber = 10002;
     /**The socket that listens for client connections*/
     private static  ServerSocket serverSocket;
-    /**The serial port to communicate with the Arduino through*/
-    private String serialPort ="/dev/ttyUSB3";
 	
     /**Constructor*/
-    public Arduino( File configurationFile ) throws IOException {
+    public Arduino( File configurationFile ) throws Exception {
         CONFIGURATION = new Configuration( configurationFile );
         
-        serverSocket = new ServerSocket( CONFIGURATION.getArduinoPort() );
+        serverSocket = new ServerSocket( CONFIGURATION.getNetworkPort(),
+                                         CONFIGURATION.getNetworkQueueLength(),
+                                         CONFIGURATION.getNetworkAddress() );
         new Thread( CLIENT_HANDLER ).start();
 	
 		   
@@ -72,6 +68,7 @@ public class Arduino{
 	
          try{
 	     serialComm.connect( );
+         
 	     new Thread( serialComm).start();
 
 	   }catch( Exception e ){
@@ -87,7 +84,7 @@ public class Arduino{
 		client = serverSocket.accept();
 		System.out.println("Client Connected");
              
-                client.setSoTimeout( CONFIGURATION.getClientTimeout() );
+                client.setSoTimeout( CONFIGURATION.getNetworkTimeout() );
                 ClientConnection tmp = new ClientConnection( client );
               
                 EXECUTOR_SERVICE.execute( tmp );
@@ -152,8 +149,10 @@ public class Arduino{
  }
 
 /** Main entry point */
- public static void main(String[] args) throws Exception {
+ public static void main(String[] args)  {
+ try{
    new Arduino( new File( "/home/gary/public_html/arduino/Arduino-Connect/java/configuration.properties") ).start();
+  }catch( Exception e ) { System.err.println( e );}
  }
 
 }
