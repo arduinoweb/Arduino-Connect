@@ -1,6 +1,7 @@
 body { margin: 0;
        padding: 0;
        font-family: sans-serif;
+       //background-color: lightgray;
 }
 html { margin: 0;
        padding: 0;
@@ -8,23 +9,25 @@ html { margin: 0;
 }
 #header {
   
-  background-color: #3B5998;
+ // background-color: #3B5998;
   height: 5.5em;
-  border-bottom: 2px solid #DCDCDC;
-  
+//  border-bottom: 2px solid #DCDCDC;
+         
+  text-align:right;
+  padding-right: 6em;
+  padding-left: 6em;
 } 
 
 #header h1{
     margin-top: 0;
-    color: white;
-    margin-left: 4em;
-    border-left: 2px;
-    border-left-color: #DCDCDC;
-    border-left-style: solid;
+    color: #2E2E2E;
+   // margin-left: 4em;
+    font-style: italic;
     padding-left: 10px;
-    margin-bottom: 2px;
-    padding-bottom: 0px;
+   margin-bottom: 2px;
+   padding-bottom: 0px;
     font-size: 3em;
+    
     
 }
 
@@ -32,12 +35,24 @@ html { margin: 0;
 #controls {
             
             width: 400px;
-	    height: 400px;
+	    height: 405px;
 	   
-	    margin-top: 20px;
-	    z-index: 10;
+	    margin-top: 0.4em;
+	    margin-left: 5.4em;
      
 }
+
+#controls p {
+    padding: 5px;
+    border: 2px solid white;
+    
+}
+#controls p:hover {
+    padding: 5px;
+    border: 2px solid gray;
+    
+}
+
 
 .shadowed {
       box-shadow: 5px 5px 5px #887; 
@@ -46,21 +61,33 @@ html { margin: 0;
 
 
 #header h2 {
-    margin-top: -7px;
+    margin-top: -12px;
     padding-top: 0;
-    margin-left: 6.3em;
+ //   margin-left: 6.3em;
     font-size: 1.9em;
-    border-left: 2px;
-    border-left-color: #DCDCDC;
-    border-left-style: solid;
+  //  border-left: 2px;
+  //  border-left-color: #DCDCDC;
+  //  border-left-style: solid;
     padding-left: 10px;
-    color: #DADFC2;
+    color: #ECE89D;
     font-style: italic;
+     border-bottom: 2px;
+    border-bottom-color: #DCDCDC;
+   border-bottom-style: solid;
 }
 
 #lockContainer {
   
        position: absolute;  
-       top: 40px;
-       box-shadow: 1px 1px 5px lightgray;
+       top: 1.5em;
+       left: 6.5em;
+       //box-shadow: 1px 1px 5px lightgray;
 }
+
+#rssFeed {
+    vertical-align: -0.9em;
+     margin-left: 2em;
+     
+  
+}
+
