@@ -7,6 +7,7 @@
  <link rel = "stylesheet" href="css/main.css" type = "text/css" media ="screen" />
 
  <link rel = "stylesheet" href="css/Aristo/Aristo.css" type="text/css" media="screen" />
+
  
  <!--<link rel = "stylesheet" href="js/sliding_login_panel/css/slide.css" type="text/css" />-->
  
@@ -14,15 +15,26 @@
  <script src = "js/jquery/js/jquery-ui-1.8.16.custom.min.js" type = "text/javascript"></script>
  <script src ="js/qtip/jquery.qtip-1.0.0-rc3.min.js" type="text/javascript"></script>
 
-
-
+ <script src = "js/flot/jquery.flot.js" type="text/javascript"></script>
+ <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/flot/excanvas.min.js"></script><![endif]-->
 <!-- <script src = "js/sliding_login_panel/js/slide.js" type="text/javascript"></script>-->
 <!-- <script src = "js/jquery-tools/jquery.tools.min.js" type="text/javascript"></script>-->
  
  <script type = "text/javascript">
-   $( function(){
+   $(document).ready( function(){
 
+          var options = {
+              series: {
+                 lines: {show: true},
+                 points: {show: true},
+               
+              },
+             
+             xaxis: { show: false},
+             yaxis: { show: false}
 
+          };
+          var chart1 = $.plot($("#chart1"), [[[1, 2],[4,45.12],[5,13.1],[7,33.6],[9,85.9],[11,219.9]]], options);
            $('#controls').accordion({
              fillSpace: true,
              collapsible: true,
@@ -31,7 +43,11 @@
 
            });
          
-    
+           $('#chart1').click( function(){
+                 $('#createContent').dialog("open");  
+           });
+
+           
            $('#verticalSlider').slider({
               value: 10,
               orientation: "vertical",
@@ -44,13 +60,13 @@
 
            $('#verticalSlider').click( function(){
                            
-                                 $('#inputContent').dialog("open");               
+                                 $('#createContent').dialog("open");               
               
            });
 
              $('#horizontalSlider').click( function(){
                            
-                                 $('#inputContent').dialog("open");               
+                                 $('#createContent').dialog("open");               
               
            });
 
@@ -77,7 +93,7 @@
            });
 
            $('#rssFeed').click( function(){
-                $('#inputContent').dialog("open");
+                $('#createContent').dialog("open");
            });
            $('#rssFeed').mouseenter( function(){
                  $(this).attr("src","img/rss-feed-hover.png");
@@ -107,35 +123,33 @@
            });
 
            $('#lock').click( function(){
-               $('#controls').toggle("slide", {direction: "left"}, 700 );
+               $('#controls').toggle("slide",{},700);
+             
+
                $(this).toggle();
                return false;
 
            });
              
        
-         
 
         
           $('#controls').toggle();
-          $('#inputContent').dialog({
+     
+          $('#createContent').dialog({
                autoOpen: false,
                height: 600,
                width: 650,
-               modal: true
+               modal: true,
+              
+
 
           });
-  /*$('#iButton').click( function(){
-                           
-                                 $('#inputContent').dialog("open");  
-               return false;             
-              
-           });*/
   
  });
  
   function displayCreateDialog(){
-           $('#inputContent').dialog("open");
+           $('#createContent').dialog("open");
            return false;
   }
 
@@ -172,23 +186,31 @@
    <h3><a href="#">Graphs</a></h3>
    <div>
 
-        <p>Graphs</p>
+        <p id="chart1" class="shadowed"></p>
 
    </div>
   </div>
  </div>
 
- <div  id="inputContent" title = "Create Control">
+ <div  id="createContent" title = "Create Control">
     <p class = "validateTips">Type stuff</p>
     <form>
         <fieldset>
-            <label for="arduinoAddress">Arduino Address</label>
+           <div> 
+           <label for="arduinoAddress">Arduino Address</label>
+            
             <input type="text" name="arduinoAddress" id="arduinoAddress"
-                   class="text ui-widget-content ui-corner-all" />
+                   class="text ui-widget-content ui-corner-all" value="localhost" />
+            </div>
+            <div>
+            <label for="arduinoPort">Arduino Port</label>
+            <input class="text ui-widget-content ui-corner-all"type="text" name="arduinoPort" id="arduinoPort" value="10002" />
+            </div>
 
         </fieldset>
-
+         
     </form>
  </div>
+
  </body>
 </html>

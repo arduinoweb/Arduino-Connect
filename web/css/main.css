@@ -33,13 +33,13 @@ html { margin: 0;
 
 
 #controls {
-            
+           
             width: 400px;
 	    height: 405px;
 	   
 	    margin-top: 0.4em;
 	    margin-left: 5.4em;
-     
+            z-index: 10;
 }
 
 #controls p {
@@ -89,5 +89,19 @@ html { margin: 0;
      margin-left: 2em;
      
   
+}
+
+.ui-effects-transfer { border: 2px dotted gray; } 
+#chart1 {
+           width: 300px;
+	   height: 100px;
+}
+
+#createContent {
+  line-height: 2em; 
+}
+#createContent label{
+    float:left;
+    width: 9em;
 }
 
