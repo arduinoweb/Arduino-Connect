@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
  <head>
  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
- <title>XHTML 1.0 Strict Example</title>
+ <title>Arduino Connect</title>
  <link rel = "stylesheet" href="css/main.css" type = "text/css" media ="screen" />
 
  <link rel = "stylesheet" href="css/Aristo/Aristo.css" type="text/css" media="screen" />
@@ -22,7 +22,29 @@
  
  <script type = "text/javascript">
    $(document).ready( function(){
+          var testChart;
+         
+          $('#lockButton').click( function(){
+              if( $('#lockButton').attr('title') == 'locked')
+              {
+                  $('#lockButton').attr( 'title','unlocked');
+                  $('#lockButton img').attr('src','img/padlock-open.png');
+                  $('#addButton').button( "option", "disabled", false);
+              }
+              else
+              {
+                  $('#lockButton').attr( 'title','locked');
+                  $('#lockButton img').attr('src','img/padlock-close.png');
+                  $('#addButton').button( "option","disabled", true );
 
+                 // if( $('#controls').css( 'display') != "none" )
+                  if( $('#controlsDialog').dialog( 'isOpen') )
+                  {
+                    $('#controlsDialog').dialog('close'); 
+                  }
+              }
+
+          });
           var options = {
               series: {
                  lines: {show: true},
@@ -39,11 +61,12 @@
              fillSpace: true,
              collapsible: true,
              active: false,
-             animated: 'bounceslide'
-
+             animated: 'bounceslide',
+            
            });
          
            $('#chart1').click( function(){
+                 appendSingleInputGraphFields();
                  $('#createContent').dialog("open");  
            });
 
@@ -66,7 +89,8 @@
 
              $('#horizontalSlider').click( function(){
                            
-                                 $('#createContent').dialog("open");               
+                                 $('#createContent').dialog("open");  
+                                          
               
            });
 
@@ -83,7 +107,7 @@
 
           // $('#iButton').iButton();
            $('#iButton').button();
-           $('#lock').button();
+           $('#addButton').button( {disabled : true});
           
            $('#rssFeed').mousedown( function(){
              $(this).attr( "src","img/rss-feed-click.png");
@@ -93,6 +117,7 @@
            });
 
            $('#rssFeed').click( function(){
+              
                 $('#createContent').dialog("open");
            });
            $('#rssFeed').mouseenter( function(){
@@ -122,37 +147,150 @@
    }
            });
 
-           $('#lock').click( function(){
-               $('#controls').toggle("slide",{},700);
-             
-
+           $('#addButton').click( function(){
+                   
+              
+                  if( $('#controlsDialog').dialog( 'isOpen') )
+                  {
+                     $('#controlsDialog').dialog( 'close');
+                  }
+                  else
+                  $('#controlsDialog').dialog('open');
+                
                $(this).toggle();
-               return false;
+              // return false;
 
            });
              
        
 
         
-          $('#controls').toggle();
-     
+        
+         // $('#controls').toggle();
+          $('#controlsDialog').dialog({
+              autoOpen: false,
+             
+              height: 600,
+              width: 450,
+            
+              buttons: {
+                 close : function(){
+                   $('#addButton').click();
+                  
+                 },
+
+              
+              },
+             open: function( event, ui ){
+                 $(' a.ui-dialog-titlebar-close').remove();
+
+            },
+              
+
+          });
+
           $('#createContent').dialog({
                autoOpen: false,
+              
                height: 600,
                width: 650,
-               modal: true,
               
+              modal: true,
+               buttons: {
+                    "Create" :function(){
+                         var pinNumber = $('#pinNum1').val().trim();
+                         var xMin = $('#xMin').val().trim();
+                         var xMax = $('#xMax').val().trim();
+                         var yMin = $('#yMin').val().trim();
+                         var yMax = $('#yMax').val().trim();
+                         
+              var options = {
+              series: {
+                 lines: {show: true},
+                 points: {show: true},
+               
+              },
+             
+             
+
+          };
+                          $('#guiFields input.formField').remove();
+                          $('#guiFields label.formField').remove();
+                         $(this).dialog("close");
+                          $('#content').append('<div id="chart2Container" class="componentContainer"><div id="chart2" class="graph" ></div></div>');
+                     testChart=    $.plot($("#chart2"), [[]], options);
+                        // $('#chart2').draggable({containment: "parent"});
+                         
+                         
+
+                    },
+                    Cancel: clearForm
+                  
+
+
+                     
+
+              },
 
 
           });
   
+  
  });
  
-  function displayCreateDialog(){
-           $('#createContent').dialog("open");
-           return false;
-  }
+ function clearForm()
+ {
+    $('#guiFields input.formField').remove();
+    $('#guiFields label.formField').remove();
+    $(this).dialog("close");
+ }
+ function displayCreateDialog()
+ {
+   clearForm();
+   $('#createContent').dialog( "open");
 
+ }
+  
+ function appendSingleInputGraphFields()
+ {
+  clearForm();
+  
+   $('#guiFields').append(
+        '<div class="formField">'+
+        '<label for="pinNum1" class="formField">Pin Number</label>'+
+        '<input type="text" id="pinNum1" width="4" name="pinNum1" class="formField"/></div>'
+
+   );
+   $('#guiFields').append(
+         '<div class="formField">'+
+         '<label for="xMin" class="formField">X Min</label>' +
+         '<input type="text" id="xMin" name="xMin" class="formField"/>'+
+         '<div>'
+
+   );
+
+  $('#guiFields').append(
+        '<div class="formField" >'+
+        '<label for = "xMax" class="formField">X Max</label>'+
+        '<input type="text" id="xMax" name="xMax"class="formField"/></div>'
+        
+   );
+
+    $('#guiFields').append(
+        '<div class="formField">'+
+        '<label for = "yMin" class="formField">Y Min</label>'+
+        '<input type="text" id="yMin" name="yMin" class="formField"/></div>'
+        
+   );
+
+   $('#guiFields').append(
+        '<div class="formField">'+
+        '<label for = "yMax" class="formField">Y Max</label>'+
+        '<input type="text" id="yMax" name = "yMax" class="formField"/></div>'
+        
+   );
+   
+ }     
  </script>
 
  
@@ -164,14 +302,16 @@
    <div id = "header">
       <h1>arduino</h1>
       <h2>connect</h2>
-   
+     
    </div>
 
    
-   <p id="lockContainer"><input type="checkbox" class="shadowed" id="lock"  /><label for="lock">Edit</label>
-      <img id="rssFeed" src = "img/rss-feed.png" />
+   <p id="addButtonContainer"><input type="checkbox" class="shadowed" id="addButton"  /><label for="addButton">Add</label>
+     
+      <button id="lockButton" title="locked"><img src="img/padlock-close.png" /></button>
    </p>
    <div id="content">
+  <div id = "controlsDialog" title="Select Component"> 
    <div id = "controls">
     <h3><a href="#">Controls</a></h3>
     <div>      
@@ -189,13 +329,19 @@
         <p id="chart1" class="shadowed"></p>
 
    </div>
-  </div>
- </div>
+  <h3><a href="#">RSS</a></h3>
+  <div>
+    <p> <img id="rssFeed" src = "img/rss-feed.png" /></p>
 
- <div  id="createContent" title = "Create Control">
-    <p class = "validateTips">Type stuff</p>
+  </div>
+  </div>
+  
+ </div>
+</div>
+ <div  id="createContent" title = "Create Component">
+  
     <form>
-        <fieldset>
+       <fieldset id="guiFields">
            <div> 
            <label for="arduinoAddress">Arduino Address</label>
             
@@ -203,14 +349,15 @@
                    class="text ui-widget-content ui-corner-all" value="localhost" />
             </div>
             <div>
-            <label for="arduinoPort">Arduino Port</label>
-            <input class="text ui-widget-content ui-corner-all"type="text" name="arduinoPort" id="arduinoPort" value="10002" />
+            <label for="arduinoPort"  >Arduino Port</label>
+            <input class="text ui-widget-content ui-corner-all" type="text" name="arduinoPort" id="arduinoPort" value="10002" />
             </div>
-
-        </fieldset>
+       </fieldset>
+       
          
     </form>
  </div>
+</div>
 
  </body>
 </html>

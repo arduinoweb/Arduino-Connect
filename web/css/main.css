@@ -1,7 +1,8 @@
 body { margin: 0;
        padding: 0;
        font-family: sans-serif;
-       //background-color: lightgray;
+       background-color: white;
+       
 }
 html { margin: 0;
        padding: 0;
@@ -14,8 +15,9 @@ html { margin: 0;
 //  border-bottom: 2px solid #DCDCDC;
          
   text-align:right;
-  padding-right: 6em;
-  padding-left: 6em;
+  margin-right: 10%;
+  margin-left: 10%;
+  width: 80%;
 } 
 
 #header h1{
@@ -35,11 +37,11 @@ html { margin: 0;
 #controls {
            
             width: 400px;
-	    height: 405px;
+	    height: 450px;
 	   
 	    margin-top: 0.4em;
-	    margin-left: 5.4em;
-            z-index: 10;
+	   
+            z-index: 9999;
 }
 
 #controls p {
@@ -59,7 +61,15 @@ html { margin: 0;
   
 }
 
-
+#content {
+  
+    margin-left: 10%;
+    margin-right: 10%;
+    width: 80%;
+   
+    
+    height: 95%;
+}
 #header h2 {
     margin-top: -12px;
     padding-top: 0;
@@ -76,20 +86,14 @@ html { margin: 0;
    border-bottom-style: solid;
 }
 
-#lockContainer {
+#addButtonContainer {
   
        position: absolute;  
        top: 1.5em;
-       left: 6.5em;
+       left: 10%;
        //box-shadow: 1px 1px 5px lightgray;
 }
 
-#rssFeed {
-    vertical-align: -0.9em;
-     margin-left: 2em;
-     
-  
-}
 
 .ui-effects-transfer { border: 2px dotted gray; } 
 #chart1 {
@@ -105,3 +109,15 @@ html { margin: 0;
     width: 9em;
 }
 
+.graph {
+  
+  margin-top: 3em;
+  width: 800px;
+  height: 300px;
+}
+#lockButton{
+ 
+   float: right;
+   margin-left: 2em;
+   margin-top: -0.5em;
+}
