@@ -13,351 +13,86 @@
  
  <script src = "js/jquery/js/jquery-1.6.2.min.js" type = "text/javascript"></script>
  <script src = "js/jquery/js/jquery-ui-1.8.16.custom.min.js" type = "text/javascript"></script>
+
  <script src ="js/qtip/jquery.qtip-1.0.0-rc3.min.js" type="text/javascript"></script>
 
  <script src = "js/flot/jquery.flot.js" type="text/javascript"></script>
  <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/flot/excanvas.min.js"></script><![endif]-->
+
+ <script src = "js/main.js" type="text/javascript"></script>
 <!-- <script src = "js/sliding_login_panel/js/slide.js" type="text/javascript"></script>-->
 <!-- <script src = "js/jquery-tools/jquery.tools.min.js" type="text/javascript"></script>-->
  
- <script type = "text/javascript">
-   $(document).ready( function(){
-          var testChart;
-         
-          $('#lockButton').click( function(){
-              if( $('#lockButton').attr('title') == 'locked')
-              {
-                  $('#lockButton').attr( 'title','unlocked');
-                  $('#lockButton img').attr('src','img/padlock-open.png');
-                  $('#addButton').button( "option", "disabled", false);
-              }
-              else
-              {
-                  $('#lockButton').attr( 'title','locked');
-                  $('#lockButton img').attr('src','img/padlock-close.png');
-                  $('#addButton').button( "option","disabled", true );
-
-                 // if( $('#controls').css( 'display') != "none" )
-                  if( $('#controlsDialog').dialog( 'isOpen') )
-                  {
-                    $('#controlsDialog').dialog('close'); 
-                  }
-              }
-
-          });
-          var options = {
-              series: {
-                 lines: {show: true},
-                 points: {show: true},
-               
-              },
-             
-             xaxis: { show: false},
-             yaxis: { show: false}
-
-          };
-          var chart1 = $.plot($("#chart1"), [[[1, 2],[4,45.12],[5,13.1],[7,33.6],[9,85.9],[11,219.9]]], options);
-           $('#controls').accordion({
-             fillSpace: true,
-             collapsible: true,
-             active: false,
-             animated: 'bounceslide',
-            
-           });
-         
-           $('#chart1').click( function(){
-                 appendSingleInputGraphFields();
-                 $('#createContent').dialog("open");  
-           });
-
-           
-           $('#verticalSlider').slider({
-              value: 10,
-              orientation: "vertical",
-              min: 0,
-              max: 255,
-              disabled: true,
-              value: 127
-
-           });
-
-           $('#verticalSlider').click( function(){
-                           
-                                 $('#createContent').dialog("open");               
-              
-           });
-
-             $('#horizontalSlider').click( function(){
-                           
-                                 $('#createContent').dialog("open");  
-                                          
-              
-           });
-
-            
-             $('#horizontalSlider').slider({
-              value: 10,
-              orientation: "horizontal",
-              min: 0,
-              max: 255,
-              value: 127,
-              disabled: true,
-
-           });
-
-          // $('#iButton').iButton();
-           $('#iButton').button();
-           $('#addButton').button( {disabled : true});
-          
-           $('#rssFeed').mousedown( function(){
-             $(this).attr( "src","img/rss-feed-click.png");
-           });
-           $('#rssFeed').mouseup( function(){
-             $(this).attr( "src", "img/rss-feed.png");
-           });
-
-           $('#rssFeed').click( function(){
-              
-                $('#createContent').dialog("open");
-           });
-           $('#rssFeed').mouseenter( function(){
-                 $(this).attr("src","img/rss-feed-hover.png");
-           });
-
-           $('#rssFeed').mouseleave( function(){
-                 $(this).attr("src","img/rss-feed.png");
-           });
-           $('#rssFeed').qtip({
-             content: 'Create an RSS Feed for the Arduino',
-             show: 'mouseover',
-             hide: 'mouseout',
-            style: { 
-      width: 200,
-      padding: 5,
-      background: 'white',
-      color: 'black',
-      textAlign: 'center',
-      border: {
-         width: 4,
-         radius: 5,
-         color: 'lightgray'
-      },
-      tip: 'topLeft',
-      name: 'dark' // Inherit the rest of the attributes from the preset dark style
-   }
-           });
-
-           $('#addButton').click( function(){
-                   
-              
-                  if( $('#controlsDialog').dialog( 'isOpen') )
-                  {
-                     $('#controlsDialog').dialog( 'close');
-                  }
-                  else
-                  $('#controlsDialog').dialog('open');
-                
-               $(this).toggle();
-              // return false;
-
-           });
-             
-       
-
-        
-        
-         // $('#controls').toggle();
-          $('#controlsDialog').dialog({
-              autoOpen: false,
-             
-              height: 600,
-              width: 450,
-            
-              buttons: {
-                 close : function(){
-                   $('#addButton').click();
-                  
-                 },
-
-              
-              },
-             open: function( event, ui ){
-                 $(' a.ui-dialog-titlebar-close').remove();
-
-            },
-              
-
-          });
-
-          $('#createContent').dialog({
-               autoOpen: false,
-              
-               height: 600,
-               width: 650,
-              
-              modal: true,
-               buttons: {
-                    "Create" :function(){
-                         var pinNumber = $('#pinNum1').val().trim();
-                         var xMin = $('#xMin').val().trim();
-                         var xMax = $('#xMax').val().trim();
-                         var yMin = $('#yMin').val().trim();
-                         var yMax = $('#yMax').val().trim();
-                         
-              var options = {
-              series: {
-                 lines: {show: true},
-                 points: {show: true},
-               
-              },
-             
-             
-
-          };
-                          $('#guiFields input.formField').remove();
-                          $('#guiFields label.formField').remove();
-                         $(this).dialog("close");
-                          $('#content').append('<div id="chart2Container" class="componentContainer"><div id="chart2" class="graph" ></div></div>');
-                     testChart=    $.plot($("#chart2"), [[]], options);
-                        // $('#chart2').draggable({containment: "parent"});
-                         
-                         
-
-                    },
-                    Cancel: clearForm
-                  
-
-
-                     
-
-              },
-
-
-          });
-  
-  
- });
- 
- function clearForm()
- {
-    $('#guiFields input.formField').remove();
-    $('#guiFields label.formField').remove();
-    $(this).dialog("close");
- }
- function displayCreateDialog()
- {
-   clearForm();
-   $('#createContent').dialog( "open");
-
- }
-  
- function appendSingleInputGraphFields()
- {
-  clearForm();
-  
-   $('#guiFields').append(
-        '<div class="formField">'+
-        '<label for="pinNum1" class="formField">Pin Number</label>'+
-        '<input type="text" id="pinNum1" width="4" name="pinNum1" class="formField"/></div>'
-
-   );
-   $('#guiFields').append(
-         '<div class="formField">'+
-         '<label for="xMin" class="formField">X Min</label>' +
-         '<input type="text" id="xMin" name="xMin" class="formField"/>'+
-         '<div>'
-
-   );
-
-  $('#guiFields').append(
-        '<div class="formField" >'+
-        '<label for = "xMax" class="formField">X Max</label>'+
-        '<input type="text" id="xMax" name="xMax"class="formField"/></div>'
-        
-   );
-
-    $('#guiFields').append(
-        '<div class="formField">'+
-        '<label for = "yMin" class="formField">Y Min</label>'+
-        '<input type="text" id="yMin" name="yMin" class="formField"/></div>'
-        
-   );
-
-   $('#guiFields').append(
-        '<div class="formField">'+
-        '<label for = "yMax" class="formField">Y Max</label>'+
-        '<input type="text" id="yMax" name = "yMax" class="formField"/></div>'
-        
-   );
-   
- }     
- </script>
-
+ <script src = "js/SingleInputGraph.js" type="text/javascript"></script>
  
  </head>
  <body>
-
-
-	
+   <div id="test"></div>
    <div id = "header">
       <h1>arduino</h1>
       <h2>connect</h2>
-     
    </div>
 
-   
-   <p id="addButtonContainer"><input type="checkbox" class="shadowed" id="addButton"  /><label for="addButton">Add</label>
-     
+   <p id="buttonContainer">
+      <button id="addButton" ><img src="img/configure.png" /></button>
       <button id="lockButton" title="locked"><img src="img/padlock-close.png" /></button>
    </p>
-   <div id="content">
-  <div id = "controlsDialog" title="Select Component"> 
-   <div id = "controls">
-    <h3><a href="#">Controls</a></h3>
-    <div>      
-         <p class="shadowed" id="verticalSlider"></p>
-      
-         <p class ="shadowed" id="horizontalSlider"></p>
-            
-           <p> <input type="checkbox" onclick="displayCreateDialog();"  id="iButton"  /><label for="iButton">Off</label></p>
-            <p ><input type="text" id="tField" class="shadowed"  value="textfield.."
-              onclick="displayCreateDialog();" /></p>
-    </div>
+   
+
+<div id="content">
+  
+ <div id = "componentsDialog" title="Select Component"> 
+   <div id = "components">
+     <h3><a href="#">Components</a></h3>
+    
+     <div>      
+       <p class="shadowed" id="verticalSlider"></p>
+       <p class ="shadowed" id="horizontalSlider"></p>
+       <p> 
+          <input type="checkbox" onclick="displayCreateDialog();"  id="iButton"  />
+            <label for="iButton">Off</label>
+       </p>
+       <p>
+           <input type="text" id="tField" class="shadowed"  value="textfield.."
+              onclick="displayCreateDialog();" />
+        </p>
+      </div>
+   
    <h3><a href="#">Graphs</a></h3>
    <div>
-
-        <p id="chart1" class="shadowed"></p>
-
+      <p id="exampleChart1" class="exampleChart shadowed"></p>
    </div>
-  <h3><a href="#">RSS</a></h3>
-  <div>
-    <p> <img id="rssFeed" src = "img/rss-feed.png" /></p>
-
-  </div>
+  
+   <h3><a href="#">RSS</a></h3>
+   <div>
+    <p> 
+        <img id="rssFeed" src = "img/rss-feed.png" />
+    </p>
+   </div>
   </div>
   
  </div>
 </div>
- <div  id="createContent" title = "Create Component">
-  
+ 
+  <div  id="configureComponent" title = "Configure Component">
     <form>
-       <fieldset id="guiFields">
-           <div> 
+       <fieldset id="configureFields">
+         <div> 
            <label for="arduinoAddress">Arduino Address</label>
-            
             <input type="text" name="arduinoAddress" id="arduinoAddress"
                    class="text ui-widget-content ui-corner-all" value="localhost" />
-            </div>
-            <div>
+         </div>
+         
+         <div>
             <label for="arduinoPort"  >Arduino Port</label>
             <input class="text ui-widget-content ui-corner-all" type="text" name="arduinoPort" id="arduinoPort" value="10002" />
-            </div>
-       </fieldset>
-       
-         
-    </form>
+         </div>
+      </fieldset>
+   </form>
  </div>
-</div>
+
+
+ </div>
 
  </body>
 </html>
