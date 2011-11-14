@@ -1,14 +1,25 @@
-function SingleInputGraph( graph )
+function SingleInputGraph( graph, url,port,
+                           yMin, yMax, showLines, showPoints,
+			   showBars,legendText
+)
 {
    this.graph = graph;
-  
+   this.url = url;
+   this.port = port;
+   this.yMin = yMin;
+   this.yMax = yMax;
+   this.showLines = showLines;
+   this.showPoints = showPoints;
+   this.showBars = showBars;
+   this.legendText = legendText;
 }
     
   
 SingleInputGraph.prototype.start = function(){
  
   var tmpGraph = this.graph;
-  
+  var tmpUrl = this.url;
+ 
   // we use an inline data source in the example, usually data would
     // be fetched from a server
     var data = [], totalPoints = 300;
@@ -36,7 +47,8 @@ SingleInputGraph.prototype.start = function(){
 
     function update(){
       $.ajax({
-	url: 'http://localhost/~gary/graphtest.php',
+	//url: 'http://localhost/~gary/graphtest.php',
+	url: tmpUrl,
 	method: 'GET',
 	dataType: 'json',
 	success: function( d ){
@@ -53,21 +65,5 @@ SingleInputGraph.prototype.start = function(){
     
     update();
     
-    /*$.ajax({
-      url: 'http://localhost/~gary/graphtest.php',
-      method: 'GET',
-      dataType: 'json',
-      success: function( d ,e){
-	
-	 $('#test').html( d[0] + " " + d[1] );
-	 update(d);
-   
-      }
-     
-      
-    });*/
- 
-   
- 
 }  
 
