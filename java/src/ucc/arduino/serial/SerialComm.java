@@ -46,6 +46,8 @@ public class SerialComm implements Runnable
 
 	stayAlive = true;
         serialTimeout = Arduino.CONFIGURATION.getSerialTimeout();
+         System.out.println("Trying to use serial port: " + 
+                                                         Arduino.CONFIGURATION.getSerialPort());
     }
     
     /** Boiler plate code that initialises the serial communication
@@ -55,7 +57,8 @@ public class SerialComm implements Runnable
     {
         CommPortIdentifier portIdentifier = 
                     CommPortIdentifier.getPortIdentifier(Arduino.CONFIGURATION.getSerialPort());
-        
+                    System.out.println("Trying to use serial port: " + 
+                                                         Arduino.CONFIGURATION.getSerialPort());
         if ( portIdentifier.isCurrentlyOwned() )
         {
             System.out.println("Error: Port is currently in use");

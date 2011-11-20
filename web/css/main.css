@@ -107,7 +107,7 @@ html { margin: 0;
   padding: 0px;
 }
 
-.graphContainer { margin: 0px; margin-top: 3em;padding:0px;}
+.graphContainer { width: 810px; height: 310px; margin: 0px; margin-top: 3em;padding:0px; padding-bottom: 20px}
 .graphLabel{ margin: 0px; margin: 1em;padding: 0.2em; font-size: 18px;
              padding-left: 1em; padding-right: 1em;
 	     background-color: white;

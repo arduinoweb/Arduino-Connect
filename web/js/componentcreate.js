@@ -25,7 +25,10 @@ function clearForm()
    
 
    $('#content').append(
-      '<div class="graphContainer"><label class="graphLabel shadowed" for="'+numOfComponents+'">'+legendText+'</label>'+
+      '<div class="graphContainer">'+
+      '<img src="img/pointing-up.png" id="sc'+numOfComponents+'" alt="Hide Graph" class="showControl" />'+
+      '<label class="graphLabel shadowed" for="'+numOfComponents+'">'+legendText+'</label>'+
+      
       '<div id="'+numOfComponents+'" class="graph"></div></div>');
    
    
@@ -55,8 +58,27 @@ function clearForm()
                                     yMax, showLines, showPoints,
 				    showBars,refreshRate,legendText
     );
-    tmp.start();
+    $('#'+numOfComponents).resize(function(){});
     userComponents.push( tmp );
+    
+    $('#'+numOfComponents).parent().draggable();
+    $('#sc'+numOfComponents).click( function(){
+       //alert("hello");
+       $('#'+numOfComponents).toggle('blind',[], 100);
+       
+       if( $(this).attr( 'src' ) == "img/pointing-up.png" )
+       {
+            $(this).attr( 'src', 'img/pointing-down.png');
+       }
+       else
+       {
+            $(this).attr( 'src', 'img/pointing-up.png');
+       }
+      
+       return false;
+    });
+  
+    tmp.start();
  }
  
  
