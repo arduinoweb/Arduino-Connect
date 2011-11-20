@@ -1,6 +1,6 @@
-function SingleInputGraph( graph, url,port,
+function SingleInputGraph( graph, url,port, pinNum,
                            yMin, yMax, showLines, showPoints,
-			   showBars,legendText
+			   showBars,refreshRate,legendText
 )
 {
    this.graph = graph;
@@ -12,6 +12,8 @@ function SingleInputGraph( graph, url,port,
    this.showPoints = showPoints;
    this.showBars = showBars;
    this.legendText = legendText;
+   this.refreshRate = refreshRate;
+   this.pinNum = pinNum;
 }
     
   
@@ -19,46 +21,51 @@ SingleInputGraph.prototype.start = function(){
  
   var tmpGraph = this.graph;
   var tmpUrl = this.url;
+  var tmpRefreshRate = this.refreshRate;
+  var query = "io=R&value="+this.pinNum;
  
   // we use an inline data source in the example, usually data would
     // be fetched from a server
-    var data = [], totalPoints = 300;
-    function getRandomData() {
-        if (data.length > 0)
+    var data = [], totalPoints = 50;
+    for( var i = 0; i < totalPoints; i++)
+    {
+            data.push( 0);       
+    }
+    function updateData(updatedValue) {
+       
             data = data.slice(1);
 
-        // do a random walk
-        while (data.length < totalPoints) {
-            var prev = data.length > 0 ? data[data.length - 1] : 50;
-            var y = prev + Math.random() * 10 - 5;
-            if (y < 0)
-                y = 0;
-            if (y > 100)
-                y = 100;
-            data.push(y);
-        }
-
+      
+        data.push( updatedValue );
         // zip the generated y values with the x values
+       
         var res = [];
         for (var i = 0; i < data.length; ++i)
             res.push([i, data[i]])
+            
+           
         return res;
+       
     }
 
     function update(){
+      var updatedValue = 0;
+      
       $.ajax({
 	//url: 'http://localhost/~gary/graphtest.php',
 	url: tmpUrl,
 	method: 'GET',
+	data: query,
 	dataType: 'json',
 	success: function( d ){
-	  $('#test').html( d[0] + " " + d[1] );
+	  $('#test').html( d[0]  );
+	  updatedValue = d[0];
 	},
 	complete: function( d ){
-        tmpGraph.setData( [ getRandomData() ] );
+        tmpGraph.setData( [ updateData( updatedValue) ] );
 	tmpGraph.setupGrid();
 	tmpGraph.draw();
-        setTimeout( update, 500);
+        setTimeout( update, tmpRefreshRate);
 	}
       });
     }

@@ -19,8 +19,10 @@ function clearForm()
    var showLines =   $('#lines').attr('checked') == 'checked' ? 'true' : 'false';
    var showPoints =  $('#points').attr('checked') == 'checked' ? 'true' : 'false';
    var showBars =   $('#bars').attr('checked') == 'checked' ? 'true' : 'false';
+   var refreshRate = $('#refreshRate').val().trim();
    var legendText = $('#legend').val().trim();
-  
+   var pinNum = $('#pinNum').val().trim();
+   
 
    $('#content').append(
       '<div class="graphContainer"><label class="graphLabel shadowed" for="'+numOfComponents+'">'+legendText+'</label>'+
@@ -44,13 +46,14 @@ function clearForm()
 	        lines:{ show: eval(showLines)},
 	        points:{ show: eval(showPoints)},
 	        xaxis:{  show: false },
+	        yaxis:{ min: eval( yMin), max:eval(yMax)}
 		
     
     });
-      
-    var tmp = new SingleInputGraph( tmpGraph, url, port, yMin,
+ 
+    var tmp = new SingleInputGraph( tmpGraph, url, port, pinNum, yMin,
                                     yMax, showLines, showPoints,
-				    showBars,legendText
+				    showBars,refreshRate,legendText
     );
     tmp.start();
     userComponents.push( tmp );
@@ -92,8 +95,8 @@ function appendSingleInputGraphFields()
   
    $('#configureFields').append(
         '<div class="formField">'+
-        '<label for="pinNum1" class="formField">Pin Number</label>'+
-        '<input type="text" id="pinNum1" width="4" name="pinNum1" class="formField"/></div>'
+        '<label for="pinNum" class="formField">Pin Number</label>'+
+        '<input type="text" id="pinNum" width="4" name="pinNum" class="formField"/></div>'
 
    );
   
@@ -131,6 +134,12 @@ function appendSingleInputGraphFields()
         '<div class="formField">'+
         '<label for = "bars" class="formField">Show Bars</label>'+
         '<input type="checkbox"  id="bars" name = "bars" class="formField"/></div>'
+        
+   );
+     $('#configureFields').append(
+        '<div class="formField">'+
+        '<label for = "refreshRate" class="formField">Refresh Rate(ms)</label>'+
+        '<input type="text"  id="refreshRate" name = "refreshRate" class="formField" value="60000"/></div>'
         
    );
     

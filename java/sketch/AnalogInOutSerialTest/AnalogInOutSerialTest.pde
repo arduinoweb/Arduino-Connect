@@ -62,15 +62,16 @@ void setup() {
 
 void loop() {
   // read the analog in value:
- // sensorValue = analogRead(9);            
+ sensorValue = analogRead(A0);            
  //  map it to the range of the analog out:
-  // outputValue = map(sensorValue, 0, 1023, 0, 255);  
+   outputValue = map(sensorValue, 0, 1023, 0, 255);  
   
-
+   sendMsg( 10, outputValue);
+   readMsg();
    // change the analog out value:
   // analogWrite(analogOutPin, outputValue);           
  
- value1 = (value1 + 1) % 255;
+/* value1 = (value1 + 1) % 255;
  value2 = (value2 + 2) % 255;  
  value3 = (value3 + 3) % 255;
  value4 = (value4 + 4) % 255;
@@ -90,7 +91,7 @@ void loop() {
 // sendMsg( 7, value7 );
 // sendMsg( 9, value9 );
  
-  //delay( 100 );
+  //delay( 100 );*/
 }
 
  void sendMsg(int pin,   int msg )
