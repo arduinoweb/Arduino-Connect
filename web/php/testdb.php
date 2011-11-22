@@ -1,31 +1,35 @@
 <?php
+require_once( 'lib/String.php');
+require_once( 'lib/Db.php');
 
-$db = sqlite_popen( 'db/test.db',0666, $error );
+//$db = sqlite_popen( '../db/arduino.db',0666, $error );
 
-if( ! $db ) die ( $error );
+if( Db::connect() )
+{
+   $query = "SELECT * FROM users WHERE userId = 'gary'";
+   
+   $result = Db::query($query);
+        
+   
+   print_r( sqlite_fetch_array( $result ) );
+}
 
-$query = "DROP TABLE graphs";
-sqlite_exec( $db, $query, $error );
+/*if( ! $result ) die ( $error );*/
 
-$query = "CREATE TABLE graphs( id INT NOT NULL,
-                               userId INT NOT NULL,
-                               url VARCHAR( 255 ) NOT NULL,
-                               port INT NOT NULL DEFAULT 80,
-                               yMin INT NOT NULL DEFAULT 0,
-                               yMax INT NOT NULL DEFAULT 255,
-                               showLines INT NOT NULL DEFAULT 1,
-                               showPoints INT NOT NULL DEFAULT 0,
-                               showBars INT NOT NULL DEFAULT 0,
-                               legendText VARCHAR( 255 ) NOT NULL DEFAULT 
-                                       'GRAPH',
-                               refreshRate INT NOT NULL DEFAULT 30000,
-                               pinNum INT NOT NULL,
-                               PRIMARY KEY( id, userId)
-                               )";
-                               
-$success = sqlite_exec( $db, $query, $error );
+/*$ra = openssl_random_pseudo_bytes( 20 ,$rr);
+$salt = bin2hex( $ra );
+$password = sha1( $ra . "letmein" );
 
-if( ! $success ) die ( "Cannot execute query . $error");
+$query = "INSERT INTO users values( 'gary', 0, '".$salt."','"
+          .$password."')";
+          
+//$query = "DROP TABLE graphs";
+
+echo $query;
+
+$success = sqlite_exec( $db, $query, $error );*/
+
+/*if( ! $success ) die ( "Cannot execute query . $error");*/
 
 
 
