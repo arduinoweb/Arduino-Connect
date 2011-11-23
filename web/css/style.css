@@ -73,3 +73,5 @@ color: #7fd0f6; font-size: 30px;}
 #loginForm #submit { float: right; margin-top: 20px;
 margin-left: 250px;}
 
+
+.error{  color:red; font-size: 20px; font-weight: bold;}

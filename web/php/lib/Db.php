@@ -1,5 +1,5 @@
 <?php
-
+require_once( 'config.php');
 require_once( 'Type.php');
 
 class Db{
@@ -13,7 +13,7 @@ class Db{
       */
     static public function connect()
     {  
-      self::$connection = sqlite_open( Type::DATABASE_FILE, 0666, $error );
+            self::$connection = sqlite_open( DATABASE_FILE, 0666, $error );
            
       return self::$connection;   
      

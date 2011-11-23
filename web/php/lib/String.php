@@ -124,6 +124,14 @@ class String{
          return $random;
              
      }
+     
+     static public function getNewURL( $oldPage, $newPage, $protocol )
+     {
+             $url = str_replace( $oldPage, $newPage, $_SERVER['PHP_SELF'] );
+             
+             return $protocol . $_SERVER['HTTP_HOST'] . $url;
+             
+     }
 }
 
 
