@@ -14,6 +14,7 @@ import ucc.arduino.net.ClientConnection;
 import ucc.arduino.serial.SerialComm;
 import ucc.arduino.net.ClientHandler;
 import ucc.arduino.main.Pin;
+import ucc.arduino.net.NetworkRegister;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -50,6 +51,9 @@ public class Arduino{
     public Arduino( File configurationFile ) throws Exception {
         CONFIGURATION = new Configuration( configurationFile );
         
+        NetworkRegister.register();
+        
+        System.exit( 1 );
         serverSocket = new ServerSocket( CONFIGURATION.getNetworkPort(),
                                          CONFIGURATION.getNetworkQueueLength(),
                                          CONFIGURATION.getNetworkAddress() );

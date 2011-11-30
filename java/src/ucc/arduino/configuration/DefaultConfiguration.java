@@ -14,7 +14,6 @@ public class DefaultConfiguration extends Properties{
       this.setProperty( "NETWORK_QUEUE_LENGTH", "50");
       this.setProperty( "NETWORK_TIMEOUT", "60000");
 
-
       //Default Serial Port Properties
       this.setProperty( "SERIAL_PORT", "/dev/ttyUSB0");
       this.setProperty( "SERIAL_BAUD_RATE", "9600");
@@ -22,6 +21,7 @@ public class DefaultConfiguration extends Properties{
       this.setProperty( "SERIAL_DATA_BITS", "8" );
       this.setProperty( "SERIAL_STOP_BITS", "1" );
       this.setProperty( "SERIAL_PARITY", "0");
+      
       
    }
 

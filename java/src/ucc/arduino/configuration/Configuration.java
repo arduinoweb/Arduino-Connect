@@ -59,11 +59,12 @@ public class Configuration {
 
      try{
           
-        inetAddress = InetAddress.getByName( configuration.getProperty( "ARDUINO_ADDRESS") );
+        inetAddress = InetAddress.getByName( 
+                         configuration.getProperty( address ) );
 
      }catch( Exception e ){
          isValid = false;
-         System.out.println("Unable to verify ARDUINO_ADDRESS");
+         System.out.println("Unable to verify " + address );
      }
 
      return isValid;
@@ -127,12 +128,37 @@ public class Configuration {
 
   public InetAddress getNetworkAddress()
   {
-    return inetAddress;
+    InetAddress iAddress = null;
+    
+    try{
+          
+        inetAddress = InetAddress.getByName( 
+                      configuration.getProperty( "NETWORK_ADDRESS" ) );
+
+     }catch( Exception e ){
+         System.out.println("Unable to verify " + 
+                      configuration.getProperty( "NETWORK_ADDRESS") );
+     }
+
+     return iAddress;  
   }
 
   public Integer getNetworkQueueLength()
   {
-    return Integer.parseInt( configuration.getProperty( "NETWORK_QUEUE_LENGTH" ));
+    return Integer.parseInt( 
+                       configuration.getProperty( "NETWORK_QUEUE_LENGTH" ));
   }
+  
  
+  public String getWebServerUrl()
+  {
+          
+    return configuration.getProperty("WEB_SERVER_URL");       
+  }
+  
+  public String getArduinoNetworkName()
+  {
+    return configuration.getProperty("ARDUINO_NETWORK_NAME");       
+          
+  }
 }
