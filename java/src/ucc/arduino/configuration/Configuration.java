@@ -46,6 +46,7 @@ public class Configuration {
          ! isInt( "SERIAL_STOP_BITS")            ||
          ! isInt( "SERIAL_PARITY")               ||
          ! isValidAddress( "NETWORK_ADDRESS")    ||
+         ! hasProtocol( "WEB_SERVER_URL")   ||
          ! isInt( "NETWORK_QUEUE_LENGTH") )
      {
         System.out.println("Please check your configuration file. Exiting...");
@@ -53,6 +54,27 @@ public class Configuration {
      }
   }
 
+  private boolean hasProtocol( String url )
+  {
+     
+     boolean hasProtocol = false;
+     
+     url = configuration.getProperty( url ).trim().toLowerCase();       
+     
+     if( url.startsWith( "http://") ||
+             url.startsWith( "https://") )
+     {
+         hasProtocol = true;
+     }
+     else
+     {
+       System.err.println("WEBSERVER_URL must begin with http:// or https://");
+     }
+     
+     return hasProtocol;
+  }
+  
+  
   private boolean isValidAddress( String address )
   {
      boolean isValid = true;
