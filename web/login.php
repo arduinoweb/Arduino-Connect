@@ -20,10 +20,17 @@
   
   $protocol = ( HTTPS_URL ? "HTTPS://" : "HTTP://" );
   
-  if( Session::isAuthenticated() )
+  
+  if( isset( $_GET['logout']) && Session::isAuthenticated() ) 
+  {
+          Session::clear();   
+  }
+  elseif( Session::isAuthenticated() && Session::getRole() == 0 )
   {       
+    
     header( "location: " . String::getNewURL( "login.php", "index.php",
                                                     $protocol) );
+    Session::clear();
     die();
   }
   
@@ -45,6 +52,7 @@
    {
         $user = trim( $_POST['userName'] );
         $password = trim( $_POST['password'] );
+        $user = strtolower( $user );
   
    }
         
@@ -66,12 +74,13 @@
            if( sqlite_num_rows( $result ) == 1 ) 
            {
                   $tmpArray = sqlite_fetch_array( $result );
-                
-                  $tmpHash = String::hashPassword( $tmpArray['salt'], $password );
+                  if( $tmpArray['type'] == 0 )
+                  {
+                   $tmpHash = String::hashPassword( $tmpArray['salt'], $password );
                   if( $tmpHash == $tmpArray['password'] )
                   {
                      Session::regenerateId();
-                     
+                   
                      Session::setAuthenticated( $user, $tmpArray['type'] );
                      header( "location: " . String::getNewURL( "login.php", "index.php",
                                                     $protocol) );
@@ -84,13 +93,19 @@
                       $error = TRUE;
                       $errorMsg = "* invalid details";
                   }
+                  }
+                  else
+                  {
+                      $error = TRUE;
+                      $errorMsg = "* invalid details";
+                  }
                         
            }
            else
            {
               $error = TRUE;
               $errorMsg = "* invalid details";
-                   
+            
            }
            
                 
@@ -118,7 +133,7 @@
 <head>
 <title>Arduino Connect: Login</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/login.css" rel="stylesheet" type="text/css" />
 
 </head>
 <body>
