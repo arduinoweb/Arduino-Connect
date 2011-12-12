@@ -1,0 +1,104 @@
+html, body{ width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial; Helvetica;sans-serif;font-size:15px;
+          }
+
+#borderContainer{  width: 100%; height: 100%;}
+
+
+
+.bordered { border-style: solid; border-width: 1px;}
+.shadowed{
+  -moz-box-shadow: 5px 5px 5px #ccc;
+  -webkit-box-shadow: 5px 5px 5px #ccc;
+  box-shadow: 2px 2px 5px #ccc;
+        
+}
+
+#header
+{
+	height: 50px;
+	background-color: white;
+	margin-bottom: 0px;
+
+}
+
+#header h1 { display: inline; font-size: 70px; color:#616160;}
+#header a { float: right; margin-left: 20px;}
+#header
+{
+	height: 50px;
+	width: 90%;
+	background-color: white;
+	margin-bottom: 40px;
+	margin-left: 50px;
+	margin-right: 50px;
+	
+}
+
+#nav
+{
+	
+	width: 90%;
+	height: 150px;
+	background-color: white;
+	margin-top: 0px;
+	margin-left: 50px;
+	margin-right: 50px;
+	margin-bottom: 20px;
+}
+
+#content
+{
+	
+	margin-left:50px;
+	width: 90%;
+	//margin-right: 40px;
+	background-color: white;
+	margin-top: 40px;
+	margin-right:50px;
+}
+
+#footer
+{
+	clear: both;
+	height: 50px;
+	width: 700px;
+	background-color: #666;
+	margin-bottom: 10px;
+}
+#toggleLinkContainer { margin-left: 50px;
+        margin-right: 50px; width:90%;
+text-align: center;
+background-color:  #616160; height: 5px;padding: 0px;}
+
+
+#navToggleLink { width: 140px; background-color: #616160;margin:0px; height:50px;
+border-bottom-left-radius: 5px;
+border-bottom-right-radius: 5px;}
+
+
+#navContent { margin-top: 40px;}
+
+
+#editBox div { margin-top: 20px;  p}
+#editBox label { float: left; width: 100px;
+                   font-size: 20px; 
+}
+
+#operations { margin-left: 50px; margin-right: 50px; width: 90%; margin-bottom: 10px;}
+.error{  color:red; font-size: 15px; font-weight: bold;}
+
+#userTable {
+        
+   font-size: 20px;
+  
+}
+
+
+
+#userTable th, td { padding-right: 20px;}
+
+
