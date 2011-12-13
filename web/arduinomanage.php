@@ -9,11 +9,13 @@
  
  require_once( './php/lib/Db.php');
  
+ require_once( './php/lib/Type.php');
+ 
 
  Session::start();
  
  if( ! Session::isAuthenticated() || ( Session::isAuthenticated() && 
-                                        Session::getRole() != 0 ) )
+         Session::getRole() != Type::USER_ROLE ) )
  {
          header( "location: login.php");
          die();

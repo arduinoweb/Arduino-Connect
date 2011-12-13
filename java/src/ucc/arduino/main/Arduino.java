@@ -19,6 +19,7 @@ import ucc.arduino.net.NetworkRegister;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+
 import java.io.IOException;
 import java.io.File;
 
@@ -50,8 +51,18 @@ public class Arduino{
     /**Constructor*/
     public Arduino( File configurationFile ) throws Exception {
         CONFIGURATION = new Configuration( configurationFile );
-        
-        NetworkRegister.register();
+      
+        if( NetworkRegister.register() )
+        {
+           System.out.println("Registered at " + 
+                               CONFIGURATION.getWebServerUrl() + " as " +
+                               CONFIGURATION.getArduinoNetworkName() );
+        }
+        else
+        {
+          System.err.println("Unable to register with web server at " +
+                              CONFIGURATION.getWebServerUrl() );
+        }
         
         System.exit( 1 );
         serverSocket = new ServerSocket( CONFIGURATION.getNetworkPort(),

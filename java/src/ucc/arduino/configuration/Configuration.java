@@ -32,7 +32,8 @@ public class Configuration {
       }
   }
 
-  public Configuration(){ configuration = new Properties( new DefaultConfiguration()); }
+  public Configuration(){ configuration = 
+                          new Properties( new DefaultConfiguration()); }
 
   private void validateProperties()
   {
@@ -153,9 +154,10 @@ public class Configuration {
     InetAddress iAddress = null;
     
     try{
-          
-        inetAddress = InetAddress.getByName( 
+          System.out.println("In getNetworkAddress");
+        iAddress = InetAddress.getByName( 
                       configuration.getProperty( "NETWORK_ADDRESS" ) );
+      
 
      }catch( Exception e ){
          System.out.println("Unable to verify " + 
@@ -182,5 +184,10 @@ public class Configuration {
   {
     return configuration.getProperty("ARDUINO_NETWORK_NAME");       
           
+  }
+  
+  public String getArduinoNetworkPassword()
+  {
+    return configuration.getProperty("ARDUINO_NETWORK_PASSWORD");       
   }
 }

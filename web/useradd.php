@@ -10,11 +10,14 @@
  
  require_once( './php/lib/String.php');
  
+ require_once( './php/lib/Type.php');
+ 
 
  Session::start();
  
  if( ! Session::isAuthenticated() || ( Session::isAuthenticated() &&
-                                       Session::getRole() != 0 ) )
+                                       Session::getRole() != 
+                                       Type::USER_ROLE ) )
  {
          header( "location: login.php");
          die();
@@ -41,7 +44,8 @@
  {
          $_POST['name'] = trim( $_POST['name'] );
          
-         if( String::isValidLength( 6, 20, $_POST['name'] ) )
+         if( String::isValidLength( Type::USERNAME_MIN_LENGTH, 
+                 Type::USERNAME_MAX_LENGTH, $_POST['name'] ) )
          {
               $errors['name'] = "OK";
               $validUserName = TRUE;
@@ -49,7 +53,9 @@
          }
          else
          {
-              $errors['name'] = "* name must be between 6 and 20 characters";       
+              $errors['name'] = "* name must be between " .
+              Type::USERNAME_MIN_LENGTH . " and " . 
+              Type::USERNAME_MAX_LENGTH . " characters";       
          }
  
  }
@@ -77,14 +83,17 @@
  {
          $_POST['password'] = trim( $_POST['password'] );
          
-         if( String::isValidLength( 6, 40, $_POST['password'] ) )
+         if( String::isValidLength( Type::PASSWORD_MIN_LENGTH,
+                 Type::PASSWORD_MAX_LENGTH, $_POST['password'] ) )
          {
             $errors['password'] = "OK";
             $validPasswordLength = TRUE;
          }
          else
          {
-             $errors['password'] = "* must be between 6 and 40 characters";       
+             $errors['password'] = "* must be between " .
+             Type::PASSWORD_MIN_LENGTH . " and " . Type::PASSWORD_MAX_LENGTH .
+              " characters";       
          }
          
          
@@ -99,7 +108,8 @@
  if( $validPasswordLength )
  { 
      if( isset( $_POST['retypePassword'] ) &&
-          ( $_POST['retypePassword']=trim( $_POST['retypePassword'] ) ) == $_POST['password'] )
+          ( $_POST['retypePassword']=
+                  trim( $_POST['retypePassword'] ) ) == $_POST['password'] )
      {
           $passwordsMatch = TRUE;
           $errors['password'] = "OK";
@@ -126,20 +136,21 @@
             
             if( $queryResult && sqlite_num_rows( $queryResult ) == 0 )
             {
-                    $userType = ( $_POST['userType'] == "admin" ? 0 : 1 );
+              $userType = ( $_POST['userType'] == "admin" ? 0 : 1 );
                     
                
-                  $salt = String::getRandomBytes();
-                  $hashPassword = String::hashPassword( $salt, $_POST['password'] );
+              $salt = String::getRandomBytes();
+              $hashPassword = String::hashPassword( $salt, $_POST['password'] );
                   
-                  $query = "INSERT INTO users values( '{$safeName}',$userType,'{$salt}','{$hashPassword}')";
+              $query = "INSERT INTO users 
+                  values( '{$safeName}',$userType,'{$salt}','{$hashPassword}')";
                   
-                  $queryResult = Db::query( $query );
+              $queryResult = Db::query( $query );
                   
-                  if( ! $queryResult )
-                  {
-                     $errors['name']="* an error occurred updating database";       
-                  }
+              if( ! $queryResult )
+              {
+                 $errors['name']="* an error occurred updating database";       
+              }
             }
             else
             {

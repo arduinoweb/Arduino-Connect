@@ -71,8 +71,17 @@ public class NetworkRegister{
        
      HttpPost httpost = new HttpPost( Arduino.CONFIGURATION.getWebServerUrl() );
       List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-         nvps.add( new BasicNameValuePair( "arduino", 
-                                      Arduino.CONFIGURATION.getArduinoNetworkName() ) );
+         nvps.add( new BasicNameValuePair( "arduinoName", 
+                             Arduino.CONFIGURATION.getArduinoNetworkName() ) );
+        nvps.add( new BasicNameValuePair( "arduinoPassword",
+                          Arduino.CONFIGURATION.getArduinoNetworkPassword() ) );
+        
+         nvps.add( new BasicNameValuePair( "arduinoAddress",
+                 Arduino.CONFIGURATION.getNetworkAddress().getHostAddress() ) );
+         nvps.add( new BasicNameValuePair( "arduinoPort",
+                           Arduino.CONFIGURATION.getNetworkPort().toString()) );
+         
+                                      
          
          httpost.setEntity( new UrlEncodedFormEntity( nvps, HTTP.UTF_8 ) );
       
@@ -87,13 +96,16 @@ public class NetworkRegister{
             
             try{
                     String data = "";
-                    
+                    String registrationResult = "";
                     BufferedReader reader = new BufferedReader(
                             new InputStreamReader( instream ) );
                     while( ( data = reader.readLine() ) != null )
                     {
-                   System.out.println( data );
+                      registrationResult += data;
                     }
+                    
+                   success = registrationResult.equals( "OK" );
+                   
             }catch( RuntimeException re ){
                     success = false;
                 httpost.abort();
@@ -106,7 +118,7 @@ public class NetworkRegister{
      }catch( IOException ioe ){
          System.err.println("Unable to connect to Web Server");
          success = false;
-         System.exit( 1 );
+        
      }catch(Exception e ){
              System.err.println( e.getMessage() );
              success = false;
@@ -116,7 +128,7 @@ public class NetworkRegister{
      }
         java.lang.System.setProperty(
               "sun.security.ssl.allowUnsafeRenegotiation", "false" );
-         return false;
+         return success;
  }
  
 

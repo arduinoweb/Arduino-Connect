@@ -25,12 +25,12 @@
   {
           Session::clear();   
   }
-  elseif( Session::isAuthenticated() && Session::getRole() == 0 )
+  elseif( Session::isAuthenticated() && Session::getRole() == Type::USER_ROLE )
   {       
     
     header( "location: " . String::getNewURL( "login.php", "index.php",
                                                     $protocol) );
-    Session::clear();
+    
     die();
   }
   
@@ -71,10 +71,10 @@
            $query = "SELECT * FROM users WHERE userId = '${safeUser}'";
            $result = Db::query( $query );
 
-           if( sqlite_num_rows( $result ) == 1 ) 
+           if( $result && sqlite_num_rows( $result ) == 1 ) 
            {
                   $tmpArray = sqlite_fetch_array( $result );
-                  if( $tmpArray['type'] == 0 )
+                  if( $tmpArray['type'] == Type::USER_ROLE )
                   {
                    $tmpHash = String::hashPassword( $tmpArray['salt'], $password );
                   if( $tmpHash == $tmpArray['password'] )
