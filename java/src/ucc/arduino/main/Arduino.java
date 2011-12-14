@@ -27,7 +27,11 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import java.util.Properties;
+
 
 
 public class Arduino{
@@ -48,23 +52,25 @@ public class Arduino{
     /**The socket that listens for client connections*/
     private static  ServerSocket serverSocket;
 	
+    private static NetworkRegister networkRegister;
+    
+    private static ScheduledExecutorService registrationService;
+    
     /**Constructor*/
     public Arduino( File configurationFile ) throws Exception {
         CONFIGURATION = new Configuration( configurationFile );
       
-        if( NetworkRegister.register() )
-        {
-           System.out.println("Registered at " + 
-                               CONFIGURATION.getWebServerUrl() + " as " +
-                               CONFIGURATION.getArduinoNetworkName() );
-        }
-        else
-        {
-          System.err.println("Unable to register with web server at " +
-                              CONFIGURATION.getWebServerUrl() );
-        }
+       
         
-        System.exit( 1 );
+        
+        networkRegister = new NetworkRegister(
+                              CONFIGURATION.getArduinoNetworkName(),
+                              CONFIGURATION.getArduinoNetworkPassword(),
+                              CONFIGURATION.getNetworkAddress().getHostAddress(),
+                              CONFIGURATION.getNetworkPort(),
+                              CONFIGURATION.getWebServerUrl() );
+        
+        
         serverSocket = new ServerSocket( CONFIGURATION.getNetworkPort(),
                                          CONFIGURATION.getNetworkQueueLength(),
                                          CONFIGURATION.getNetworkAddress() );
@@ -91,6 +97,14 @@ public class Arduino{
 	     System.err.println("Exception in thread creation");
 	     System.exit( 1 );
 	   }
+	
+	   
+	 registrationService = Executors.newScheduledThreadPool( 1 );
+	 
+	registrationService.scheduleWithFixedDelay( networkRegister,
+	                              
+	   0, CONFIGURATION.getArduinoNetworkRegistrationRate(), TimeUnit.SECONDS 
+	                                           );
 	 
         System.out.println("Arduino Connect Started.");
 	while( true )

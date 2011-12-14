@@ -48,6 +48,7 @@ public class Configuration {
          ! isInt( "SERIAL_PARITY")               ||
          ! isValidAddress( "NETWORK_ADDRESS")    ||
          ! hasProtocol( "WEB_SERVER_URL")   ||
+         ! isInt( "ARDUINO_NETWORK_REGISTRATION_RATE") ||
          ! isInt( "NETWORK_QUEUE_LENGTH") )
      {
         System.out.println("Please check your configuration file. Exiting...");
@@ -189,5 +190,13 @@ public class Configuration {
   public String getArduinoNetworkPassword()
   {
     return configuration.getProperty("ARDUINO_NETWORK_PASSWORD");       
+  }
+  
+  public Integer getArduinoNetworkRegistrationRate()
+  {
+      return Integer.parseInt( 
+                    configuration.getProperty(
+                             "ARDUINO_NETWORK_REGISTRATION_RATE" ) );
+          
   }
 }

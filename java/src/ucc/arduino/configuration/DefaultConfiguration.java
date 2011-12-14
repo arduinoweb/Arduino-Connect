@@ -13,6 +13,7 @@ public class DefaultConfiguration extends Properties{
       this.setProperty( "NETWORK_PORT", "10002" );
       this.setProperty( "NETWORK_QUEUE_LENGTH", "50");
       this.setProperty( "NETWORK_TIMEOUT", "60000");
+      this.setProperty( "ARDUINO_NETWORK_REGISTRATION_RATE", "60");
 
       //Default Serial Port Properties
       this.setProperty( "SERIAL_PORT", "/dev/ttyUSB0");

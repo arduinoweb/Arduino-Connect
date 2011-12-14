@@ -1,6 +1,6 @@
 <?php
 
- define( "HTTPS_URL", TRUE);
+ define( "HTTPS_URL", FALSE);
  
  define( "DATABASE_FILE", "db/arduino.db");
 

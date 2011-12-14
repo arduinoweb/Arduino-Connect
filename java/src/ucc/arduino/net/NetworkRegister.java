@@ -24,6 +24,9 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import java.net.URL;
+import java.net.MalformedURLException;
+import java.io.UnsupportedEncodingException;
+
 import java.security.cert.X509Certificate;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -38,57 +41,67 @@ import java.security.cert.CertificateException;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.BasicHttpParams;
 
-public class NetworkRegister{
+public class NetworkRegister implements Runnable{
   
- private static boolean success;
+ private  boolean success;
+ private DefaultHttpClient httpClient;
+
+ private final URL url;
+ private int port;
+ private final boolean isHttps;
+ private final HttpPost httpost;
  
- public static boolean  register( ) 
+ public NetworkRegister( String arduinoNetworkName,
+                         String arduinoNetworkPassword,
+                         String arduinoNetworkAddress,
+                         int networkPort,
+                         String webServerUrl) throws MalformedURLException,
+                                                    UnsupportedEncodingException
  {
-     DefaultHttpClient httpClient = null;
+    url = new URL( webServerUrl );
+    
+    if( ( isHttps = url.getProtocol().equalsIgnoreCase( "https" ) )  )
+    {
+        port = url.getPort();
+        
+        if( port == -1 )
+        {
+           port = 443;
+        }
+    }
+    
+    httpost = new HttpPost( webServerUrl );
+    List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+    nvps.add( new BasicNameValuePair( "arduinoName", arduinoNetworkName ) );
+    nvps.add( new BasicNameValuePair( "arduinoPassword", arduinoNetworkPassword) );
+    nvps.add( new BasicNameValuePair( "arduinoAddress", arduinoNetworkAddress ) );
+    nvps.add( new BasicNameValuePair( "arduinoPort", ( networkPort + "" ) ) );
+    httpost.setEntity( new UrlEncodedFormEntity( nvps, HTTP.UTF_8 ) );
+ }
+ 
+ public void run( ) 
+ {
+     
      success = true;
      
       
     
      try{  
              
-       URL url = new URL( Arduino.CONFIGURATION.getWebServerUrl() );
-       
-       if( url.getProtocol().equalsIgnoreCase("https" ) )
+       if( isHttps )
        {
-          int port = url.getPort();
-          
-          if( port == -1)
-          {
-             port = 443;
-          }
-          
-          httpClient = getUnauthenticatedSSLClient( port );
+
+          httpClient = getUnauthenticatedSSLClient(  );
        }
        else
        {
            httpClient = new DefaultHttpClient();
        }
-       
-     HttpPost httpost = new HttpPost( Arduino.CONFIGURATION.getWebServerUrl() );
-      List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-         nvps.add( new BasicNameValuePair( "arduinoName", 
-                             Arduino.CONFIGURATION.getArduinoNetworkName() ) );
-        nvps.add( new BasicNameValuePair( "arduinoPassword",
-                          Arduino.CONFIGURATION.getArduinoNetworkPassword() ) );
-        
-         nvps.add( new BasicNameValuePair( "arduinoAddress",
-                 Arduino.CONFIGURATION.getNetworkAddress().getHostAddress() ) );
-         nvps.add( new BasicNameValuePair( "arduinoPort",
-                           Arduino.CONFIGURATION.getNetworkPort().toString()) );
-         
-                                      
-         
-         httpost.setEntity( new UrlEncodedFormEntity( nvps, HTTP.UTF_8 ) );
+
       
          HttpResponse response = httpClient.execute( httpost );
          HttpEntity entity = response.getEntity();
        
-         System.out.println( response.getStatusLine() );
         
          if( entity != null )
          {
@@ -128,11 +141,24 @@ public class NetworkRegister{
      }
         java.lang.System.setProperty(
               "sun.security.ssl.allowUnsafeRenegotiation", "false" );
-         return success;
+        
+    if( ! success )
+    {
+      System.err.println("Unable to register with server at " +
+                          url );
+    }
+    
+    httpClient = null;
+        
  }
  
-
- private static DefaultHttpClient getUnauthenticatedSSLClient( final int port )
+ public synchronized boolean isRegistered()
+ {
+    return success;        
+         
+ }
+ 
+ private DefaultHttpClient getUnauthenticatedSSLClient(  )
  {
      DefaultHttpClient defaultClient = null;
    

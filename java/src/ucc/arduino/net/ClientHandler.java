@@ -12,7 +12,8 @@ import ucc.arduino.configuration.Protocol;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
-public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> implements Runnable
+public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> 
+                                                         implements Runnable
 {
 
   /** Stores whether to keep the thread alive or not */
@@ -41,6 +42,7 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> imple
 	if( ( clientConnection = this.poll() ) != null )
         {
           String msg = clientConnection.getMessage();
+          //System.out.println("Message: " + msg );
           
           // There's a chance we could have a client but the
           // thread executor hasn't had a chance to invoke the thread yet
@@ -137,7 +139,7 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> imple
     String clientReply = Protocol.BAD_MESSAGE_FORMAT;
     StringBuffer replyBuilder = new StringBuffer();
     int indexer = 1;
-    
+   // System.out.println("In processRead");
     while( indexer < msg.length -1 && pinValue != null )
     {
 	                            
@@ -161,7 +163,8 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection> imple
 	    indexer++;
 	                             
 	}catch( NumberFormatException nfe ){
-	     pinValue = null;        
+	     pinValue = null;   
+	     System.err.println( nfe );
 	}
     }
      
