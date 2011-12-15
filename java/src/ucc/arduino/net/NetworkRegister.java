@@ -69,7 +69,7 @@ public class NetworkRegister implements Runnable{
            port = 443;
         }
     }
-    
+    System.out.println("Listening on Port: " +  networkPort);
     httpost = new HttpPost( webServerUrl );
     List<NameValuePair> nvps = new ArrayList<NameValuePair>();
     nvps.add( new BasicNameValuePair( "arduinoName", arduinoNetworkName ) );

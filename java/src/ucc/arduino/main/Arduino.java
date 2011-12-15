@@ -61,7 +61,8 @@ public class Arduino{
         CONFIGURATION = new Configuration( configurationFile );
       
        
-        
+        System.setProperty("gnu.io.rxtx.SerialPorts",
+                            CONFIGURATION.getSerialPort() );
         
         networkRegister = new NetworkRegister(
                               CONFIGURATION.getArduinoNetworkName(),

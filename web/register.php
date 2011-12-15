@@ -63,8 +63,9 @@
          {
          
            $currTime = time();
+           $numRows = sqlite_num_rows( $queryResult );
            
-           if( sqlite_num_rows( $queryResult ) == 0 )
+           if( $numRows == 0 )
            {
         
            
@@ -72,9 +73,10 @@
                      VALUES( '{$safeName}','{$safeAddress}',
                      {$_POST['arduinoPort']}, {$currTime})";
            }
-           else
+           elseif( $numRows == 1 )
            {
-           $query = "UPDATE registeredArduinos SET lastRegistered={$currTime}
+          $query = "UPDATE registeredArduinos SET lastRegistered={$currTime},
+          port={$_POST['arduinoPort']}, address='{$safeAddress}'
                      WHERE name='{$safeName}'";
                    
            }
