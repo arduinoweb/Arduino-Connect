@@ -1,119 +1,109 @@
-body { margin: 0;
-       padding: 0;
-       font-family: sans-serif;
-       background-color: white;
-       
+/*
+      Created by Keith Donegan of Code-Sucks.com
+	  
+	  E-Mail: Keithdonegan@gmail.com
+	  
+	  You can do whatever you want with these layouts,
+	  but it would be greatly appreciated if you gave a link
+	  back to http://www.code-sucks.com
+	  
+*/
+
+* { padding: 0; margin: 0; }
+
+body {
+ font-family: Arial, Helvetica, sans-serif;
+ font-size: 13px;
 }
-html { margin: 0;
-       padding: 0;
-       font-family: sans-serif;
+#wrapper { 
+ margin: 0 auto;
+ width: 1270px;
 }
 #header {
- height: 5.5em;
- text-align:right;
-  margin-right: 10%;
-  margin-left: 10%;
-  width: 80%;
-} 
-
-#header h1{
-    margin-top: 0;
-    color: #2E2E2E;
-    font-style: italic;
-    padding-left: 10px;
-   margin-bottom: 2px;
-   padding-bottom: 0px;
-    font-size: 3em;
-    
-    
+ color: #333;
+ width: 1248px;
+ float: left;
+ padding: 10px;
+ //border: 1px solid #ccc;
+ height: 80px;
+ margin: 0px 0px 0px 0px;
+ background: #FFFFF;
 }
-
-
-#components {
-   width: 400px;
-   height: 450px;
-   margin-top: 0.4em;
+#navigation {
+ float: left;
+ width: 1248px;
+ color: #333;
+ padding: 10px;
+ //border: 1px solid #ccc;
+ margin: 0px 0px 0px 0px;
+ background: #A8B4C1;
 }
+#leftcolumn { 
+ color: #333;
+ border: 1px solid #ccc;
+  border-bottom-width: 10px;
+  border-bottom-color: #A8B4C1;
+ background: #FFFFF;
+ margin: 0px 0px 0px 0px;
+ padding: 10px;
+ //height: 325px;
+ width: 200px;
+ float: left;
+}
+#rightcolumn { 
+ float: right;
+ color: #333;
+ border: 1px solid #ccc;
 
-#components p {
-    padding: 5px;
-    border: 2px solid white;
+ background: #FFFFF;
+ margin: 0px 0px 0px 0px;
+ padding: 10px;
+ height: 350px;
+ width: 1020px;
+ display: inline;
 }
-#components p:hover {
-    padding: 5px;
-    border: 2px solid gray;    
-}
-
-.shadowed {
-      box-shadow: 5px 5px 5px #887;   
-}
-
-#content {
-    margin-left: 10%;
-    margin-right: 10%;
-    width: 80%;
-    height: 95%;
-}
-#header h2 {
-    margin-top: -12px;
-    padding-top: 0;
-    font-size: 1.9em;
-    padding-left: 10px;
-    color: #ECE89D;
-    font-style: italic;
-    border-bottom: 2px;
-    border-bottom-color: #DCDCDC;
-   border-bottom-style: solid;
+#footer { 
+ width: 1248px;
+ clear: both;
+ color: #333;
+ //border: 1px solid #ccc;
+ background: #FFFFFF;
+ margin: 0px 0px 10px 0px;
+ padding: 10px;
 }
 
-#buttonContainer {
-       position: absolute;  
-       top: 1.5em;
-       left: 10%;
+.shadowed{
+  -moz-box-shadow: 5px 5px 5px #ccc;
+  -webkit-box-shadow: 5px 5px 5px #ccc;
+  box-shadow: 2px 2px 5px #ccc;
+        
 }
 
-
-.ui-effects-transfer { border: 2px dotted gray; } 
-.exampleChart {
-           width: 300px;
-	   height: 100px;
+#arduinoList{
+    list-style: none; margin-left: 10px; margin-top: 15px;
+		 line-height: 30px; font-size: 20px; width: 160px;
+		
+		 
+        
 }
 
-#configureComponent {
-  line-height: 2em; 
+#arduinoList li > img {
+    width:20px;height:20px;float:left;margin-top: 8px;
+		 margin-right: 5px; margin-left: 2px;   
 }
-#configureComponent label{
-    float:left;
-    width: 9em;
+li { word-wrap: break-word; margin-bottom: 15px; }
+h3 { font-size: 25px;}
+
+#arduinoMessageArea {
+   margin-top:240px; width: 200px; height: 33px;background-color: #A8B4C1     
+        
 }
 
-.graph {
-  
-  margin-top: 1em;
-  width: 800px;
-  height: 300px;
-}
-#lockButton{
- 
-   float: right;
-   margin-left: 2em;
-   margin-top: -.9em;
-   padding: 5px;
-}
-#lockButton img{ padding-left: 5px;padding-right: 5px}
-#addButton{
-  float: left;
-  margin-top: -0.5em;
-  padding: 0px;
+.ui-widget-header img { float:right; margin-right:5px;}
+#leftcolumn h3{
+        text-align: center;padding-top: 5px;margin-top:0px;width:200px;height:35px;
 }
 
-.graphContainer { width: 810px; height: 310px; margin: 0px; margin-top: 3em;padding:0px; padding-bottom: 20px}
-.graphLabel{ margin: 0px; margin: 1em;padding: 0.2em; font-size: 18px;
-             padding-left: 1em; padding-right: 1em;
-	     background-color: white;
-	     color: #616161; font-weight: bold; font-style: italic;
- }
+.error { color: red;}
 
-.rounded{
-    border-radius: 10px;
-}
+.greyblue { color: #A8B4C1;}

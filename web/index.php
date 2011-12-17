@@ -26,137 +26,77 @@
  
 ?>
 
-<!DOCTYPE html>
-<html>
- <head>
-  <meta charset="utf-8">
-  <title>Arduino Connect</title>
-  
-  
-  
-  
-  <link rel="stylesheet" type="text/css" href="css/arduino.css" />
-  <link rel="stylesheet" type="text/css" href="js/jquery/css/flick/jquery-ui-1.8.16.custom.css" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Arduino Connect</title>
+<link rel="stylesheet" type="text/css" href="css/main.css" />
+<link rel="stylesheet" type="text/css" href="css/Aristo/Aristo.css" />
 
+<script type="text/javascript" src="js/jquery/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="js/jquery/js/jquery-ui-1.8.16.custom.min.js"></script>
 
-  <script type="text/javascript" src="js/jquery/js/jquery-1.6.2.min.js"></script>
-  <script type="text/javascript" src="js/jquery/js/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src = "js/arduinolist.js"></script>
+</head>
 
-  <script type="text/javascript" src="js/jquery.layout.min-1.2.0.js"></script>  
-  <script type="text/javascript">
-  
-  var layout;
-  
-  $(document).ready( function(){
-                  
-        
-           
-           $('#header a').button();
-           $('#widgets').accordion();
-           $('#navToggleLink').click( function(){
-                           $('#nav').toggle( "blind",[],100, function(){
-              checkNavPanelState();
-                           });
-              return false;             
-           });
-          
-           $('#toggleLinkContainer').click( function(){
-                           $('#nav').toggle("blind",[],100, function(){
-              checkNavPanelState();
-                           });
-           });
-           $('#toggleLinkContainer').hover( togglePanelHighlight);
-               
-           
-           
-           $('#toggleLinkContainer').mouseout( checkNavPanelState);
-              
-        
-            
-            
-           $('#nav').toggle();
-           
-           
-  });
-          
-  function checkNavPanelState()
-  {
-        $('#content').html( $('#nav').css('display') );
-        var tmpState = $('#nav').css('display');
-        
-        if( tmpState == 'none' )
-               {
-                  togglePanelNormal();
-                  
-               }
-               else
-               {
-                  togglePanelHighlight();
-               
-               }   
-          
-          
-  }
-  
-  function togglePanelHighlight()
-  {
-           $('#toggleLinkContainer').css("background-color", "orange");
-                $('#navToggleLink').css("background-color","orange");
-          
-  }
-  
-  function togglePanelNormal()
-  {
-            $('#toggleLinkContainer').css("background-color", "#616160");
-                $('#navToggleLink').css("background-color","#616160");
-          
-  }
-  </script>
- </head>
- <body>     
-   
- <div id="header" >
-    
-    
- 
-   
-    <h1>arduino</h1>
-  
-       <a href="login.php?logout=true" id="logoutLink">logout</a>
-       <a href="arduinomanage.php" id="adminLink">admin</a>
-      
-    
-    
-    
-    
+<body>
+
+   <!-- Begin Wrapper -->
+   <div id="wrapper">
+   	 <!-- Begin Navigation -->
+         <div id="navigation" class="shadowed">
+		 
+		       <img src="img/arduino.png" />	 
+			   
+		 </div>
+		 <!-- End Navigation -->
+         <!-- Begin Header -->
+         <div id="header">
+		 
+		       		 
+			   
+		 </div>
+		 <!-- End Header -->
+		 
+	
+		 
+		 <!-- Begin Left Column -->
+		 <div id="leftcolumn" class="ui-widget ui-content ui-corner-all shadowed"
+		                            style="margin:0px; padding:0px; width: 200px;">
+		   <h3 class="ui-widget-header">Arduinos
+		   <img id="arduinoListRefresh" 
+		      src="img/reload.png" alt="refresh list of Arduinos icon"
+		                   title="refresh list of Arduinos"/></h3>
+		 
+		   <div>
+		      <ul id="arduinoList">
+		        <li class="arduino greyblue">none available</li>
+		       
+		     </ul>
+		  </div>
+		 
+		 
+		 </div>
+		 <!-- End Left Column -->
+		 
+		 <!-- Begin Right Column -->
+		 <div id="rightcolumn" class="shadowed">
+		       
+	         
+		 </div>
+		 <!-- End Right Column -->
+		 
+		 <!-- Begin Footer -->
+		 <div id="footer">
+		       
+			   This is the Footer		
+			    
+	     </div>
+		 <!-- End Footer -->
+		 
    </div>
-
-   <div id="toggleLinkContainer" class="shadowed" ><span class="shadowed" id="navToggleLink">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
-   <div id="nav">
-    
-    <div id="navContent">
-   <div id="widgets">
-    <h3><a href="#">Widgets</a></h3>
-    <div>
-      <p>Widgets 1</p>
-    </div>
-    <h3><a href="#">Widgets 2</a></h3>
-    <div>
-     <p>Widgets 2</p>
-    
-    </div>
-    </div>
-   </div>
+   <!-- End Wrapper -->
    
- </div>  
-   
-   <div id="content" style="border-style: solid; border-width: 1px" >Center
-   
-   
-   </div>
-
- </body>
-
-
-
+</body>
 </html>
