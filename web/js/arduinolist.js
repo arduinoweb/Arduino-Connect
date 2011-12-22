@@ -34,8 +34,13 @@ $(document).ready( function(){
                          for( var i = 0; i < len; i++ )
                          {
                            $('#arduinoList').append(
-                              '<li class="arduino" id="'+response[i]+'">' +
+                              '<li class="arduino live" id="'+response[i]+'">' +
                                response[i] + '<img src="img/greenlight.png" /></li>' );
+                           
+                           $('#'+response[i]).draggable({
+                                           helper: 'clone',
+                                           revert: 'true'
+                           });
                                    
                                  
                          }

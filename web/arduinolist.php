@@ -32,7 +32,7 @@
       die();
          
  }
- sleep( 2);
+ 
  $query = "SELECT * FROM registeredArduinos";
  
  $queryResult = Db::query( $query );
