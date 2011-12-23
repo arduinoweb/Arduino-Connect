@@ -1,20 +1,10 @@
-function Component( id )
+function HorizontalGauge1( id )
 {
-  var data = [];
-  
-  
-  var totalPoints = 20;
-  
-  for( var i = 0; i < totalPoints; i++)
-  {
-            data.push( 0);       
-  }
-
-
+ 
 
   var refreshRate = 1000;
  
-  var component = null;
+  var component= null;
   var componentId = id;
   var input = 0;
   var componentTitle = "Title ..click to edit";
@@ -23,11 +13,12 @@ function Component( id )
   var scheduler = null;
   var request = "";
   
+  
   $('#rightcolumn').append(
-             '<div id="componentContainer'+componentId+'" class="componentContainer shadowed"><span class="edit title" id="componentTitle'+componentId+'">'
-             + componentTitle +'</span><span id="close'+componentId+'" class="close"></span><div id="component'+componentId+'" class="graph">'+
+             '<div id="componentContainer'+componentId+'" class="horizontalGaugeContainer shadowed"><span class="edit title" id="componentTitle'+componentId+'">'
+             + componentTitle +'</span><span id="close'+componentId+'" class="close"></span><div><canvas id="component'+componentId+'">'+
              
-             '</div><div  style="margin-top: 20px"><img id="refreshIcon'+componentId+'" alt="refresh rate icon" title="click to edit refresh rate" src="img/clock.png" />'+
+             '</canvas></div><div  style="margin-top: 20px"><img id="refreshIcon'+componentId+'" alt="refresh rate icon" title="click to edit refresh rate" src="img/clock.png" />'+
              
              '<div id="refreshrate'+componentId+'" class="refreshpanel" ><label id="value'+componentId+'">1s</label><div id="refreshSlider'+componentId+'"></div></div>'
              +
@@ -140,6 +131,7 @@ function Component( id )
           if( status == 'img/greenlight.png')
           {
             stopScheduler();
+            component.setvalueAnimated( 0 );
           }
           else
           {
@@ -167,15 +159,16 @@ function Component( id )
       
       this.draw = function()
       {
-         component = $.plot( $("#component"+componentId), [data],{
-                bars: { show: false},
-	        lines:{ show: true},
-	        points:{ show: true},
-	        xaxis:{  show: false },
-	        yaxis:{ min: 0, max:255}
-		
-    
-             });
+        
+        component = new steelseries.Linear('component'+componentId, {
+                        width: 320,
+                        height: 140,
+                        lcdVisible: true
+                            });
+        
+        component.setFrameDesign(steelseries.FrameDesign.METAL);
+        component.setBackgroundColor(steelseries.BackgroundColor.WHITE);
+             
               
       }
     function getData()
@@ -194,15 +187,17 @@ function Component( id )
                   title: componentTitle,
                   text: 'An error ocurred retreiving data.Possible causes:<ul class="errorMessage"><li class="errorMessage">Arduino is offline</li><li class="errorMessage">Invalid Pin Number</li></ul>',
                   });
+                 component.setValueAnimated( 0 );
                  stopScheduler();
                }            
                else
                {
                
                  
-                  component.setData( [ updateData( tmpValue) ] );
-	           component.setupGrid();
-	          component.draw();
+                  /*graph.setData( [ updateData( tmpValue) ] );
+	          graph.setupGrid();
+	          graph.draw();*/
+	          component.setValueAnimated( tmpValue );
                 
                  
                }
@@ -218,7 +213,8 @@ function Component( id )
                  $.gritter.add({
                   title: componentTitle,
                   text: "Unable to access webserver",
-                  });              
+                  });   
+                 component.setValueAnimated( 0 );
                  stopScheduler();
             });
             
@@ -226,7 +222,7 @@ function Component( id )
     
     function updateData( updatedValue )
     {
-        data = data.slice(1);
+       /* data = data.slice(1);
 
       
         data.push( updatedValue );
@@ -237,7 +233,7 @@ function Component( id )
             res.push([i, data[i]])
             
            
-        return res;
+        return res;*/
          
             
             

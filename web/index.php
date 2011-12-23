@@ -46,13 +46,15 @@
 <script type="text/javascript" src="js/flot/jquery.flot.min.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.js"></script>
 <script type="text/javascript" src="js/gritter/js/jquery.gritter.js"></script>
-
+   <script src="js/tween-min.js"></script>
+<script src="js/steelseries.min.js"></script>
 <script type="text/javascript" src="js/Component.js"></script>
+<script type="text/javascript" src="js/HorizontalGauge1.js"></script>
 <script>
 $(document).ready( function(){
                 
      var numComponents = 0;
-     var components = [];
+   //  var components = [];
      
      $('#componentButton').click( function(){
                      $('#header').toggle();
@@ -91,15 +93,35 @@ appendTo: 'body'
                     if( name == "newgraph")
                     {
                        var tmp= new Component(++numComponents);
-                       tmp.drawGraph();
+                       tmp.draw();
+                    }
+                    else if( name == "horizontalgauge1" )
+                    {
+                        var tmp = new HorizontalGauge1( ++numComponents );
+                        tmp.draw();
                     }
                   }
   });
    
-  
+var radial1;
+ var sections = [steelseries.Section(0, 25, 'rgba(0, 0, 220, 0.3)'),
+                        steelseries.Section(25, 50, 'rgba(0, 220, 0, 0.3)'),
+                        steelseries.Section(50, 75, 'rgba(220, 220, 0, 0.3)') ];
 
- 
-  
+        // Define one area
+        var areas = [steelseries.Section(75, 100, 'rgba(220, 0, 0, 0.3)')];
+
+        // Define value gradient for bargraph
+        var valGrad = new steelseries.gradientWrapper(  0,
+                                                        100,
+                                                        [ 0, 0.33, 0.66, 0.85, 1],
+                                                        [ new steelseries.rgbaColor(0, 0, 200, 1),
+                                                          new steelseries.rgbaColor(0, 200, 0, 1),
+                                                          new steelseries.rgbaColor(200, 200, 0, 1),
+                                                          new steelseries.rgbaColor(200, 0, 0, 1),
+                                                          new steelseries.rgbaColor(200, 0, 0, 1) ]);
+   
+			
 });
 </script>
 </head>
@@ -125,7 +147,7 @@ appendTo: 'body'
 
     <ul>
         <li><img src="img/examples/graph.png"  class="demoComponent" alt="newgraph" width="200" height="100"/ ></li>
-       <li class="demoComponent"><img src="someimage" alt="dsdsa" width="200" height="100" ></li>
+       <li ><img src="img/examples/horizontalgauge1.png" class="demoComponent" alt="horizontalgauge1" width="200" height="100" /></li>
         <li class="demoComponent"><img src="someimage" alt="dsds" width="200" height="100" ></li>
         <li class="demoComponent"><img src="someimage" alt="dsdsad" width="200" height="100" ></li>
     </ul>
@@ -167,13 +189,16 @@ appendTo: 'body'
 		 <!-- Begin Footer -->
 		 <div id="footer">
 		       
-			   This is the Footer		
+			   <canvas id="canvasRadial1" width="201" height="201">No canvas in your browser...sorry...</canvas>		
 			    
 	     </div>
 		 <!-- End Footer -->
 		 
    </div>
    <!-- End Wrapper -->
-   <div id="status"></div>
+   <div id="status" style="background-color: black"></div>
+  
+   
+
 </body>
 </html>
