@@ -33,6 +33,7 @@
 <title>Arduino Connect</title>
 <link rel="stylesheet" type="text/css" href="css/main.css" />
 -<link rel="stylesheet" type="text/css" href="css/Aristo/Aristo.css" />
+<link rel="stylesheet" type="text/css" href="js/gritter/css/jquery.gritter.css" />
 <!--<link rel="stylesheet" type="text/css" href="js/jquery/css/flick/jquery-ui-1.8.16.custom.css" />-->
 
 
@@ -44,6 +45,8 @@
 <script type="text/javascript" src="js/jcarousellite_1.0.1.min.js"></script>
 <script type="text/javascript" src="js/flot/jquery.flot.min.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.js"></script>
+<script type="text/javascript" src="js/gritter/js/jquery.gritter.js"></script>
+
 <script type="text/javascript" src="js/Component.js"></script>
 <script>
 $(document).ready( function(){

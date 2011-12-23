@@ -71,14 +71,14 @@ void loop() {
    // change the analog out value:
   // analogWrite(analogOutPin, outputValue);           
  
-/* value1 = (value1 + 1) % 255;
+ value1 = (value1 + 1) % 255;
  value2 = (value2 + 2) % 255;  
  value3 = (value3 + 3) % 255;
  value4 = (value4 + 4) % 255;
  value5 = (value5 + 5) % 255;
  value6 = (value6 + 6) % 255;
-// value7 = (value7 + 7) % 255;
-// value9 = (value9 + 9) % 255;
+value7 = (value7 + 7) % 255;
+ value9 = (value9 + 9) % 255;
   sendMsg(1, value1);
   
   readMsg();
@@ -88,8 +88,8 @@ void loop() {
  sendMsg( 4, value4 );
  sendMsg( 5, value5 );
  sendMsg( 6, value6 );
-// sendMsg( 7, value7 );
-// sendMsg( 9, value9 );
+ sendMsg( 7, value7 );
+sendMsg( 9, value9 );
  
   //delay( 100 );*/
 }

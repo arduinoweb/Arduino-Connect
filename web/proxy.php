@@ -16,9 +16,10 @@
     Session::start();
     
     
-    $returnMsg = "unable to contact arduino";
+    $returnMsg = json_encode( "unable to contact arduino" );
     
-    $arduinoName = "arduino1";
+    $arduinoName = String::safeSql( $_POST['arduino'] );
+    $text = $_POST['msg'];
     $currTime = time();
     $success = FALSE;
     
@@ -47,9 +48,10 @@
       {
          $sock = socket_create( AF_INET, SOCK_STREAM, 0 );
          
-         if( ($success = socket_connect( $sock, "localhost", 10002 ) ) )
+         if( ($success = socket_connect( $sock, $arduinoDetails['address'], 
+                 $arduinoDetails['port'] ) ) )
          {
-            $text = "R 10 E";
+          // $text = "R 10 E";
          
             if( ($success = socket_write( $sock, $text ."\n", strlen( $text ) + 1 )) )
             {

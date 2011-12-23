@@ -131,4 +131,4 @@ width: 30px;border-radius: 4px;text-align: left}
 .pinPanel label { margin-bottom: 10px; font-size: 20px; color: white;
 }
 
-          
+.errorMessage { margin-left: 5px; padding-left: 10px;}

@@ -75,5 +75,5 @@ $(document).ready( function(){
  
  refreshArduinoList();
  
- window.setInterval( automateArduinoListRefresh , 30000 );
+ window.setInterval( automateArduinoListRefresh , 30000,"JAVASCRIPT" );
 });
