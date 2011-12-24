@@ -48,8 +48,15 @@
 <script type="text/javascript" src="js/gritter/js/jquery.gritter.js"></script>
    <script src="js/tween-min.js"></script>
 <script src="js/steelseries.min.js"></script>
+
 <script type="text/javascript" src="js/Component.js"></script>
-<script type="text/javascript" src="js/HorizontalGauge1.js"></script>
+
+<script type="text/javascript" src="js/LineChart.js"></script>
+
+<script type="text/javascript" src="js/HorizontalGauge.js"></script>
+
+
+
 <script>
 $(document).ready( function(){
                 
@@ -92,13 +99,17 @@ appendTo: 'body'
                    
                     if( name == "newgraph")
                     {
-                       var tmp= new Component(++numComponents);
-                       tmp.draw();
+                      var tmp= new LineChart(++numComponents);
+                      tmp.init();
+                      
+                      // tmp.createContainer(numComponents);
+                     // var tmp = new LineChart( ++numComponents );
+                     // tmp.draw();
                     }
-                    else if( name == "horizontalgauge1" )
+                    else if( name == "horizontalgauge" )
                     {
-                        var tmp = new HorizontalGauge1( ++numComponents );
-                        tmp.draw();
+                        var tmp = new HorizontalGauge( ++numComponents );
+                        tmp.init();
                     }
                   }
   });
@@ -147,7 +158,7 @@ var radial1;
 
     <ul>
         <li><img src="img/examples/graph.png"  class="demoComponent" alt="newgraph" width="200" height="100"/ ></li>
-       <li ><img src="img/examples/horizontalgauge1.png" class="demoComponent" alt="horizontalgauge1" width="200" height="100" /></li>
+       <li ><img src="img/examples/horizontalgauge1.png" class="demoComponent" alt="horizontalgauge" width="200" height="100" /></li>
         <li class="demoComponent"><img src="someimage" alt="dsds" width="200" height="100" ></li>
         <li class="demoComponent"><img src="someimage" alt="dsdsad" width="200" height="100" ></li>
     </ul>

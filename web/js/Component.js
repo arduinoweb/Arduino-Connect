@@ -1,274 +1,243 @@
 function Component( id )
 {
-  var data = [];
+  this.__arduinoName__="none";
+  this.__componentId__=id;
+  this.__componentTitle__="click to edit";
+  this.__isActive__=false;
+  this.__scheduler__=null;
+  this.__refreshRate__=1000;
+  this.__input__=0;
+  this.__component__=null;
   
-  
-  var totalPoints = 20;
-  
-  for( var i = 0; i < totalPoints; i++)
-  {
-            data.push( 0);       
-  }
-
-
-
-  var refreshRate = 1000;
  
-  var component = null;
-  var componentId = id;
-  var input = 0;
-  var componentTitle = "Title ..click to edit";
-  var arduinoName = "none";
-  var isActive = false;
-  var scheduler = null;
-  var request = "";
-  
-  $('#rightcolumn').append(
-             '<div id="componentContainer'+componentId+'" class="componentContainer shadowed"><span class="edit title" id="componentTitle'+componentId+'">'
-             + componentTitle +'</span><span id="close'+componentId+'" class="close"></span><div id="component'+componentId+'" class="graph">'+
-             
-             '</div><div  style="margin-top: 20px"><img id="refreshIcon'+componentId+'" alt="refresh rate icon" title="click to edit refresh rate" src="img/clock.png" />'+
-             
-             '<div id="refreshrate'+componentId+'" class="refreshpanel" ><label id="value'+componentId+'">1s</label><div id="refreshSlider'+componentId+'"></div></div>'
-             +
-             
-             '<div class="inputs" ><span id="inputArea'+componentId+'"></span><div id="pinPanel'+componentId+'" class="pinPanel"><label id="pinValue'+componentId+'">Pin 0</label><div id="pinSlider'+componentId+'"></div></div></div>'
-             
-             +'<img id="statusLight'+componentId+'" src="img/redlight.png" style="width: 20px; height:20px; float:right" /></div>'
-      
-             
-             
-     );
+}
+
+
+
+
+Component.prototype.init = function(){
+
+   var _self = this;
+   _self.createContainer();
+   
+    //Make the component draggable
+   $('#componentContainer'+_self.__componentId__).draggable({
+         containment: '#rightcolumn',
+         scroll: true
+   });
+   
+   //Make the component closeable
+    $('#close'+_self.__componentId__).click( function( ){
+         
+     if( _self.__isActive__)
+     {
+            _self.stopScheduler();
+     }
      
-   
-       
-       $('#componentContainer'+componentId).draggable({
-                       
-                       containment: '#rightcolumn',
-                       scroll: true
-                      
-       });
-              
-		
-       $('#close'+componentId).click( function(){
+     
+     $('#componentContainer'+_self.__componentId__).remove();   
          
-         if( isActive == true )
-         {
-            stopScheduler();
-         }
-         
-         $('#componentContainer'+componentId).remove();   
-         
-       });
-   
-       $('#componentTitle'+componentId).editable( function( value,settings){
-                       componentTitle = value;
+   });
+    
+    
+  //Make the components title editable
+  $('#componentTitle'+_self.__componentId__).editable( function( value,settings){
+                       _self.__componentTitle__ = value;
                        return value;
                        
-       });
-       
-       $('#refreshSlider'+componentId).slider({
-                       orientation: 'vertical',
-                       min: 1,
-                       max: 60,
-                       slide: function( event, ui ){
+  });
+  
+  //Create the slider for adjusting refresh rate
+  $('#refreshSlider'+_self.__componentId__).slider({
+         orientation: 'vertical',
+         min: 1,
+         max: 60,
+         slide: function( event, ui ){
+               $('#value'+_self.__componentId__).html( ui.value +"s" );
+                   _self.__refreshRate__ = ui.value * 1000;
                                
-                               $('#value'+componentId).html( ui.value +"s" );
-                               refreshRate = ui.value * 1000;
-                               
-                       }
-                       
-       });
-       
-       $('#pinSlider'+componentId).slider({
-                       
-                       orientation:'vertical',
-                       min: 0,
-                       max: 12,
-                       slide: function( event, ui ){
-                           $('#pinValue'+componentId).html("Pin " + ui.value );
-                           //input = ui.value;
-                         
-                               
-                       },
-                       stop: function( event, ui ){
-                           input = ui.value;       
-                       }
-       });
-     $('#refreshIcon'+componentId).click( function(){
-         $('#refreshrate'+componentId).toggle();  
-         
-         if( $(this).css('display') != 'none' &&
-             $('#pinPanel'+componentId).css('display') != 'none' )
-         {
-                 $('#pinPanel'+componentId).toggle();       
-         }
-                    
-      });
-      
-      $('#componentContainer'+componentId).droppable({
-                      
-                      accept: '.live',
-                      drop: function(event, ui){
-                            arduinoName = $(ui.draggable).attr('id');
-                            isActive = false;
-                            
-                            stopScheduler();
-                            
-                            $('#inputArea'+componentId).html(
-                                    '<img id="inputIcon'+componentId+'" src="img/plug.png" style="margin-right:15px" />'+arduinoName);
-                            
-                              $('#inputIcon'+componentId).click( function(){
-                                
-                                 $('#pinPanel'+componentId).toggle();           
-                                 
-                                   if( $('#refreshrate'+componentId).css('display') 
-                                           != 'none' &&
-                                        $('#pinPanel'+componentId).css('display')
-                                           != 'none')
-                                        $('#refreshrate'+componentId).toggle();
-                                       
-                                 });
-                      }
-      });
-          
+                }
+    });
     
-      $('#statusLight'+componentId).click( function(){
+  //Make the icon clickabel to show/hide the refresh slider
+  $('#refreshIcon'+_self.__componentId__).click( function(){
+     $('#refreshRate'+_self.__componentId__).toggle();  
+   
+         if( $(this).css('display') != 'none' &&
+             $('#pinPanel'+_self.__componentId__).css('display') != 'none' )
+         {
+                 $('#pinPanel'+_self.__componentId__).toggle();       
+         }
+
+      });
+ 
+ //Create the slider that allows pin selection
+ $('#pinSlider'+_self.__componentId__).slider({
+       orientation:'vertical',
+       min: 0,
+       max: 12,
+       slide: function( event, ui ){
+            $('#pinValue'+_self.__componentId__).html("Pin " + ui.value );
+            
+            },
+            stop: function( event, ui ){
+               _self.__input__ = ui.value;       
+            }
+  });
+  
+ 
+ //Make the component droppable to allow dragging of arduinos on to it
+ $('#componentContainer'+_self.__componentId__).droppable({
+     accept: '.live',
+     drop: function(event, ui){
+            _self.__arduinoName__ = $(ui.draggable).attr('id');
+           
+                
+           _self.stopScheduler();
+                            
+            $('#inputArea'+_self.__componentId__).html(
+                '<img id="inputIcon'+_self.__componentId__+
+                '" src="img/plug.png" style="margin-right:15px" />'+
+                _self.__arduinoName__);
+                            
+            $('#inputIcon'+_self.__componentId__).click( function(){
+                  $('#pinPanel'+_self.__componentId__).toggle();           
+                                 
+                  if( $('#refreshRate'+_self.__componentId__).css('display') 
+                            != 'none' &&
+                      $('#pinPanel'+_self.__componentId__).css('display')
+                            != 'none')
+                        $('#refreshRate'+_self.__componentId__).toggle();
+                                       
+              });
+          }
+      });
+ 
+ 
+ //Handle turning on and off the component
+ $('#statusLight'+_self.__componentId__).click( function(){
                       
           var status = $(this).attr('src');
-          hideSliders();
+          _self.hideSliders();
           if( status == 'img/greenlight.png')
           {
-            stopScheduler();
+            _self.stopScheduler();
           }
           else
           {
               
-             if( arduinoName != 'none')
+             if( _self.__arduinoName__ != 'none')
              {
                  
-                 if( isActive == true )
+                 if( _self.__isActive__ ==true)
                  {
-                    window.clearInterval( scheduler );
-                    scheduler = null;
+                    window.clearInterval( _self.__scheduler__ );
+                    _self.__scheduler__ = null;
+                    _self.__isActive=false;
                           
                  }
-                 else
-                 {
-                    isActive = true;
-                 }
+               
                  
-                 startScheduler();
+               _self.startScheduler();
                  
              }
           }
                       
       });
-      
-      this.draw = function()
-      {
-         component = $.plot( $("#component"+componentId), [data],{
-                bars: { show: false},
-	        lines:{ show: true},
-	        points:{ show: true},
-	        xaxis:{  show: false },
-	        yaxis:{ min: 0, max:255}
-		
-    
-             });
-              
-      }
-    function getData()
-    {          
-            request = "R " + input + " E";
-            $.post("proxy.php", { arduino: arduinoName, msg:request},function( data ){
-                            
-               var response = JSON.parse( data );
-               
-               var tmpValue = parseInt( response.msg );
-               
-               if( isNaN( tmpValue ) )
-               {
-           
-                 $.gritter.add({
-                  title: componentTitle,
-                  text: 'An error ocurred retreiving data.Possible causes:<ul class="errorMessage"><li class="errorMessage">Arduino is offline</li><li class="errorMessage">Invalid Pin Number</li></ul>',
-                  });
-                 stopScheduler();
-               }            
-               else
-               {
-               
-                 
-                  component.setData( [ updateData( tmpValue) ] );
-	           component.setupGrid();
-	          component.draw();
-                
-                 
-               }
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-            })
-            .error( function(){
-                 $.gritter.add({
-                  title: componentTitle,
-                  text: "Unable to access webserver",
-                  });              
-                 stopScheduler();
-            });
-            
-    }
-    
-    function updateData( updatedValue )
-    {
-        data = data.slice(1);
-
-      
-        data.push( updatedValue );
-        // zip the generated y values with the x values
-       
-        var res = [];
-        for (var i = 0; i < data.length; ++i)
-            res.push([i, data[i]])
-            
-           
-        return res;
-         
-            
-            
-    }
-    
-    function startScheduler()
-    {
-      $('#statusLight'+componentId).attr('src','img/greenlight.png');
-      isActive = true;
-      scheduler = window.setInterval(getData, refreshRate, "JavaScript" );
-            
-    }
-    
-    function stopScheduler()
-    {
-             $('#statusLight'+componentId).attr('src','img/redlight.png');
-                   window.clearInterval( scheduler );
-                   scheduler = null;  
-                   isActive = false;
-            
-    }
-    
-    function hideSliders()
-    {
-      var refresh = $('#refreshrate'+componentId).css('display');
-      var pin = $('#pinPanel'+componentId).css('display');
-      
-      if( refresh != 'none') $('#refreshrate'+componentId).toggle();
-      
-      if( pin != 'none') $('#pinPanel'+componentId).toggle();
-            
-            
-    }
+ 
+ _self.draw();
+   
 }
+
+
+
+//Stops the scheduling of data retrieval from the web server
+Component.prototype.stopScheduler = function(){
+if( this.__isActive__ == true)
+{
+  $('#statusLight'+this.__componentId__).attr('src','img/redlight.png');
+  window.clearTimeout( this.__scheduler__ );
+  this.__scheduler__ = null;  
+  this.__isActive__ = false;
+}
+}
+     
+
+//Starts the scheduling of data retrieval from the web server
+Component.prototype.startScheduler = function(){
+   var _self = this;
+   
+  if( this.__isActive__ ==false)
+   {
+      $('#statusLight'+this.__componentId__).attr('src','img/greenlight.png');
+      this.__isActive__ = true; 
+      this.__scheduler__ = window.setTimeout(function(){_self.getData();}, 
+                                              0);
+   }        
+           
+         
+ }
+
+
+ 
+//Hides the refresh and pin selector sliders
+ Component.prototype.hideSliders = function(){
+         
+      var refresh = $('#refreshRate'+this.__componentId__).css('display');
+      var pin = $('#pinPanel'+this.__componentId__).css('display');
+      
+      if( refresh != 'none') $('#refreshRate'+this.__componentId__).toggle();
+      
+      if( pin != 'none') $('#pinPanel'+this.__componentId__).toggle();   
+         
+         
+         
+ }
+ 
+ Component.prototype.getData = function(){
+        
+  var request = "R " + this.__input__ + " E";
+  var _self = this;
+  
+  $.post("proxy.php",{arduino:_self.__arduinoName__,msg:request}, function(data){
+                  
+     var response = JSON.parse( data );
+     
+     var tmpValue = parseInt( response.msg );
+     
+     if( isNaN( tmpValue ) )
+     {
+        $.gritter.add({
+                  title: _self.__componentTitle__,
+                  text: 'An error ocurred retreiving data. Retrying...',
+                  });         
+             
+     }
+     else
+     {
+       _self.update( tmpValue );             
+     }
+  })
+  .error( function() {
+       $.gritter.add({
+           title: _self.__componentTitle__,
+           text: "Unable to access webserver",
+       });
+       _self.stopScheduler();
+                  
+  })
+  .complete( function(){
+                  
+     if( _self.__isActive__ == true )
+     {
+     this.__scheduler__ = window.setTimeout(function(){_self.getData();}, 
+                                              _self.__refreshRate__);
+
+     }             
+  });
+                      
+  
+  
+        
+}
+
