@@ -114,9 +114,12 @@ h3 { font-size: 25px;}
 
 .title { font-size: 20px; color: black;  height: 30px;}
 
-.componentContainer { border:4px; border-radius: 4px;padding: 10px; width: 600px; height: 280px;margin-bottom: 10px;}
+.componentContainer { position: absolute;border:4px; border-radius: 4px;padding: 10px; width: 600px; height: 280px;margin-bottom: 10px;}
 .graph { width: 600px; height: 200px; }
-.horizontalGaugeContainer{ border:4px; border-radius: 4px;padding: 10px; width: 320px; height: 215px;margin-bottom: 10px;}
+.horizontalGaugeContainer{ border:4px; border-radius: 4px;padding: 10px; width: 320px; height: 240px;margin-bottom: 10px;}
+.verticalGaugeContainer{ border: 4px; border-radius: 4px; padding: 10px; width: 200px; height: 400px; margin-bottom: 10px;}
+.radialGaugeContainer{ border: 4px; border-radius: 4px; padding: 10px; width: 250px; height: 280px; margin-bottom: 10px;}
+
         
 //.titlebar{ height: 20px; color: #A8B4C1; margin-bottom: 20px;padding-bottom:20px}
 .close{ width: 20px; height: 20px; margin-bottom: 5px;background: url( ../img/close-icon.png);display:inline;float: right;}

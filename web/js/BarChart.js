@@ -1,12 +1,12 @@
-function LineChart( id ){
+function BarChart( id ){
         
        
       Component.call( this, id );
         
-      this.__type__ = "linechart";
+      this.__type__ = "barchart";
       this.__data__ = [];
       
-     this.__totalPoints__ = 20;
+      this.__totalPoints__ = 20;
       
       for( var i = 0; i < this.__totalPoints__; i++)
       {
@@ -15,9 +15,9 @@ function LineChart( id ){
         
 }
 
-LineChart.prototype = new Component();
+BarChart.prototype = new Component();
 
-LineChart.prototype.createContainer = function(){
+BarChart.prototype.createContainer = function(){
           
     $('#rightcolumn').append(
              '<div id="componentContainer'+this.__componentId__+'" class="componentContainer shadowed"><span class="edit title" id="componentTitle'+this.__componentId__+'">'
@@ -37,22 +37,23 @@ LineChart.prototype.createContainer = function(){
      );
 }
 
-LineChart.prototype.draw = function(){
+BarChart.prototype.draw = function(){
    
    
    this.__component__ =  $.plot( $("#component"+this.__componentId__),
                                  [this.__data__],{
-                                         series:{shadowSize: 0},
-	        yaxis:{ min: 0, max:255},
-	        xaxis:{show: false}
+                                         bars: { show: true, barWidth:0.8},
+	   
+                                         xaxis:{show:false},
+	        yaxis:{ min: 0, max:255}
    });
        
 }
 
 
 
-LineChart.prototype.update = function( updatedValue ){
-       
+BarChart.prototype.update = function( updatedValue ){
+
         this.__data__ = this.__data__.slice( 1 );
         
         this.__data__.push( updatedValue);
@@ -66,7 +67,7 @@ LineChart.prototype.update = function( updatedValue ){
         }
         
         this.__component__.setData( [res] );
-      this.__component__.setupGrid();
+        this.__component__.setupGrid();
         this.__component__.draw();
 }
 

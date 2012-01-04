@@ -52,16 +52,21 @@
 <script type="text/javascript" src="js/Component.js"></script>
 
 <script type="text/javascript" src="js/LineChart.js"></script>
+<script type="text/javascript" src="js/BarChart.js"></script>
 
 <script type="text/javascript" src="js/HorizontalGauge.js"></script>
-
+<script type="text/javascript" src="js/VerticalGauge.js"></script>
+<script type="text/javascript" src="js/RadialGauge.js"></script>
+<script type="text/javascript" src="js/PointerGauge.js"></script>
 
 
 <script>
+var components;
+
 $(document).ready( function(){
                 
-     var numComponents = 0;
-   //  var components = [];
+
+     components = [];
      
      $('#componentButton').click( function(){
                      $('#header').toggle();
@@ -74,7 +79,7 @@ $(document).ready( function(){
         btnPrev: ".prev"
     });
   
-  $('.demoComponent').css('overflow','visible');
+  //$('.demoComponent').css('overflow','visible');
                 
 
      
@@ -97,19 +102,67 @@ appendTo: 'body'
                   drop: function(event, ui){
                     var name = $(ui.draggable).attr('alt');
                    
-                    if( name == "newgraph")
+                    if( name == "linechart")
                     {
-                      var tmp= new LineChart(++numComponents);
+                      var id = generateId();
+                      var tmp= new LineChart( id );
+                     
                       tmp.init();
+                      components[ id ] = tmp;
+                      saveComponent( id );
                       
                       // tmp.createContainer(numComponents);
                      // var tmp = new LineChart( ++numComponents );
                      // tmp.draw();
                     }
                     else if( name == "horizontalgauge" )
-                    {
-                        var tmp = new HorizontalGauge( ++numComponents );
+                    {   var id = generateId();
+                            
+                        var tmp = new HorizontalGauge( id);
                         tmp.init();
+                        components[ id ] = tmp;
+                        saveComponent( id );
+                        
+                    }
+                    else if( name == "barchart" )
+                    {
+                      var id= generateId();
+                    
+                      var tmp = new BarChart( id );
+                      tmp.init();
+                     components[ id ] = tmp;
+                      saveComponent( id );
+                            
+                    }
+                    else if( name == "verticalgauge" )
+                    {
+                      var id= generateId();
+                    
+                      var tmp = new VerticalGauge( id );
+                      tmp.init();
+                     components[ id ] = tmp;
+                      saveComponent( id );
+                            
+                    }
+                    else if( name == "radialgauge" )
+                    {
+                      var id= generateId();
+                    
+                      var tmp = new RadialGauge( id );
+                      tmp.init();
+                     components[ id ] = tmp;
+                      saveComponent( id );
+                            
+                    }
+                    else if( name == "pointergauge" )
+                    {
+                      var id= generateId();
+                    
+                      var tmp = new PointerGauge( id );
+                      tmp.init();
+                     components[ id ] = tmp;
+                      saveComponent( id );
+                            
                     }
                   }
   });
@@ -132,7 +185,70 @@ var radial1;
                                                           new steelseries.rgbaColor(200, 0, 0, 1),
                                                           new steelseries.rgbaColor(200, 0, 0, 1) ]);
    
-			
+function generateId()
+{
+   var tmpNum = 0;
+
+   while( typeof components[tmpNum] !== 'undefined' ||
+            components[tmpNum] != null )
+       tmpNum = Math.floor( Math.random() * 10000); 
+       
+
+   return tmpNum;
+        
+}
+	
+function saveComponent( componentId )
+{
+    var tmpComponent = components[ componentId ];
+    
+    $('#footer').append( components[componentId].getId() );
+    $('#footer').append( components[componentId].getArduinoName() );
+    $('#footer').append( components[componentId].getComponentTitle() );    
+    
+    var tmp =  components[componentId].getIsActive();
+    if( tmp == true )
+    {
+            
+          $('#footer').append( "true");
+    }
+    else
+    {
+            $('#footer').append( "false");
+    }
+            
+  /*  $('#footer').append( components[componentId].getRefreshRate() );
+    $('#footer').append( components[componentId].getInput() );
+    $('#footer').append( components[componentId].getType() );
+    $('#footer').append( components[componentId].offsetLeft() );
+    $('#footer').append( components[componentId].offsetTop() );
+    $('#footer').append( components[componentId].getZIndex() );*/
+    
+    $.post( "persist.php", 
+            {
+             componentId: components[componentId].getId(),
+             arduinoName: components[componentId].getArduinoName(),
+             componentTitle: components[componentId].getComponentTitle(),
+             isActive: components[componentId].getIsActive(),
+             refreshRate: components[componentId].getRefreshRate(),
+             input: components[componentId].getInput(),
+             type: components[componentId].getType(),
+             left: components[componentId].offsetLeft(),
+             top:components[componentId].offsetTop(),
+             zindex:components[componentId].getZIndex()
+            
+            
+            
+            },
+            function( data ){
+                    
+            //  $('#footer').append( data );               
+                    
+            }
+    );       
+    
+}
+
 });
 </script>
 </head>
@@ -157,10 +273,14 @@ var radial1;
 
 
     <ul>
-        <li><img src="img/examples/graph.png"  class="demoComponent" alt="newgraph" width="200" height="100"/ ></li>
+        <li><img src="img/examples/linechart.png"  class="demoComponent" alt="linechart" width="200" height="100"/ ></li>
+        <li><img src="img/examples/barchart.png" class="demoComponent" alt="barchart" width="200" height="100"/></li>
        <li ><img src="img/examples/horizontalgauge1.png" class="demoComponent" alt="horizontalgauge" width="200" height="100" /></li>
-        <li class="demoComponent"><img src="someimage" alt="dsds" width="200" height="100" ></li>
-        <li class="demoComponent"><img src="someimage" alt="dsdsad" width="200" height="100" ></li>
+       <li ><img src="img/examples/verticalgauge.png" class="demoComponent" alt="verticalgauge" width="44" height="100" /></li>
+       <li ><img src="img/examples/radialgauge.png" class="demoComponent" alt="radialgauge" width="100" height="100" /></li>
+       <li ><img src="img/examples/pointergauge.png" class="demoComponent" alt="pointergauge" width="100" height="100" /></li>
+
+
     </ul>
    
 	</div>
@@ -200,14 +320,14 @@ var radial1;
 		 <!-- Begin Footer -->
 		 <div id="footer">
 		       
-			   <canvas id="canvasRadial1" width="201" height="201">No canvas in your browser...sorry...</canvas>		
+			
 			    
 	     </div>
 		 <!-- End Footer -->
 		 
    </div>
    <!-- End Wrapper -->
-   <div id="status" style="background-color: black"></div>
+  
   
    
 

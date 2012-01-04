@@ -8,10 +8,90 @@ function Component( id )
   this.__refreshRate__=1000;
   this.__input__=0;
   this.__component__=null;
+  this.__type__="";
   
  
 }
 
+Component.prototype.getId = function(){
+      return this.__componentId__;       
+}
+
+Component.prototype.setId = function( id ){
+       this.__componentId__ = id;        
+}
+
+
+Component.prototype.getArduinoName = function(){
+      return this.__arduinoName__;       
+}
+
+Component.prototype.setArduinoName = function( name ){
+      this.__arduinoName__ = name;       
+        
+}
+
+Component.prototype.getComponentTitle = function(){
+      return this.__componentTitle__;       
+}
+
+Component.prototype.setComponentTitle = function( title ){
+      this.__componentTitle__ = title;       
+}
+
+Component.prototype.getIsActive = function(){
+       return this.__isActive__;
+}
+
+Component.prototype.setIsActive = function( active ){
+        this.__isActive__ = active;        
+        
+}
+
+Component.prototype.getRefreshRate = function(){
+     return this.__refreshRate__;       
+}
+
+Component.prototype.setRefreshRate = function( rate ){
+         this.__refreshRate__ = rate;        
+        
+}
+
+Component.prototype.getInput = function(){
+     return this.__input__;       
+        
+}
+       
+Component.prototype.setInput = function( pin ){
+     this.__input__ = pin;        
+        
+}
+
+Component.prototype.getType = function(){
+    return this.__type__;       
+        
+}
+
+
+Component.prototype.offsetLeft = function(){
+    
+    var offset = $('#componentContainer'+this.__componentId__).offset();    
+    return offset.left;       
+        
+}
+
+Component.prototype.offsetTop = function(){
+    
+    var offset = $('#componentContainer'+this.__componentId__).offset();    
+  
+    return offset.top;       
+}
+
+Component.prototype.getZIndex = function(){
+        
+        
+    return $('#componentContainer'+this.__componentId__).css("z-index");        
+}
 
 
 
@@ -34,8 +114,13 @@ Component.prototype.init = function(){
             _self.stopScheduler();
      }
      
+     components[ _self.__componentId__] = null;
      
-     $('#componentContainer'+_self.__componentId__).remove();   
+     $('#componentContainer'+_self.__componentId__).remove();  
+     $.post( "remove.php",{componentId:_self.__componentId__}, function( data ){
+                           
+                     
+     });
          
    });
     

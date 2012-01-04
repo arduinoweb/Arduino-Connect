@@ -1,16 +1,16 @@
-function HorizontalGauge( id ){
+function VerticalGauge( id ){
         
    Component.call( this, id );       
-   this.__type__="horizontalgauge";
+   this.__type__="verticalgauge";
    
 }
 
-HorizontalGauge.prototype = new Component();
+VerticalGauge.prototype = new Component();
 
-HorizontalGauge.prototype.createContainer = function() {
+VerticalGauge.prototype.createContainer = function() {
         
    $('#rightcolumn').append(
-             '<div id="componentContainer'+this.__componentId__+'" class="horizontalGaugeContainer shadowed"><span class="edit title" id="componentTitle'+this.__componentId__+'">'
+             '<div id="componentContainer'+this.__componentId__+'" class="verticalGaugeContainer shadowed" ><span class="edit title" id="componentTitle'+this.__componentId__+'">'
              + this.__componentTitle__ +'</span><span id="close'+this.__componentId__+'" class="close"></span><div><canvas id="component'+this.__componentId__+'">'+
              
              '</canvas></div><div  style="margin-top: 20px"><img id="refreshIcon'+this.__componentId__+'" alt="refresh rate icon" title="click to edit refresh rate" src="img/clock.png" />'+
@@ -28,12 +28,11 @@ HorizontalGauge.prototype.createContainer = function() {
         
 }
 
-HorizontalGauge.prototype.draw = function(){
+VerticalGauge.prototype.draw = function(){
 
  this.__component__ = new steelseries.Linear('component'+this.__componentId__, {
-                        width: 320,
-                        height: 140,
-                        lcdVisible: true
+                      
+                        slcdVisible: true
                             });
         
         this.__component__.setFrameDesign(steelseries.FrameDesign.METAL);
@@ -43,7 +42,7 @@ HorizontalGauge.prototype.draw = function(){
 }
 
 
-HorizontalGauge.prototype.update = function( value ) {
+VerticalGauge.prototype.update = function( value ) {
 
  this.__component__.setValueAnimated( value );
 

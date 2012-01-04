@@ -1,16 +1,16 @@
-function HorizontalGauge( id ){
+function RadialGauge( id ){
         
    Component.call( this, id );       
-   this.__type__="horizontalgauge";
+   this.__type__="radialgauge";
    
 }
 
-HorizontalGauge.prototype = new Component();
+RadialGauge.prototype = new Component();
 
-HorizontalGauge.prototype.createContainer = function() {
+RadialGauge.prototype.createContainer = function() {
         
    $('#rightcolumn').append(
-             '<div id="componentContainer'+this.__componentId__+'" class="horizontalGaugeContainer shadowed"><span class="edit title" id="componentTitle'+this.__componentId__+'">'
+             '<div id="componentContainer'+this.__componentId__+'" class="radialGaugeContainer shadowed"><span class="edit title" id="componentTitle'+this.__componentId__+'">'
              + this.__componentTitle__ +'</span><span id="close'+this.__componentId__+'" class="close"></span><div><canvas id="component'+this.__componentId__+'">'+
              
              '</canvas></div><div  style="margin-top: 20px"><img id="refreshIcon'+this.__componentId__+'" alt="refresh rate icon" title="click to edit refresh rate" src="img/clock.png" />'+
@@ -28,11 +28,10 @@ HorizontalGauge.prototype.createContainer = function() {
         
 }
 
-HorizontalGauge.prototype.draw = function(){
+RadialGauge.prototype.draw = function(){
 
- this.__component__ = new steelseries.Linear('component'+this.__componentId__, {
-                        width: 320,
-                        height: 140,
+ this.__component__ = new steelseries.RadialBargraph('component'+this.__componentId__, {
+                 gaugeType: steelseries.GaugeType.TYPE4,
                         lcdVisible: true
                             });
         
@@ -43,7 +42,7 @@ HorizontalGauge.prototype.draw = function(){
 }
 
 
-HorizontalGauge.prototype.update = function( value ) {
+RadialGauge.prototype.update = function( value ) {
 
  this.__component__.setValueAnimated( value );
 
