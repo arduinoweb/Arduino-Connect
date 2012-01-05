@@ -39,7 +39,11 @@ $(document).ready( function(){
                            
                            $('#'+response[i]).draggable({
                                            helper: 'clone',
-                                           revert: 'true'
+                                           revert: 'true',
+                                           scroll: false,
+                                           containment: 'window',
+                                           appendTo: 'body'
+                                           
                            });
                                    
                                  

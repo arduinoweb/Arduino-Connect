@@ -42,7 +42,7 @@
 <script type="text/javascript" src="js/jquery/js/jquery-ui-1.8.16.custom.min.js"></script>
 
 <script type="text/javascript" src = "js/arduinolist.js"></script>
-<script type="text/javascript" src="js/jcarousellite_1.0.1.min.js"></script>
+
 <script type="text/javascript" src="js/flot/jquery.flot.min.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.js"></script>
 <script type="text/javascript" src="js/gritter/js/jquery.gritter.js"></script>
@@ -74,10 +74,7 @@ $(document).ready( function(){
                      return false;
      });
     
-     $(".componentScroller").jCarouselLite({
-        btnNext: ".next",
-        btnPrev: ".prev"
-    });
+    
   
   //$('.demoComponent').css('overflow','visible');
                 
@@ -248,7 +245,22 @@ function saveComponent( componentId )
     );       
     
 }
+$('#accordion').accordion({fillSpace: true});
+$('#components').dialog( {autoOpen: false });
 
+ $('#componentButton').button();
+ $('#componentButton').click( function(){
+                 
+    if( $('#components').dialog("isOpen") )
+    {
+       $('#components').dialog("close");
+    }
+    else
+    {
+       $('#components').dialog("open");       
+    }
+         
+ });
 });
 </script>
 </head>
@@ -260,11 +272,11 @@ function saveComponent( componentId )
    	 <!-- Begin Navigation -->
          <div id="navigation" class="shadowed">
 		 
-		    <a id="componentButton" href="#">Show/Hide</a> 
+		    <a id="componentButton" href="#"><img src="img/tools.png" /></a> 
 		 </div>
 		 <!-- End Navigation -->
          <!-- Begin Header -->
-         <div id="header">
+       <!--  <div id="header">
 		 
  
 
@@ -272,42 +284,31 @@ function saveComponent( componentId )
          <div class="componentScroller shadowed"  style="width: 1000px;border: 1px solid black; padding:5px">
 
 
-    <ul>
-        <li><img src="img/examples/linechart.png"  class="demoComponent" alt="linechart" width="200" height="100"/ ></li>
-        <li><img src="img/examples/barchart.png" class="demoComponent" alt="barchart" width="200" height="100"/></li>
-       <li ><img src="img/examples/horizontalgauge1.png" class="demoComponent" alt="horizontalgauge" width="200" height="100" /></li>
-       <li ><img src="img/examples/verticalgauge.png" class="demoComponent" alt="verticalgauge" width="44" height="100" /></li>
-       <li ><img src="img/examples/radialgauge.png" class="demoComponent" alt="radialgauge" width="100" height="100" /></li>
-       <li ><img src="img/examples/pointergauge.png" class="demoComponent" alt="pointergauge" width="100" height="100" /></li>
-
-
-    </ul>
+   
    
 	</div>
 	<div style="position:absolute;display: inline; left:1040px; top: 100px;"><button class="prev">>></button></div>		   
 
- </div>
+ </div>-->
 		 <!-- End Header -->
 		 
 	
 		 
 		 <!-- Begin Left Column -->
-		 <div id="leftcolumn" class="ui-widget ui-content ui-corner-all shadowed"
+		<!-- <div id="leftcolumn" class="ui-widget ui-content ui-corner-all shadowed"
 		                            style="margin:0px; padding:0px; width: 200px;">
-		   <h3 class="ui-widget-header">Arduinos
-		   <img id="arduinoListRefresh" 
-		      src="img/reload.png" alt="refresh list of Arduinos icon"
-		                   title="refresh list of Arduinos"/></h3>
+		   <h3 class="ui-widget-header">Arduinos-->
 		 
-		   <div>
+		 
+		<!--   <div>
 		      <ul id="arduinoList">
 		        <li class="arduino greyblue">none available</li>
 		       
 		     </ul>
-		  </div>
+		  </div>-->
 		 
 		 
-		 </div>
+		 <!--</div>-->
 		 <!-- End Left Column -->
 		 
 		 <!-- Begin Right Column -->
@@ -327,9 +328,39 @@ function saveComponent( componentId )
 		 
    </div>
    <!-- End Wrapper -->
-  
-  
+   <div id="components" style="height: 600px"> 
+     <div id="accordion"> 
+     <h3><a href="#">Arduinos  <img id="arduinoListRefresh" 
+		      src="img/reload.png" alt="refresh list of Arduinos icon"
+		                   title="refresh list of Arduinos"/></a></h3>
+     <div>
+		      <ul id="arduinoList">
+		        <li class="arduino greyblue">none available</li>
+		       
+		     </ul>
+		  </div>
+     <h3><a href="#">Charts</a></h3>
+        <div>
+        <ul>
+        <li><img src="img/examples/linechart.png"  class="demoComponent" alt="linechart" width="200" height="100"/></li> 
+        <li><img src="img/examples/barchart.png" class="demoComponent" alt="barchart" width="200" height="100"/></li>
+        </ul>
+        </div>
+        <h3><a href="#">Gauges</a></h3>
+        <div>
+        <ul>
+       <li><img src="img/examples/horizontalgauge1.png" class="demoComponent" alt="horizontalgauge" width="200" height="100" /></li>
+       <li><img src="img/examples/verticalgauge.png" class="demoComponent" alt="verticalgauge" width="44" height="100" /></li>
+       <li><img src="img/examples/radialgauge.png" class="demoComponent" alt="radialgauge" width="100" height="100" /></li>
+       <li><img src="img/examples/pointergauge.png" class="demoComponent" alt="pointergauge" width="100" height="100" /></li>
+       </li>
+       </div>
+       
+    </div>   
+
    
+   
+   </div>
 
 </body>
 </html>
