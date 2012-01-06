@@ -117,6 +117,8 @@ public class NetworkRegister implements Runnable{
                       registrationResult += data;
                     }
                     
+                   // reader.close();
+                   // reader=null;
                    success = registrationResult.equals( "OK" );
                    
             }catch( RuntimeException re ){

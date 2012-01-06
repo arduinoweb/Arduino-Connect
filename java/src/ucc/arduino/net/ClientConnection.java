@@ -15,11 +15,11 @@ import java.net.SocketTimeoutException;
 
 public class ClientConnection  implements Runnable{
    /** The inputstream side of the clients socket */
-   private final BufferedReader DATA_IN;
+   private  BufferedReader DATA_IN;
    /** The outputstream side of the clients socket */
-   private final PrintWriter    DATA_OUT;
+   private  PrintWriter    DATA_OUT;
    /** The clients socket */
-   private final Socket         SOCKET;
+   private  Socket         SOCKET;
    /** The message received from the client via the inputstream */
    private String message;
    /** Indicates whether to keep the thread alive or not*/
@@ -68,6 +68,11 @@ public class ClientConnection  implements Runnable{
 	      System.err.println( ioe );
 	   }
     
+      DATA_OUT = null;
+      DATA_IN = null;
+     // DATA_OUT = null;
+      SOCKET = null;
+      message = null;
       stayAlive = false;
    }
    
@@ -94,9 +99,12 @@ public class ClientConnection  implements Runnable{
       System.err.println( ioe.getMessage() );   
       close();
    }
-   
+ //  stayAlive = false;
 
- while( stayAlive ) { };
+ while( stayAlive ) { 
+ 
+ Thread.yield();
+ }
 
    
  }

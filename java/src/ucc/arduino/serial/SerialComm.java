@@ -23,7 +23,7 @@ public class SerialComm implements Runnable
     /** The size of the buffer to use when reading from Arduino */
     private final static int  READ_BUFFER_SIZE = 256;
     /** The buffer to use when reading from Arduino */
-    private final static byte[]  READ_BUFFER =  new byte[ READ_BUFFER_SIZE ];
+    private  static byte[]  READ_BUFFER =  new byte[ READ_BUFFER_SIZE ];
 
     /** The amount of time to wait between each byte received */
     private int serialTimeout;
@@ -84,7 +84,10 @@ public class SerialComm implements Runnable
           {
             System.out.println("Error: Only serial ports are handled by this example.");
           }
-        }     
+          commPort = null;
+        }
+        
+        portIdentifier = null;
     }
 	
     /** Terminates the thread */
@@ -168,6 +171,9 @@ public class SerialComm implements Runnable
                        }
 
                     }catch( NumberFormatException nfe ) { }
+                    
+                    message = null;
+                    parts = null;
                }
              
 	      }
@@ -192,6 +198,7 @@ public class SerialComm implements Runnable
                   writeMsg[ 1 ] = Protocol.NULL_BYTE;
                   writeMsg[ 2 ] = Protocol.NULL_BYTE;
                   writeMsg[ 3 ] = Protocol.NULL_BYTE;
+                  pin = null;
 	       }
 
              }
@@ -199,6 +206,9 @@ public class SerialComm implements Runnable
 
           }catch( IOException ioe ){ System.err.println( ioe ); }
 
+       
+          Thread.yield();
+          
       }	// End of While Loop
 	close();
     }

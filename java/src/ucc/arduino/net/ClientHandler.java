@@ -32,7 +32,8 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection>
   {
      ClientConnection clientConnection = null;
      String clientReply;
-     
+     String msg = null;
+     String[] msgParts = null;
 	 
      while( stayAlive )
      {
@@ -41,7 +42,7 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection>
         // Check if we have any outstanding write requests in the queue
 	if( ( clientConnection = this.poll() ) != null )
         {
-          String msg = clientConnection.getMessage();
+          msg = clientConnection.getMessage();
           //System.out.println("Message: " + msg );
           
           // There's a chance we could have a client but the
@@ -49,7 +50,7 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection>
           // or the client has connected but not sent anything yet.
           if( msg != null)
           {
-            String[] msgParts = msg.split(" " );
+             msgParts = msg.split(" " );
             System.out.println("Message parts length: " + msgParts.length);
             // Any message has a minimum length and end of message marker
 	    if( msgParts.length > 2 && 
@@ -67,7 +68,8 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection>
            }  
             clientConnection.sendMessage( clientReply );
 
-	    clientConnection.close();
+	    //clientConnection.close();
+	    
 	  
          }
          else if( clientConnection.isAlive() )
@@ -78,9 +80,12 @@ public class ClientHandler extends ConcurrentLinkedQueue<ClientConnection>
            this.add( clientConnection);
          }
 	    
-	
+	clientConnection = null;
+	msg = null;
+	msgParts = null;
         }
-	 
+       // System.gc();
+	 Thread.yield();
      }
      
   }

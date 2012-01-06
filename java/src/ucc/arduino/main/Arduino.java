@@ -120,6 +120,8 @@ public class Arduino{
                 EXECUTOR_SERVICE.execute( tmp );
                 
                 CLIENT_HANDLER.add( tmp  );
+                client = null;
+                tmp = null;
 		 
 	}catch( IOException ioe ){
 		System.err.println( ioe );
