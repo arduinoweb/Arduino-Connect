@@ -44,6 +44,7 @@
 <script type="text/javascript" src = "js/arduinolist.js"></script>
 
 <script type="text/javascript" src="js/flot/jquery.flot.min.js"></script>
+<script type="text/javascript" src="js/flot/jquery.flot.threshold.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.js"></script>
 <script type="text/javascript" src="js/gritter/js/jquery.gritter.js"></script>
    <script src="js/tween-min.js"></script>
@@ -58,6 +59,8 @@
 <script type="text/javascript" src="js/VerticalGauge.js"></script>
 <script type="text/javascript" src="js/RadialGauge.js"></script>
 <script type="text/javascript" src="js/PointerGauge.js"></script>
+<script type="text/javascript" src="js/Lcd.js"></script>
+
 
 
 <script>
@@ -91,7 +94,7 @@ appendTo: 'body'
              
                   
   });
-  
+
   
   $('#rightcolumn').droppable({
                   
@@ -156,6 +159,16 @@ appendTo: 'body'
                       var id= generateId();
                     
                       var tmp = new PointerGauge( id );
+                      tmp.init();
+                     components[ id ] = tmp;
+                      saveComponent( id );
+                            
+                    }
+                     else if( name == "lcd" )
+                    {
+                      var id= generateId();
+                    
+                      var tmp = new Lcd( id );
                       tmp.init();
                      components[ id ] = tmp;
                       saveComponent( id );
@@ -239,14 +252,37 @@ function saveComponent( componentId )
             },
             function( data ){
                     
-            //  $('#footer').append( data );               
+               data = $.trim( data );
+               
+               if( data != "ok" )
+               {
+                    $.gritter.add({
+                    title: "Component Creation Error",
+                  text: "unable to access database to create component"
+                  });      
+                       
+                     $('#componentContainer'+componentId).remove();
+                     components[ _self.__componentId__] = null;
+                       
+               }
                     
             }
-    );       
+    )
+    .error( function(){
+            $.gritter.add({
+                    title: "Component Creation Error",
+                  text: "unable to access web server to create component"
+                  });      
+                       
+                     $('#componentContainer'+componentId).remove();
+                     components[ _self.__componentId__] = null;          
+                    
+                    
+    });
     
 }
 $('#accordion').accordion({fillSpace: true});
-$('#components').dialog( {autoOpen: false });
+$('#components').dialog( {autoOpen: false, position:"left" });
 
  $('#componentButton').button();
  $('#componentButton').click( function(){
@@ -270,10 +306,10 @@ $('#components').dialog( {autoOpen: false });
    <!-- Begin Wrapper -->
    <div id="wrapper">
    	 <!-- Begin Navigation -->
-         <div id="navigation" class="shadowed">
+        <!-- <div id="navigation" class="shadowed">
 		 
-		    <a id="componentButton" href="#"><img src="img/tools.png" /></a> 
-		 </div>
+		    
+		 </div>-->
 		 <!-- End Navigation -->
          <!-- Begin Header -->
        <!--  <div id="header">
@@ -295,40 +331,10 @@ $('#components').dialog( {autoOpen: false });
 	
 		 
 		 <!-- Begin Left Column -->
-		<!-- <div id="leftcolumn" class="ui-widget ui-content ui-corner-all shadowed"
-		                            style="margin:0px; padding:0px; width: 200px;">
-		   <h3 class="ui-widget-header">Arduinos-->
-		 
-		 
-		<!--   <div>
-		      <ul id="arduinoList">
-		        <li class="arduino greyblue">none available</li>
-		       
-		     </ul>
-		  </div>-->
-		 
-		 
-		 <!--</div>-->
-		 <!-- End Left Column -->
-		 
-		 <!-- Begin Right Column -->
-		 <div id="rightcolumn" class="shadowed">
-		       
-	        
-		 </div>
-		 <!-- End Right Column -->
-		 
-		 <!-- Begin Footer -->
-		 <div id="footer">
-		       
-			
-			    
-	     </div>
-		 <!-- End Footer -->
-		 
-   </div>
-   <!-- End Wrapper -->
-   <div id="components" style="height: 600px"> 
+		 <div id="leftcolumn" >
+		   <!--<h3 class="ui-widget-header">Arduinos-->
+		 <a id="componentButton" href="#"><img src="img/tools.png" /></a> 
+		  <div id="components" style="height: 500px"> 
      <div id="accordion"> 
      <h3><a href="#">Arduinos  <img id="arduinoListRefresh" 
 		      src="img/reload.png" alt="refresh list of Arduinos icon"
@@ -353,6 +359,8 @@ $('#components').dialog( {autoOpen: false });
        <li><img src="img/examples/verticalgauge.png" class="demoComponent" alt="verticalgauge" width="44" height="100" /></li>
        <li><img src="img/examples/radialgauge.png" class="demoComponent" alt="radialgauge" width="100" height="100" /></li>
        <li><img src="img/examples/pointergauge.png" class="demoComponent" alt="pointergauge" width="100" height="100" /></li>
+       <li><img src="img/examples/lcd.png" class="demoComponent" alt="lcd" /></li>
+
        </li>
        </div>
        
@@ -362,5 +370,35 @@ $('#components').dialog( {autoOpen: false });
    
    </div>
 
+		 
+		<!--   <div>
+		      <ul id="arduinoList">
+		        <li class="arduino greyblue">none available</li>
+		       
+		     </ul>
+		  </div>-->
+		 
+		 
+		 </div>
+		 <!-- End Left Column -->
+		 
+		 <!-- Begin Right Column -->
+		 <div id="rightcolumn" class="shadowed">
+		       
+	        
+		 </div>
+		 <!-- End Right Column -->
+		 
+		 <!-- Begin Footer -->
+		 <div id="footer">
+		       
+			
+			    
+	     </div>
+		 <!-- End Footer -->
+		 
+   </div>
+   <!-- End Wrapper -->
+  
 </body>
 </html>

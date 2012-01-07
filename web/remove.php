@@ -30,11 +30,14 @@
  $safeId = String::safeSql( $_POST['componentId'] );
  
  $query = "DELETE FROM components WHERE id={$safeId}";
+ $result = "error";
  
- Db::connect();
+ if( Db::connect() && Db::query( $query ) )
+ {
+     $result = "ok";       
+         
+ }
  
- Db::query( $query );
- 
- echo $query;
- 
+  echo $result;
+
 ?>

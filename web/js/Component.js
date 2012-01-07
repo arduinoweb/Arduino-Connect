@@ -2,7 +2,7 @@ function Component( id )
 {
   this.__arduinoName__="none";
   this.__componentId__=id;
-  this.__componentTitle__="click to edit";
+  this.__componentTitle__= id;
   this.__isActive__=false;
   this.__scheduler__=null;
   this.__refreshRate__=1000;
@@ -93,7 +93,14 @@ Component.prototype.getZIndex = function(){
     return $('#componentContainer'+this.__componentId__).css("z-index");        
 }
 
-
+Component.prototype.message = function( msg){
+        
+    $.gritter.add({
+                    title: "ID: " + this.__componentId__,
+                  text: msg,
+                  });          
+        
+}
 
 Component.prototype.init = function(){
 
@@ -109,28 +116,50 @@ Component.prototype.init = function(){
    //Make the component closeable
     $('#close'+_self.__componentId__).click( function( ){
          
-     if( _self.__isActive__)
-     {
-            _self.stopScheduler();
-     }
+    
      
-     components[ _self.__componentId__] = null;
+     //components[ _self.__componentId__] = null;
      
-     $('#componentContainer'+_self.__componentId__).remove();  
+     //$('#componentContainer'+_self.__componentId__).remove();  
      $.post( "remove.php",{componentId:_self.__componentId__}, function( data ){
-                           
+                  data = $.trim( data );
+                  
+                  if( data == "ok")
+                  {
+                     if( _self.__isActive__)
+                     {
+                       _self.stopScheduler();
+                     }
+                    
+                    $('#componentContainer'+_self.__componentId__).remove(); 
+                    components[ _self.__componentId__] = null;
+                  }
+                  else
+                  {
+                    _self.message(
+                            "currently unable to delete component" );
+                    
+                          
+                  }
+     })
+     .error( function(){
+          _self.message(
+                            "currently unable to delete component" );
+                               
+                     
                      
      });
          
    });
     
-    
+ 
   //Make the components title editable
-  $('#componentTitle'+_self.__componentId__).editable( function( value,settings){
+ /* $('#componentTitle'+_self.__componentId__).editable( function( value,settings){
                        _self.__componentTitle__ = value;
+                       _self.setTitle( );
                        return value;
                        
-  });
+  });*/
   
   //Create the slider for adjusting refresh rate
   $('#refreshSlider'+_self.__componentId__).slider({
@@ -139,13 +168,53 @@ Component.prototype.init = function(){
          max: 60,
          slide: function( event, ui ){
                $('#value'+_self.__componentId__).html( ui.value +"s" );
-                   _self.__refreshRate__ = ui.value * 1000;
                                
+                },
+                stop: function( event, ui ){
+                    var tmp = ui.value * 1000;
+                    if( tmp != _self.__refreshRate__ )
+                    {
+                         //_self.__refreshRate__ = tmp;
+                         
+                         $.post( "update.php",
+                                 {componentId : _self.__componentId__, refreshRate: tmp},
+                                 function( data ){
+                                     
+                                     data = $.trim( data );
+                                     if( data == "error" )
+                                     {
+                                          _self.message( 
+                                          "an error occurred updating the database");
+                                        
+                                        
+                                        $('#value'+_self.__componentId__).html( 
+                                               (_self.__refreshRate__/1000) +"s" );
+                                        
+                                        $('#refreshSlider'+_self.__componentId__).slider(
+                                                "option","value", (_self.__refreshRate__/1000));
+                                             
+                                     }
+                                     else
+                                     {
+                                        _self.__refreshRate__ = tmp;       
+                                             
+                                     }
+                                         
+                                 })
+                         .error( function(){
+                                 _self.message( 
+                                          "an error occurred updating the database");          
+                                         
+                         });
+                            
+                    }
+                        
                 }
     });
     
   //Make the icon clickabel to show/hide the refresh slider
   $('#refreshIcon'+_self.__componentId__).click( function(){
+                
      $('#refreshRate'+_self.__componentId__).toggle();  
    
          if( $(this).css('display') != 'none' &&
@@ -292,10 +361,8 @@ Component.prototype.startScheduler = function(){
      
      if( isNaN( tmpValue ) )
      {
-        $.gritter.add({
-                  title: _self.__componentTitle__,
-                  text: 'An error ocurred retreiving data. Retrying...',
-                  });         
+         _self.message(  "An error ocurred retreiving data. Retrying..."); 
+              
              
      }
      else
@@ -304,10 +371,9 @@ Component.prototype.startScheduler = function(){
      }
   })
   .error( function() {
-       $.gritter.add({
-           title: _self.__componentTitle__,
-           text: "Unable to access webserver",
-       });
+                  
+       _self.message("Unable to access webserver");           
+      
        _self.stopScheduler();
                   
   })

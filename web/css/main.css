@@ -35,14 +35,15 @@ body {
 #leftcolumn { 
  color: #333;
  border: 1px solid #ccc;
-  border-bottom-width: 10px;
-  border-bottom-color: #A8B4C1;
+//  border-bottom-width: 10px;
+//  border-bottom-color: #A8B4C1;
  background: #FFFFF;
  margin: 0px 0px 0px 0px;
  padding: 10px;
  //height: 325px;
- width: 200px;
+ width: 55px;
  float: left;
+ margin-top:20px;
 }
 #rightcolumn { 
  float: right;
@@ -51,6 +52,7 @@ body {
 
  background: #FFFFF;
  margin: 0px 0px 0px 0px;
+ margin-top: 20px;
  padding: 10px;
 // height: 350px;
  width: 1020px;
@@ -110,6 +112,7 @@ h3 { font-size: 25px;}
 .horizontalGaugeContainer{ border:4px; border-radius: 4px;padding: 10px; width: 320px; height: 240px;margin-bottom: 10px;}
 .verticalGaugeContainer{ border: 4px; border-radius: 4px; padding: 10px; width: 200px; height: 400px; margin-bottom: 10px;}
 .radialGaugeContainer{ border: 4px; border-radius: 4px; padding: 10px; width: 250px; height: 280px; margin-bottom: 10px;}
+.lcdGaugeContainer{ border: 4px; border-radius: 4px; padding: 10px; width: 250px; height: 130px; margin-bottom: 10px;}
 
         
 //.titlebar{ height: 20px; color: #A8B4C1; margin-bottom: 20px;padding-bottom:20px}

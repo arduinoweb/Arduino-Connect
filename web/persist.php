@@ -40,15 +40,18 @@
  $safeTop = String::safeSql( $_POST['top'] );
  $safeZIndex = String::safeSql( $_POST['zindex'] );
  
+ $result = "error";
+ 
  $query = "INSERT INTO components VALUES({$safeId}, '{$safeComponentTitle}',"
  ."'{$safeIsActive}',{$safeRefreshRate},{$safeInput},'{$safeType}',"
  ."{$safeLeft}, {$safeTop},'{$safeZIndex}','{$safeArduinoName}')";
  
- Db::connect();
+ if( Db::connect() && Db::query( $query ) )
+ {
+      $result = "ok";
+      
+ }
  
- Db::query( $query );
- echo $query;
-                                                 
- 
+ echo $result;                                               
 
 ?>

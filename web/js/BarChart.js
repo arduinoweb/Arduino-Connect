@@ -5,8 +5,10 @@ function BarChart( id ){
         
       this.__type__ = "barchart";
       this.__data__ = [];
-      
+     
       this.__totalPoints__ = 20;
+      this.__minValue__ = 0;
+      this.__maxValue__=255;
       
       for( var i = 0; i < this.__totalPoints__; i++)
       {
@@ -20,8 +22,7 @@ BarChart.prototype = new Component();
 BarChart.prototype.createContainer = function(){
           
     $('#rightcolumn').append(
-             '<div id="componentContainer'+this.__componentId__+'" class="componentContainer shadowed"><span class="edit title" id="componentTitle'+this.__componentId__+'">'
-             + this.__componentTitle__ +'</span><span id="close'+this.__componentId__+'" class="close"></span><div id="component'+this.__componentId__+'" class="graph">'+
+             '<div id="componentContainer'+this.__componentId__+'" class="componentContainer shadowed"><span class="edit title" id="componentTitle'+this.__componentId__+'"><img id="statusLight'+this.__componentId__+'" src="img/redlight.png" style="width: 20px; height:20px; float:left" /></span><span id="close'+this.__componentId__+'" class="close"></span><br/><div id="component'+this.__componentId__+'" class="graph">'+
              
              '</div><div  style="margin-top: 20px"><img id="refreshIcon'+this.__componentId__+'" alt="refresh rate icon" title="click to edit refresh rate" src="img/clock.png" />'+
              
@@ -30,7 +31,7 @@ BarChart.prototype.createContainer = function(){
              
              '<div class="inputs" ><span id="inputArea'+this.__componentId__+'"></span><div id="pinPanel'+this.__componentId__+'" class="pinPanel"><label id="pinValue'+this.__componentId__+'">Pin 0</label><div id="pinSlider'+this.__componentId__+'"></div></div></div>'
              
-             +'<img id="statusLight'+this.__componentId__+'" src="img/redlight.png" style="width: 20px; height:20px; float:right" /></div>'
+             +'</div>'
       
              
              
@@ -41,11 +42,15 @@ BarChart.prototype.draw = function(){
    
    
    this.__component__ =  $.plot( $("#component"+this.__componentId__),
-                                 [this.__data__],{
-                                         bars: { show: true, barWidth:0.8},
-	   
+           [this.__data__],{
+                   bars: { show: true, barWidth:0.8},
+	                                 color: "#000",
+	                        
                                          xaxis:{show:false},
-	        yaxis:{ min: 0, max:255}
+	        yaxis:{ min: this.__minValue__, max:this.__maxValue__},
+	        grid: {
+            backgroundColor: { colors: ["#FFF", "#eee"] }
+        }
    });
        
 }
@@ -67,7 +72,8 @@ BarChart.prototype.update = function( updatedValue ){
         }
         
         this.__component__.setData( [res] );
-        this.__component__.setupGrid();
+                this.__component__.setupGrid();
+
         this.__component__.draw();
 }
 
