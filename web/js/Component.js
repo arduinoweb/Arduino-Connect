@@ -124,6 +124,8 @@ Component.prototype.init = function(){
      $.post( "remove.php",{componentId:_self.__componentId__}, function( data ){
                   data = $.trim( data );
                   
+                  _self.message("deleting component");
+                  
                   if( data == "ok")
                   {
                      if( _self.__isActive__)
@@ -151,15 +153,7 @@ Component.prototype.init = function(){
      });
          
    });
-    
- 
-  //Make the components title editable
- /* $('#componentTitle'+_self.__componentId__).editable( function( value,settings){
-                       _self.__componentTitle__ = value;
-                       _self.setTitle( );
-                       return value;
-                       
-  });*/
+
   
   //Create the slider for adjusting refresh rate
   $('#refreshSlider'+_self.__componentId__).slider({
@@ -175,35 +169,44 @@ Component.prototype.init = function(){
                     if( tmp != _self.__refreshRate__ )
                     {
                          //_self.__refreshRate__ = tmp;
-                         
+                         _self.message( "updating refresh rate");
                          $.post( "update.php",
                                  {componentId : _self.__componentId__, refreshRate: tmp},
                                  function( data ){
                                      
                                      data = $.trim( data );
-                                     if( data == "error" )
+                                     
+                                     if( data == "ok")
                                      {
-                                          _self.message( 
-                                          "an error occurred updating the database");
-                                        
-                                        
-                                        $('#value'+_self.__componentId__).html( 
-                                               (_self.__refreshRate__/1000) +"s" );
-                                        
-                                        $('#refreshSlider'+_self.__componentId__).slider(
-                                                "option","value", (_self.__refreshRate__/1000));
+                                       _self.__refreshRate__ = tmp;       
+                                             
                                              
                                      }
                                      else
                                      {
-                                        _self.__refreshRate__ = tmp;       
-                                             
+                                         
+                                        $('#value'+_self.__componentId__).html( 
+                                               (_self.__refreshRate__/1000) +"s" );
+                                        
+                                        $('#refreshSlider'+_self.__componentId__).slider(
+                                                "option","value", (_self.__refreshRate__/1000));      
+                                        _self.message( 
+                                          "an error occurred updating the database");
+                                                                                     
                                      }
+                                   
                                          
                                  })
                          .error( function(){
+                                    
+                                 $('#value'+_self.__componentId__).html( 
+                                               (_self.__refreshRate__/1000) +"s" );
+                                        
+                                 $('#refreshSlider'+_self.__componentId__).slider(
+                                                "option","value", (_self.__refreshRate__/1000));       
+                                         
                                  _self.message( 
-                                          "an error occurred updating the database");          
+                                          "an error occurred accessing the web servers");          
                                          
                          });
                             
@@ -235,7 +238,49 @@ Component.prototype.init = function(){
             
             },
             stop: function( event, ui ){
-               _self.__input__ = ui.value;       
+              var tmp = ui.value;
+              
+              if( tmp != _self.__input__ )
+              {
+                      _self.message("updating pin value");
+                      $.post( "update.php",{ componentId: _self.__componentId__, input: tmp },
+                              function( data ){
+                                      
+                       
+                              data = $.trim( data );
+                              
+                              if( data == "ok" )
+                              {
+                                 _self.__input__ = tmp;       
+                                      
+                              }
+                              else
+                              {
+                                $('#pinSlider'+_self.__componentId__).slider(
+                                                "option","value", _self.__input__);
+                                $('#pinValue'+_self.__componentId__).html("Pin " + _self.__input__);
+                                
+                               _self.message( 
+                                          "an error occurred updating the database");          
+                             
+                              }
+                                      
+                       })
+                      .error( function(){
+                             $('#pinSlider'+_self.__componentId__).slider(
+                                                "option","value", _self.__input__);         
+                             $('#pinValue'+_self.__componentId__).html("Pin " + _self.__input__);
+
+                             _self.message( 
+                                          "an error occurred accessing the webserver");  
+                             
+                                      
+                      });
+                      
+                      
+                      
+                      
+              }
             }
   });
   
@@ -244,11 +289,21 @@ Component.prototype.init = function(){
  $('#componentContainer'+_self.__componentId__).droppable({
      accept: '.live',
      drop: function(event, ui){
-            _self.__arduinoName__ = $(ui.draggable).attr('id');
+            var tmp = $(ui.draggable).attr('id');
            
-                
-           _self.stopScheduler();
-                            
+          if( tmp != _self.__arduinoName__ )
+          {
+                  _self.message("associating with " + tmp );
+            $.post("update.php",{componentId:_self.__componentId__,
+            arduino : tmp}, function( data ){
+                    
+               data = $.trim( data );
+               
+            
+           if( data == "ok" ) 
+           {     
+           //_self.stopScheduler();
+           _self.__arduinoName__ = tmp;                 
             $('#inputArea'+_self.__componentId__).html(
                 '<img id="inputIcon'+_self.__componentId__+
                 '" src="img/plug.png" style="margin-right:15px" />'+
@@ -264,6 +319,21 @@ Component.prototype.init = function(){
                         $('#refreshRate'+_self.__componentId__).toggle();
                                        
               });
+           }
+           else
+           {
+                  _self.message( 
+                       "an error occurred updating the database");   
+                   
+                   
+           }
+            })
+            .error( function(){
+               _self.message( 
+                       "an error contacting the web server");             
+                            
+            });
+          }
           }
       });
  
@@ -272,30 +342,59 @@ Component.prototype.init = function(){
  $('#statusLight'+_self.__componentId__).click( function(){
                       
           var status = $(this).attr('src');
+      
+          
+          
           _self.hideSliders();
-          if( status == 'img/greenlight.png')
+          
+          if( _self.__arduinoName__ != "none" )
+                  
           {
-            _self.stopScheduler();
+              var msg = ( _self.__isActive__  ? "stopping" : "starting" );
+                  
+              _self.message( msg );
+                  
+              $.post("update.php",
+                      { componentId: _self.__componentId__,isActive: ( !_self.__isActive__ )}, function( data ){
+                              
+                              
+                         data = $.trim( data );
+                    
+                        
+                         if( data == "ok" )
+                         {
+                           _self.__isActive__ = ! _self.__isActive__;
+                           
+                           
+                            if( _self.__isActive__ )
+                            {
+                               _self.startScheduler();  
+                                
+                             }
+                             else
+                             {
+                                
+                             _self.stopScheduler();
+                             }
+                         }
+                         else
+                         {
+                              _self.message(
+                                      "unable to access database");
+                                 
+                         }
+                              
+                       
+                      })
+                       .error( function(){
+                             _self.message(
+                                   "unable to contact web server");
+                              
+                       });
+                  
+                  
           }
-          else
-          {
-              
-             if( _self.__arduinoName__ != 'none')
-             {
-                 
-                 if( _self.__isActive__ ==true)
-                 {
-                    window.clearInterval( _self.__scheduler__ );
-                    _self.__scheduler__ = null;
-                    _self.__isActive=false;
-                          
-                 }
-               
-                 
-               _self.startScheduler();
-                 
-             }
-          }
+          
                       
       });
  
@@ -307,13 +406,13 @@ Component.prototype.init = function(){
 
 //Stops the scheduling of data retrieval from the web server
 Component.prototype.stopScheduler = function(){
-if( this.__isActive__ == true)
-{
+//if( this.__isActive__ == true)
+//{
   $('#statusLight'+this.__componentId__).attr('src','img/redlight.png');
   window.clearTimeout( this.__scheduler__ );
   this.__scheduler__ = null;  
   this.__isActive__ = false;
-}
+//}
 }
      
 
@@ -321,13 +420,13 @@ if( this.__isActive__ == true)
 Component.prototype.startScheduler = function(){
    var _self = this;
    
-  if( this.__isActive__ ==false)
-   {
+ // if( this.__isActive__ ==false)
+ //  {
       $('#statusLight'+this.__componentId__).attr('src','img/greenlight.png');
       this.__isActive__ = true; 
       this.__scheduler__ = window.setTimeout(function(){_self.getData();}, 
                                               0);
-   }        
+ //  }        
            
          
  }

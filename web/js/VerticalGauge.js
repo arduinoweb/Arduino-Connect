@@ -39,7 +39,7 @@ VerticalGauge.prototype.draw = function(){
                         minValue: this.__minValue__,
                         maxValue: this.__maxValue__,
                         threshold: this.__threshold__,
-                        titleString: this.__componentTitle__,
+                        titleString: "id: " + this.__componentTitle__,
                         unitString: this.__units__
                             });
         

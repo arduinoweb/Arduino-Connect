@@ -233,7 +233,10 @@ function saveComponent( componentId )
     $('#footer').append( components[componentId].offsetLeft() );
     $('#footer').append( components[componentId].offsetTop() );
     $('#footer').append( components[componentId].getZIndex() );*/
-    
+      $.gritter.add({
+                    title: "New Component",
+                  text: "creating new component"
+                  });      
     $.post( "persist.php", 
             {
              componentId: components[componentId].getId(),

@@ -47,7 +47,23 @@ require_once( './php/lib/String.php');
    $safeField="refreshRate";
    $safeValue = String::safeSql( $_POST['refreshRate'] );
  }
- 
+ elseif( isset( $_POST['arduino'] ) )
+ {
+    $safeField ="arduino";
+    $safeValue = "'".String::safeSql( $_POST['arduino'] )."'";
+         
+ }
+ elseif( isset( $_POST['isActive'] ) )
+ {
+    $safeField = "isActive";
+    $safeValue = "'".String::safeSql( $_POST['isActive'] )."'";
+    
+ }
+ elseif( isset( $_POST['input'] ) )
+ {
+    $safeField = "input";
+    $safeValue = String::safeSql( $_POST['input'] );
+ }
  
  if( Db::connect() )
  {
@@ -71,6 +87,7 @@ require_once( './php/lib/String.php');
          
  }
 
+//echo $query;
 echo $result;
 ?>
 
