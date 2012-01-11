@@ -1,0 +1,11 @@
+System.out.println("In Script");
+System.out.println("---------");
+
+if( (tmp = Arduino.getDevice( "arduino2") )!= null)
+{
+ System.out.println( tmp.getName() );
+ System.out.println( tmp.getIpAddress() );
+ System.out.println( tmp.getPort() );
+ System.out.println("Hello John");
+}
+System.out.println("-----------");

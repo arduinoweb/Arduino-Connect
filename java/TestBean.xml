@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.7" class="java.beans.XMLDecoder">
+ <object class="ucc.arduino.intercom.Notifier">
+  <void property="nT">
+      <object class="ucc.arduino.intercom.NotificationTarget">
+         <string>arduino1</string>
+         <int>5</int>
+         <int>10</int>
+         <int>3</int>
+      </object>
+  </void>
+ 
+ 
+ </object>
+</java>

@@ -52,45 +52,39 @@ int value9 = 10;
 void setup() {
   // initialize serial communications at 9600 bps:
  Serial.begin(9600); 
- pinMode( 7, OUTPUT );
- while( Serial.available() == 0 );
- Serial.read();
+ //pinMode( 7, OUTPUT );
+// while( Serial.available() == 0 );
+ //Serial.read();
  
  
 }
 
 
 void loop() {
-  // read the analog in value:
- sensorValue = analogRead(A0);            
- //  map it to the range of the analog out:
-   outputValue = map(sensorValue, 0, 1023, 0, 255);  
-  
-   sendMsg( 10, outputValue);
-   readMsg();
+ 
    // change the analog out value:
   // analogWrite(analogOutPin, outputValue);           
  
- value1 = (value1 + 1) % 255;
- value2 = (value2 + 2) % 255;  
- value3 = (value3 + 3) % 255;
- value4 = (value4 + 4) % 255;
- value5 = (value5 + 5) % 255;
- value6 = (value6 + 6) % 255;
-value7 = (value7 + 7) % 255;
- value9 = (value9 + 9) % 255;
-  sendMsg(1, value1);
+// value1 = (value1 + 1) % 255;
+ value2 = (value2 + 1) % 255;  
+// value3 = (value3 + 3) % 255;
+// value4 = (value4 + 4) % 255;
+// value5 = (value5 + 5) % 255;
+// value6 = (value6 + 6) % 255;
+//value7 = (value7 + 7) % 255;
+ value9 = (value9 + 1) % 255;
+  sendMsg(2, value2);
   
   readMsg();
   
- sendMsg( 2, value2 );
- sendMsg( 3, value3 );
- sendMsg( 4, value4 );
- sendMsg( 5, value5 );
- sendMsg( 6, value6 );
- sendMsg( 7, value7 );
+// sendMsg( 2, value2 );
+// sendMsg( 3, value3 );
+// sendMsg( 4, value4 );
+// sendMsg( 5, value5 );
+// sendMsg( 6, value6 );
+// sendMsg( 7, value7 );
 sendMsg( 9, value9 );
- 
+ readMsg();
   //delay( 100 );*/
 }
 

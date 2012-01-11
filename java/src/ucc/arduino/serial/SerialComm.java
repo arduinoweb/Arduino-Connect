@@ -6,6 +6,7 @@ package ucc.arduino.serial;
 import ucc.arduino.main.Arduino;
 import ucc.arduino.main.Pin;
 import ucc.arduino.configuration.Protocol;
+import ucc.arduino.scripting.Scripter;
 
 
 import gnu.io.CommPort;
@@ -37,13 +38,14 @@ public class SerialComm implements Runnable
     /** Whether to keep the thread alive or not */
     private boolean stayAlive;
    
+    private Scripter scripter;
 
     /** Constructor
       */
-    public SerialComm( )
+    public SerialComm( Scripter scripter)
     {
         super();
-
+        this.scripter = scripter;
 	stayAlive = true;
         serialTimeout = Arduino.CONFIGURATION.getSerialTimeout();
          System.out.println("Trying to use serial port: " + 
@@ -166,8 +168,13 @@ public class SerialComm implements Runnable
                        // Belt and braces here, add the (pin,value) pair
                        // received to the PINS map.
                        if( parts.length == 2 ){
-                                Arduino.setPin( Integer.parseInt( parts[0] ),
-                                                Integer.parseInt( parts[1] ) );
+                               int pin = Integer.parseInt( parts[0] );
+                               int value = Integer.parseInt( parts[1] );
+                                Arduino.setPin( pin, value );
+                                
+                              
+                                   scripter.runScript();
+                               
                        }
 
                     }catch( NumberFormatException nfe ) { }

@@ -9,6 +9,9 @@
 package ucc.arduino.main;
 
 import ucc.arduino.configuration.Configuration;
+import ucc.arduino.scripting.Scripter;
+import ucc.arduino.net.DeviceList;
+import ucc.arduino.net.Device;
 
 import ucc.arduino.net.ClientConnection;
 import ucc.arduino.serial.SerialComm;
@@ -56,6 +59,10 @@ public class Arduino{
     
     private static ScheduledExecutorService registrationService;
     
+    private static Scripter scripter;
+    
+    private static DeviceList deviceListRetriever;
+    
     /**Constructor*/
     public Arduino( File configurationFile ) throws Exception {
         CONFIGURATION = new Configuration( configurationFile );
@@ -71,13 +78,17 @@ public class Arduino{
                               CONFIGURATION.getNetworkPort(),
                               CONFIGURATION.getWebServerUrl() );
         
+        deviceListRetriever = new DeviceList();
         
         serverSocket = new ServerSocket( CONFIGURATION.getNetworkPort(),
                                          CONFIGURATION.getNetworkQueueLength(),
                                          CONFIGURATION.getNetworkAddress() );
+        
+        
         new Thread( CLIENT_HANDLER ).start();
 	
-		   
+	scripter = new Scripter( this );
+	new Thread( scripter).start();
      }
    
   /** Main routine that waits for a client connection, assigns it a new thread
@@ -86,7 +97,7 @@ public class Arduino{
   public void start()
  {
          
-	 serialComm = new SerialComm( );
+	 serialComm = new SerialComm( scripter );
 	
          try{
 	     serialComm.connect( );
@@ -100,11 +111,15 @@ public class Arduino{
 	   }
 	
 	   
-	 registrationService = Executors.newScheduledThreadPool( 1 );
+	 registrationService = Executors.newScheduledThreadPool( 2 );
 	 
 	registrationService.scheduleWithFixedDelay( networkRegister,
 	                              
 	   0, CONFIGURATION.getArduinoNetworkRegistrationRate(), TimeUnit.SECONDS 
+	                                           );
+	registrationService.scheduleWithFixedDelay( deviceListRetriever,
+	                              
+	   0, 5, TimeUnit.SECONDS 
 	                                           );
 	 
         System.out.println("Arduino Connect Started.");
@@ -180,13 +195,20 @@ public class Arduino{
     return WRITE_QUEUE.poll();
  }
 
+ 
+ public static synchronized Device getDevice( String deviceName )
+ {
+       return deviceListRetriever.get( deviceName );       
+         
+ }
 /** Main entry point */
  public static void main(String[] args)  {
  try{
    new Arduino( new File( "/home/gary/public_html/arduino/Arduino-Connect/java/configuration.properties") ).start();
   }catch( Exception e ) { System.err.println( e );}
+ 
  }
-
+ 
 }
  
 

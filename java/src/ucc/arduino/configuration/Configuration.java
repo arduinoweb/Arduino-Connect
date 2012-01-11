@@ -177,8 +177,8 @@ public class Configuration {
  
   public String getWebServerUrl()
   {
-          
-    return configuration.getProperty("WEB_SERVER_URL");       
+    return configuration.getProperty("WEB_SERVER_URL") + "/register.php";
+    
   }
   
   public String getArduinoNetworkName()
@@ -198,5 +198,11 @@ public class Configuration {
                     configuration.getProperty(
                              "ARDUINO_NETWORK_REGISTRATION_RATE" ) );
           
+  }
+  
+  public String getDeviceListUrl()
+  {
+
+      return configuration.getProperty("WEB_SERVER_URL") + "/devicelist.php";      
   }
 }
