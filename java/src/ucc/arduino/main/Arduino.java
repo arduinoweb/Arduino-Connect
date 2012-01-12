@@ -54,9 +54,9 @@ public class Arduino{
     private Socket client;
     /**The socket that listens for client connections*/
     private static  ServerSocket serverSocket;
-	
+    /**Thread that regularly notifies web server of device presence*/
     private static NetworkRegister networkRegister;
-    
+    /**Schedules and runs threads that are to be run periodically*/
     private static ScheduledExecutorService registrationService;
     
     private static Scripter scripter;
@@ -73,10 +73,10 @@ public class Arduino{
         
         networkRegister = new NetworkRegister(
                               CONFIGURATION.getArduinoNetworkName(),
-                              CONFIGURATION.getArduinoNetworkPassword(),
+                              
                               CONFIGURATION.getNetworkAddress().getHostAddress(),
                               CONFIGURATION.getNetworkPort(),
-                              CONFIGURATION.getWebServerUrl() );
+                              CONFIGURATION.getDeviceRegistrationUrl() );
         
         deviceListRetriever = new DeviceList();
         
@@ -87,8 +87,7 @@ public class Arduino{
         
         new Thread( CLIENT_HANDLER ).start();
 	
-	scripter = new Scripter( this );
-	new Thread( scripter).start();
+	
      }
    
   /** Main routine that waits for a client connection, assigns it a new thread
@@ -96,6 +95,8 @@ public class Arduino{
    */	
   public void start()
  {
+        scripter = new Scripter( this );
+	new Thread( scripter).start();
          
 	 serialComm = new SerialComm( scripter );
 	
@@ -119,7 +120,7 @@ public class Arduino{
 	                                           );
 	registrationService.scheduleWithFixedDelay( deviceListRetriever,
 	                              
-	   0, 5, TimeUnit.SECONDS 
+	   2, CONFIGURATION.getArduinoNetworkRegistrationRate()+2, TimeUnit.SECONDS 
 	                                           );
 	 
         System.out.println("Arduino Connect Started.");

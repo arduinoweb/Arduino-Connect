@@ -2,7 +2,7 @@
 
     require_once( './php/lib/config.php');
   
-    require_once( './php/lib/SSL.php');
+   // require_once( './php/lib/SSL.php');
 
     require_once( './php/lib/Db.php');
     
@@ -10,10 +10,10 @@
     
     require_once( './php/lib/String.php');
   
-    require_once( './php/lib/Session.php');
+  //  require_once( './php/lib/Session.php');
     
     
-    Session::start();
+  //  Session::start();
     
     
     $returnMsg = json_encode( "unable to contact arduino" );

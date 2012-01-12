@@ -1,30 +1,4 @@
-<?php
 
- 
- require_once( './php/lib/config.php');
-  
- require_once( './php/lib/SSL.php');
-
- require_once( './php/lib/Session.php');
-
- require_once( './php/lib/Type.php' );
- 
- Session::start();
- 
- if( ! Session::isAuthenticated() || ( Session::isAuthenticated() &&
-         Session::getRole() != Type::USER_ROLE ) )
- {
-         header( "location: login.php");
-         die();
-         
- }
- elseif( HTTPS_URL &&  SSL::notHTTPSUrl() )
- {
-          SSL::redirectToSSLUrl();
-          die();
- }
- 
-?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

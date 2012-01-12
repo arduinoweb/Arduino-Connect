@@ -2,17 +2,17 @@
 
  require_once( './php/lib/config.php');
   
- require_once( './php/lib/SSL.php');
+ //require_once( './php/lib/SSL.php');
 
- require_once( './php/lib/Session.php');
+// require_once( './php/lib/Session.php');
 
  require_once( './php/lib/Type.php' );
  
  require_once( './php/lib/Db.php');
  
- Session::start();
+// Session::start();
  
- if( ! Session::isAuthenticated() || ( Session::isAuthenticated() &&
+/* if( ! Session::isAuthenticated() || ( Session::isAuthenticated() &&
          Session::getRole() != Type::USER_ROLE ) )
  {
          header( "location: login.php");
@@ -23,7 +23,7 @@
  {
           SSL::redirectToSSLUrl();
           die();
- }
+ }*/
  
  
  if( ! Db::connect() )

@@ -2,9 +2,9 @@
 
  require_once( './php/lib/config.php');
   
- require_once( './php/lib/SSL.php');
+// require_once( './php/lib/SSL.php');
 
- require_once( './php/lib/Session.php');
+ //require_once( './php/lib/Session.php');
 
  require_once( './php/lib/Type.php' );
  
@@ -12,7 +12,7 @@
  
  require_once( './php/lib/String.php');
 
- Session::start();
+ /*Session::start();
  
  if( ! Session::isAuthenticated() || ( Session::isAuthenticated() &&
          Session::getRole() != Type::USER_ROLE ) )
@@ -25,7 +25,7 @@
  {
           SSL::redirectToSSLUrl();
           die();
- }
+ }*/
  
  $safeId = String::safeSql( $_POST['componentId'] );
  

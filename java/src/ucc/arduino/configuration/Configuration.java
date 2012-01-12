@@ -177,7 +177,7 @@ public class Configuration {
  
   public String getWebServerUrl()
   {
-    return configuration.getProperty("WEB_SERVER_URL") + "/register.php";
+    return configuration.getProperty("WEB_SERVER_URL");
     
   }
   
@@ -204,5 +204,11 @@ public class Configuration {
   {
 
       return configuration.getProperty("WEB_SERVER_URL") + "/devicelist.php";      
+  }
+  
+  public String getDeviceRegistrationUrl()
+  {
+    return configuration.getProperty("WEB_SERVER_URL") + "/register.php";      
+      
   }
 }

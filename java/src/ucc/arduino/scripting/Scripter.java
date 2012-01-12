@@ -13,13 +13,13 @@ public class Scripter implements Runnable{
    private boolean stayAlive;     
    private Interpreter interpreter;
    private Arduino arduino;
-   private boolean execute;
+
    public Scripter(Arduino arduino)
    {
        stayAlive = true;
        this.arduino = arduino;
-       execute = false;
-       interpreter = new Interpreter();
+    
+       
        
    }
    
@@ -27,8 +27,7 @@ public class Scripter implements Runnable{
    {
       while( stayAlive )
       {
-       if( execute )
-       {
+       
         interpreter = new Interpreter();
          try{
          // interpreter.eval();
@@ -36,35 +35,13 @@ public class Scripter implements Runnable{
           interpreter.source( "test.bsh");
         }catch( Exception e){System.err.println( e );}
         //interpreter = null;     
-        execute = false;        
+             
        }
-              
+            interpreter = null;  
        Thread.yield();       
       }
            
            
    }
        
-   private void loadScript()
-   {
-       interpreter = null;
-       interpreter = new Interpreter();
-       try{
-               
-         interpreter.set( "Arduino", arduino );
-         interpreter.source( "test.bsh");
-         
-       }catch( Exception e){
-         System.err.println( e );       
-       }
-           
-   }
-   
-   public synchronized void runScript()
-   {
-       execute = true;       
-           
-   }
-  
-        
-}
+ 
