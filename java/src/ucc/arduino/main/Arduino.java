@@ -25,6 +25,7 @@ import java.net.Socket;
 
 import java.io.IOException;
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -95,8 +96,16 @@ public class Arduino{
    */	
   public void start()
  {
-        scripter = new Scripter( this );
-	new Thread( scripter).start();
+        scripter = null;
+         try{
+        scripter = new Scripter( this, new File( "test.bsh") );
+        new Thread( scripter).start();
+         }catch( FileNotFoundException fnfe ){
+            System.err.println( fnfe );
+         }catch( IOException ioe ){
+            System.err.println( ioe );       
+         }
+	
          
 	 serialComm = new SerialComm( scripter );
 	

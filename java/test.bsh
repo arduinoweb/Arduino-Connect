@@ -1,11 +1,25 @@
-System.out.println("In Script");
-System.out.println("---------");
 
-if( (tmp = Arduino.getDevice( "arduino1") )!= null)
-{
- System.out.println( tmp.getName() );
- System.out.println( tmp.getIpAddress() );
- System.out.println( tmp.getPort() );
- System.out.println("Hello Gary");
+
+Integer currValue =  (Integer)Arduino.getPin( 10 );
+
+if( currValue !=null && currValue > 250 || currValue == 0){
+        PrintWriter pw;
+        Socket sock;
+        try{  
+       sock = new Socket( "127.0.0.1", 10003);
+     
+       pw = new PrintWriter( sock.getOutputStream(), true );
+       
+       pw.println( "W D 7 " + currValue + " E");
+       pw.flush();
+       pw.close();
+       sock.close();
+     
+        }catch( Exception e ){ System.err.println( e ); }
+        
+        sock = null;
+        sock=null;
 }
-System.out.println("-----------");
+
+currValue = null;
+//System.out.println("-----------");
