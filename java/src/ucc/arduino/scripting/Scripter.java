@@ -1,9 +1,10 @@
 package ucc.arduino.scripting;
 
-import bsh.Interpreter;
+//import bsh.Interpreter;
 import ucc.arduino.main.Arduino;
+import ucc.arduino.net.Messenger;
 
-
+import org.mozilla.javascript.*;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
@@ -13,42 +14,35 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import java.util.HashMap;
+
 public class Scripter implements Runnable {
         
    private boolean stayAlive;     
-   private Interpreter interpreter;
-   private Arduino arduino;
+  
+   private final Arduino ARDUINO;
    private final File SCRIPT;
-   private String scriptContents;
+;
    private boolean invoke;
-   private Integer prevValue = 0;
+
+   private boolean firstRun;
+   private HashMap<String, Object> state;
+   private Script compiledScript;
+   private Messenger messenger;
+   
+   //Rhino stuff
+   private Context context;
    
    public Scripter(Arduino arduino, File script ) throws FileNotFoundException,
                                                          IOException
    {
+       
        invoke = false;
        stayAlive = true;
-       this.arduino = arduino;
+       ARDUINO = arduino;
        SCRIPT = script;
-       
-       /*BufferedReader br = new BufferedReader( new FileReader( script) );
-     
-       String dataIn = null;
-       StringBuffer readBuffer = new StringBuffer();
-       
-       while( ( dataIn = br.readLine() ) != null )
-       {
-          readBuffer.append( dataIn );
-          
-               
-       }
-       scriptContents = readBuffer.toString();
-       dataIn = null;
-       readBuffer = null;
-       interpreter = new Interpreter();
-       try{
-       interpreter.set("Arduino", arduino);
-       }catch( bsh.EvalError ee){}*/
+       state = new HashMap<String, Object>();
+       messenger = new Messenger();
    }
    
    public void run()
@@ -56,21 +50,42 @@ public class Scripter implements Runnable {
       while( stayAlive )
       {
        
-        interpreter = new Interpreter();
+      // interpreter = new Interpreter();
         if( invoke )
         {
-         try{
-         // interpreter.eval();
-          interpreter.set("prevValue", prevValue);
-          interpreter.set("Arduino",arduino);
-          interpreter.source( "test.bsh");
-          prevValue = (Integer)interpreter.get("prevValue");
-        }catch( Exception e){System.err.println( e );}
-        //interpreter = null;     
+     
+        context = Context.enter();
+        
+        try{
+           Scriptable scope = context.initStandardObjects(); 
+           Object arduinoWrapped = Context.javaToJS( ARDUINO, scope );
+           Object firstRunWrapped = Context.javaToJS( firstRun, scope );
+           Object stateWrapped = Context.javaToJS( state, scope );
+           Object messengerWrapped = Context.javaToJS( messenger, scope );
+           
+           ScriptableObject.putProperty( scope, "ARDUINO", arduinoWrapped);
+           ScriptableObject.putProperty( scope, "firstRun",firstRunWrapped);
+           ScriptableObject.putProperty( scope, "state", stateWrapped);
+           ScriptableObject.putProperty( scope, "messenger", messengerWrapped);
+           Script compiledScript = context.compileReader(
+                   new java.io.FileReader(SCRIPT), "test.bsh", 1, null );
+           
+           
+           compiledScript.exec( context, scope );           
+          // state = scope.get( "state", scope );
+           firstRun = false;
+           
+        }catch(Exception e ){ System.err.println(e);        
+        }finally{
+          Context.exit();       
+        }
+        
         }    
        }
-          interpreter = null; 
+
        invoke = false;
+       context = null;
+       
       Thread.yield();       
       }
            

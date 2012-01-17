@@ -211,4 +211,9 @@ public class Configuration {
     return configuration.getProperty("WEB_SERVER_URL") + "/register.php";      
       
   }
+  
+  public String getScriptName()
+  {
+     return configuration.getProperty("SCRIPT");       
+  }
 }

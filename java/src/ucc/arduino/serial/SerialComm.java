@@ -172,7 +172,7 @@ public class SerialComm implements Runnable
                                int value = Integer.parseInt( parts[1] );
                                 Arduino.setPin( pin, value );
                                 
-                              
+                              if( Arduino.CONFIGURATION.getScriptName() != null )
                                scripter.runScript();
                                
                        }

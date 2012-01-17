@@ -97,15 +97,17 @@ public class Arduino{
   public void start()
  {
         scripter = null;
+         if( CONFIGURATION.getScriptName() != null )
+        {
          try{
-        scripter = new Scripter( this, new File( "test.bsh") );
+        scripter = new Scripter( this, new File( CONFIGURATION.getScriptName()) );
         new Thread( scripter).start();
          }catch( FileNotFoundException fnfe ){
             System.err.println( fnfe );
          }catch( IOException ioe ){
             System.err.println( ioe );       
          }
-	
+	}
          
 	 serialComm = new SerialComm( scripter );
 	
