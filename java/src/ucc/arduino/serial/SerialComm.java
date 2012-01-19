@@ -173,7 +173,9 @@ public class SerialComm implements Runnable
                                 Arduino.setPin( pin, value );
                                 
                               if( Arduino.CONFIGURATION.getScriptName() != null )
-                               scripter.runScript();
+                              {
+                               scripter.add( Arduino.copyPins() );
+                              }
                                
                        }
 

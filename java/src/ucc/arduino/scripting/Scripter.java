@@ -1,103 +1,88 @@
 package ucc.arduino.scripting;
 
-//import bsh.Interpreter;
+
 import ucc.arduino.main.Arduino;
 import ucc.arduino.net.Messenger;
 
-import org.mozilla.javascript.*;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+
+import javax.script.*;
 
 import java.util.HashMap;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.FileReader;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.HashMap;
 
-public class Scripter implements Runnable {
+public class Scripter extends ConcurrentLinkedQueue<HashMap<Integer,Integer>> implements Runnable {
         
    private boolean stayAlive;     
-  
-   private final Arduino ARDUINO;
-   private final File SCRIPT;
-;
-   private boolean invoke;
-
-   private boolean firstRun;
+   private  final File SCRIPT;
    private HashMap<String, Object> state;
-   private Script compiledScript;
-   private Messenger messenger;
-   
-   //Rhino stuff
-   private Context context;
-   
-   public Scripter(Arduino arduino, File script ) throws FileNotFoundException,
-                                                         IOException
+   private final Messenger messenger;
+   private ScriptEngineManager scriptEngineManager;
+   private ScriptEngine scriptEngine;
+   private CompiledScript compiledScript;
+   private Compilable compilable;
+   private Bindings bindings;
+   private long scriptLastModified;
+      
+   public Scripter( File script ) throws FileNotFoundException,
+                                                         IOException,
+                                                         ScriptException
    {
+      super();
+      stayAlive = true;
+      SCRIPT = script;
+      state = new HashMap<String, Object>();
+      messenger = new Messenger();
+      scriptEngineManager = new ScriptEngineManager();
+      scriptEngine = scriptEngineManager.getEngineByName("JavaScript");
+      bindings = scriptEngine.createBindings();
        
-       invoke = false;
-       stayAlive = true;
-       ARDUINO = arduino;
-       SCRIPT = script;
-       state = new HashMap<String, Object>();
-       messenger = new Messenger();
+      compilable = (Compilable) scriptEngine;    
+     
+      bindings.put( "messenger", messenger);
+      bindings.put( "state", state);
+      compiledScript = compilable.compile( new FileReader( SCRIPT ) );
+      compilable = null;
+      scriptEngine = null;
+      scriptEngineManager = null;
    }
+   
+   
    
    public void run()
    {
+      HashMap<Integer,Integer> pinState;
+      long lastModified;
+      
       while( stayAlive )
       {
-       
-      // interpreter = new Interpreter();
-        if( invoke )
+      
+        if( (pinState = this.poll() ) != null )   
         {
-     
-        context = Context.enter();
-        
+          
         try{
-           Scriptable scope = context.initStandardObjects(); 
-           Object arduinoWrapped = Context.javaToJS( ARDUINO, scope );
-           Object firstRunWrapped = Context.javaToJS( firstRun, scope );
-           Object stateWrapped = Context.javaToJS( state, scope );
-           Object messengerWrapped = Context.javaToJS( messenger, scope );
-           
-           ScriptableObject.putProperty( scope, "ARDUINO", arduinoWrapped);
-           ScriptableObject.putProperty( scope, "firstRun",firstRunWrapped);
-           ScriptableObject.putProperty( scope, "state", stateWrapped);
-           ScriptableObject.putProperty( scope, "messenger", messengerWrapped);
-           Script compiledScript = context.compileReader(
-                   new java.io.FileReader(SCRIPT), "test.bsh", 1, null );
-           
-           
-           compiledScript.exec( context, scope );           
-          // state = scope.get( "state", scope );
-           firstRun = false;
-           
-        }catch(Exception e ){ System.err.println(e);        
-        }finally{
-          Context.exit();       
+           bindings.put("pins", pinState); 
+           compiledScript.eval( bindings);
+         }catch(ScriptException e ){ 
+           System.err.println(e);        
+         }    
         }
-        
-        }    
-       }
-
-       invoke = false;
-       context = null;
-       
+     
+      pinState = null;
       Thread.yield();       
       }
+   }
            
     
-    public synchronized void runScript()
-    {
-        if( ! invoke )
-        {
-           invoke = true;
-        }
-            
-    }
+  public synchronized void stop()
+  {
+      stayAlive = false;
+      bindings = null;
+  }
       
    }
    

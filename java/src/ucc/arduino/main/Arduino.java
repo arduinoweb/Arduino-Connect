@@ -35,7 +35,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import java.util.Properties;
-
+import javax.script.*;
 
 
 public class Arduino{
@@ -100,12 +100,14 @@ public class Arduino{
          if( CONFIGURATION.getScriptName() != null )
         {
          try{
-        scripter = new Scripter( this, new File( CONFIGURATION.getScriptName()) );
+        scripter = new Scripter(  new File( CONFIGURATION.getScriptName()) );
         new Thread( scripter).start();
          }catch( FileNotFoundException fnfe ){
             System.err.println( fnfe );
          }catch( IOException ioe ){
             System.err.println( ioe );       
+         }catch( ScriptException se ){
+            System.err.println( se );       
          }
 	}
          
@@ -213,10 +215,33 @@ public class Arduino{
        return deviceListRetriever.get( deviceName );       
          
  }
+ 
+ 
+ public static synchronized HashMap<Integer,Integer> copyPins()
+ {
+    return new HashMap<Integer,Integer>( PINS );       
+         
+ }
 /** Main entry point */
  public static void main(String[] args)  {
  try{
-   new Arduino( new File( "/home/gary/public_html/arduino/Arduino-Connect/java/configuration.properties") ).start();
+    
+    
+    if( args.length == 0 )
+    {
+       new Arduino( new File( "configuration.properties") ).start();       
+    }
+   else if( args.length == 1 )
+   {
+       new Arduino( new File( args[0] ) ).start();     
+   }
+   else
+   {
+       System.err.println("invalid number of arguments");       
+   }
+    
+   
+           
   }catch( Exception e ) { System.err.println( e );}
  
  }
