@@ -26,19 +26,17 @@
           SSL::redirectToSSLUrl();
           die();
  }*/
- $dbConnection = new Db();
  
  $safeId = String::safeSql( $_POST['componentId'] );
  
  $query = "DELETE FROM components WHERE id={$safeId}";
  $result = "error";
  
- if( $dbConnection  && $dbConnection->query( $query ) )
+ if( Db::connect() && Db::query( $query ) )
  {
      $result = "ok";       
          
  }
- $dbConnection = NULL;
  
   echo $result;
 

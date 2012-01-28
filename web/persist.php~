@@ -50,7 +50,6 @@
  
  if( $dbConnection->connect() && $dbConnection->query( $query ) )
  {
-     
       $result = "ok";
       
  }

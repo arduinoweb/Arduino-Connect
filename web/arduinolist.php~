@@ -25,9 +25,8 @@
           die();
  }*/
  
- $dbConnection = new Db();
  
- if( ! $dbConnection )
+ if( ! Db::connect() )
  {
       echo json_encode("dberror");
       die();
@@ -36,7 +35,7 @@
  
  $query = "SELECT * FROM registeredArduinos";
  
- $queryResult = $dbConnection->query( $query );
+ $queryResult = Db::query( $query );
  
  if( $queryResult && sqlite_num_rows( $queryResult ) > 0 )
  {

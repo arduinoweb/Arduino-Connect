@@ -65,8 +65,7 @@ require_once( './php/lib/String.php');
     $safeValue = String::safeSql( $_POST['input'] );
  }
  
- $dbConnection = new Db();
- if( $dbConnection )
+ if( Db::connect() )
  {
          $query = "UPDATE components SET " . $safeField ."={$safeValue} WHERE"
          . " id = {$safeComponentId}";
@@ -80,7 +79,7 @@ require_once( './php/lib/String.php');
  
  if( $query != "" )
  {
-    if( $dbConnection->query( $query ) )
+    if( Db::query( $query ) )
     {
         $result = "ok";       
     }

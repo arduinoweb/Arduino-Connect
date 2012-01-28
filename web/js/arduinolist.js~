@@ -3,7 +3,7 @@ $(document).ready( function(){
               
                 
  var arduinoListIsRefreshing = false;
-
+ 
                 
  function refreshArduinoList()
  {
@@ -12,7 +12,7 @@ $(document).ready( function(){
        
        $('#arduinoListRefresh').attr('src','img/ajax-loader.gif');         
                       
-                       $.post("arduinolist.php", function( data ){
+                       $.post("http://192.168.141.128/~gary/arduino/Arduino-Connect/web/arduinolist.php", function( data ){
                         
                        var response = JSON.parse( data );
                        

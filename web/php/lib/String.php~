@@ -19,11 +19,6 @@ class String{
  		if( isset( $str ))
  		{
  			$str = self::undoMagicQuotes( $str );
- 			if( class_exists( "SQLite3") )
- 		        {
- 		        	$returnValue = SQLite3::escapeString( $str );	
- 		        }
- 		        else
  			$returnValue = sqlite_escape_string( $str );
  		}
  		

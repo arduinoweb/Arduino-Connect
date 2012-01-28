@@ -31,7 +31,6 @@
        die();
     }
     
-    $dbConnection = new Db();
     
     $query = "SELECT * FROM registeredArduinos WHERE
     name='{$arduinoName}'";

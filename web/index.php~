@@ -211,7 +211,7 @@ function saveComponent( componentId )
                     title: "New Component",
                   text: "creating new component"
                   });      
-    $.post( "persist.php", 
+    $.post( "http://192.168.141.128/~gary/arduino/Arduino-Connect/web/persist.php", 
             {
              componentId: components[componentId].getId(),
              arduinoName: components[componentId].getArduinoName(),
@@ -234,7 +234,7 @@ function saveComponent( componentId )
                if( data != "ok" )
                {
                     $.gritter.add({
-                    title: "Component Creation Error" + data,
+                    title: "Component Creation Error",
                   text: "unable to access database to create component"
                   });      
                        

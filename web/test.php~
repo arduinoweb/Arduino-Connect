@@ -1,0 +1,12 @@
+<?php
+
+if( $db=sqlite_open('db/arduino.db',0666, $sqliteerror) )
+{
+  echo "opened";
+}
+else
+{
+  die( $sqliteerror );
+}
+
+?>
