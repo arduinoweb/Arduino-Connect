@@ -6,7 +6,6 @@ class Db{
         
 
    private $connection = NULL;
-   private $isSQLite3 = FALSE;
     /**
       * Creates a connection to the database if one doesn't already exist
       * @return the connection or null if unable to create one
@@ -14,24 +13,23 @@ class Db{
     public function connect()
     {  
       
-     if( function_exists( "sqlite_open"))
+     if(SQLITE_VERSION < 3)
      {
        $this->connection = sqlite_open( DATABASE_FILE, 0666, $error );
-       
+      
+
+            
      }
-     elseif( class_exists( "SQLite3" ))
+     else 
      {
      	     try{
        $this->connection = new SQLite3( DATABASE_FILE, SQLITE3_OPEN_READWRITE );
-       $this->isSQLite3 = TRUE;
-        return TRUE;
-       	     }catch(Exception $e ){
+	     }catch(Exception $e ){
        	     	        
        	     }
      }
      
-     return FALSE;
-       
+      return ( $this->connection ? TRUE : FALSE ); 
      
     }      
         
@@ -54,7 +52,7 @@ class Db{
             
             if( $this->connection )
             {
-            	if( $this->isSQLite3 )
+            	if( SQLITE_VERSION == 3 )
                 {
                   $result = $this->connection->query( $qry );
                   
