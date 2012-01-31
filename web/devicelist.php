@@ -6,19 +6,20 @@ require_once( "php/lib/config.php");
 
 $returnValue = "error";
 
+$db = new DB();
 
 
-if( Db::connect() )
+if(  $db->connect() )
 {
   $query = "SELECT * FROM registeredArduinos";
   
-  $result = Db::query( $query );
+  $result = $db->query( $query );
   $currentTime = time();
   $noneAvailable = TRUE;
   
-  if( sqlite_num_rows( $result ) > 0 )
-  {
-     while( $row = sqlite_fetch_array( $result ) )
+//  if( sqlite_num_rows( $result ) > 0 )//
+//  {//
+     while( $row = $db->fetchArray( $result ) )
      {
         if( $currentTime - $row['lastRegistered'] <=
                 ARDUINO_NETWORK_REGISTRATION_RATE )
@@ -36,7 +37,7 @@ if( Db::connect() )
      }
           
           
-  }
+//  }//
         
         
 }

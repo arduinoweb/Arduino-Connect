@@ -25,7 +25,7 @@ class Db{
      	     try{
        $this->connection = new SQLite3( DATABASE_FILE, SQLITE3_OPEN_READWRITE );
 	     }catch(Exception $e ){
-       	     	        
+       	     	      
        	     }
      }
      
@@ -66,7 +66,39 @@ class Db{
            
            return $result;
     }
+    
+    function fetchArray( &$resultSet )
+    {
+    	    
+    	    return ( SQLITE_VERSION == 3  ? $resultSet->fetchArray( SQLITE3_ASSOC)
+    	    	    : sqlite_fetch_assoc( $resultSet ) );
+    	    
+    	    
+    }
         
+    function numRows( &$resultSet )
+    {
+    	$count = 0;
+    	    
+    	if( SQLITE_VERSION == 3 )
+        {
+            while( $resultSet->fetchArray( SQLITE3_NUM ) )
+            {
+            $count++;
+            }
+            $resultSet->reset();
+            
+            
+        	 
+        }
+        else
+        {
+           $count = sqlite_num_rows( $resultSet );	
+        }
+        
+        return $count;
+        
+   }
 }
 
 

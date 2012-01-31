@@ -24,25 +24,26 @@
     $success = FALSE;
     
     $arduinoDetails = NULL;
+    $db = new Db();
     
-    if( ! Db::connect() )
+    if( ! $db->connect() )
     {
        echo "unable to connect to database";
        die();
     }
     
-    $dbConnection = new Db();
+   // $dbConnection = new Db();
     
     $query = "SELECT * FROM registeredArduinos WHERE
     name='{$arduinoName}'";
     
   
-    if(  ($queryResult = Db::query( $query ) ) &&
-                 sqlite_num_rows( $queryResult) == 1 )
+    if(  ($queryResult = $db->query( $query ) ) &&
+                 $db->numRows( $queryResult) == 1 )
     {
       
       
-      $arduinoDetails = sqlite_fetch_array( $queryResult );
+      $arduinoDetails = $db->fetchArray( $queryResult );
       
       if( $currTime - $arduinoDetails['lastRegistered'] 
                <= ARDUINO_NETWORK_REGISTRATION_RATE )
@@ -73,7 +74,7 @@
     if( ! $success && $arduinoDetails != NULL )
     {
       $query = "DELETE FROM registeredArduinos WHERE name ='{$arduinoName}'";
-      Db::query( $query );       
+      $db->query( $query );       
     }
    
     echo $returnMsg;

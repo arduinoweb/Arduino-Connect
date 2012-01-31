@@ -13,6 +13,7 @@ import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 
+
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,6 +82,7 @@ public class SerialComm implements Runnable
                 
            inputStream = serialPort.getInputStream();
            outputStream = serialPort.getOutputStream();
+
 	  }
           else
           {
@@ -126,7 +128,7 @@ public class SerialComm implements Runnable
          
 	while( stayAlive )
 	{
-     	  try{
+     	 try{
         
 	    if( inputStream.available() > 0 )
             {
@@ -223,7 +225,8 @@ public class SerialComm implements Runnable
     }
  
 
-
+  
+    
     private void close()
 	{
 	   try{

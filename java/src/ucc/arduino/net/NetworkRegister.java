@@ -34,7 +34,7 @@ public class NetworkRegister implements Runnable{
                                                      UnsupportedEncodingException
 {
    url = new URL( webServerUrl );
-   System.out.println( "["+webServerUrl+"]" );
+   System.out.println( "["+webServerUrl+"] in here" );
    
    postData = "arduinoName=" + URLEncoder.encode( arduinoNetworkName,"UTF-8") +
               "&arduinoAddress="+URLEncoder.encode( arduinoNetworkAddress,"UTF-8" ) +
@@ -75,9 +75,10 @@ public class NetworkRegister implements Runnable{
              
              while( ( responseLine = dataIn.readLine() ) != null )
              {
-                responseBuffer.append( responseLine );       
+                responseBuffer.append( responseLine ); 
+                
              }
-             
+             System.out.println( responseBuffer.toString() );
              
              dataIn.close();
              

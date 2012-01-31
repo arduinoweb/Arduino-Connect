@@ -79,7 +79,7 @@ public class Arduino{
                               CONFIGURATION.getNetworkPort(),
                               CONFIGURATION.getDeviceRegistrationUrl() );
         
-        deviceListRetriever = new DeviceList();
+      //  deviceListRetriever = new DeviceList();
         
         serverSocket = new ServerSocket( CONFIGURATION.getNetworkPort(),
                                          CONFIGURATION.getNetworkQueueLength(),
@@ -131,10 +131,10 @@ public class Arduino{
 	                              
 	   0, CONFIGURATION.getArduinoNetworkRegistrationRate(), TimeUnit.SECONDS 
 	                                           );
-	registrationService.scheduleWithFixedDelay( deviceListRetriever,
+	/*registrationService.scheduleWithFixedDelay( deviceListRetriever,
 	                              
 	   2, CONFIGURATION.getArduinoNetworkRegistrationRate()+2, TimeUnit.SECONDS 
-	                                           );
+	                                           );*/
 	 
         System.out.println("Arduino Connect Started.");
 	while( true )

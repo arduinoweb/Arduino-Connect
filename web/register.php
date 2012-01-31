@@ -19,11 +19,12 @@
           echo "sslonly";
           die();
   }*/
+  $db = new Db();
   
   if( isset( $_POST['arduinoName'] )     &&
      
       isset( $_POST['arduinoAddress'] )  &&
-      isset( $_POST['arduinoPort'] )  && Db::connect() )
+      isset( $_POST['arduinoPort'] ) && $db->connect() )
   {
               
           
@@ -56,13 +57,13 @@
          
          $query = "SELECT * FROM registeredArduinos WHERE name='{$safeName}'";
          
-         $queryResult = Db::query( $query );
+         $queryResult = $db->query( $query );
          
          if( $queryResult )
          {
          
            $currTime = time();
-           $numRows = sqlite_num_rows( $queryResult );
+           $numRows = $db->numRows( $queryResult );
            
            if( $numRows == 0 )
            {
@@ -80,19 +81,19 @@
                    
            }
                  
-          if(  Db::query( $query ) != FALSE )
+          if(  $db->query( $query ) != FALSE )
           {
               $response = "OK";
           }
           
             
 
-         //}
+         }
        
        }
        
     }     
-  }
+  
   
   echo $response;
 

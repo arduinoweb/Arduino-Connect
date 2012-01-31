@@ -27,7 +27,7 @@
  
  $dbConnection = new Db();
  
- if( ! $dbConnection )
+ if( ! $dbConnection->connect() )
  {
       echo json_encode("dberror");
       die();
@@ -38,14 +38,14 @@
  
  $queryResult = $dbConnection->query( $query );
  
- if( $queryResult && sqlite_num_rows( $queryResult ) > 0 )
+ if( $queryResult && $dbConnection->numRows( $queryResult ) > 0 )
  {
      $tmpArray = NULL;
      $result = array();
      
      $currTime = time();
      
-     while( $tmpArray = sqlite_fetch_array( $queryResult ) )
+     while( $tmpArray = $dbConnection->fetchArray( $queryResult ) )
      {
      
        if( $currTime - $tmpArray['lastRegistered'] <=

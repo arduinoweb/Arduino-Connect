@@ -33,7 +33,7 @@
  $query = "DELETE FROM components WHERE id={$safeId}";
  $result = "error";
  
- if( $dbConnection  && $dbConnection->query( $query ) )
+ if( $dbConnection->connect()  && $dbConnection->query( $query ) )
  {
      $result = "ok";       
          
