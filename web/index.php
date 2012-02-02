@@ -45,6 +45,9 @@ $(document).ready( function(){
 
      components = [];
      
+     restore();
+     
+     
      $('#componentButton').click( function(){
                      $('#header').toggle();
                      
@@ -274,6 +277,78 @@ $('#components').dialog( {autoOpen: false, position:"left" });
     }
          
  });
+ 
+ 
+ function restore()
+ {
+         $.post("restore.php",function( data ){
+                         
+               var tmp = JSON.parse( data );
+               var tmpComponent = null;
+               var tmpId;
+               //alert( data );
+               for( var i = 0; i < tmp.length; i++)
+               {
+                    tmpId = tmp[i].id;
+                   // alert( tmp[i].id);
+                    switch( tmp[i].type )
+                    {
+                    case "horizontalgauge" : { tmpComponent = new HorizontalGauge( tmpId);
+                                               break;
+                                             } 
+                    case "radialgauge" : {tmpComponent = new RadialGauge( tmpId );
+                                                           break;
+                                         }
+                   case "verticalgauge" : {tmpComponent = new VerticalGauge( tmpId );
+                                                         break;
+                                 }
+                   case "pointergauge" : {tmpComponent = new PointerGauge( tmpId );
+                                                         break;
+                                 }
+                    case "lcd" : {tmpComponent = new Lcd( tmpId );
+                                                         break;
+                                 }
+                    case "linechart" : {tmpComponent = new LineChart( tmpId );
+                                                         break;
+                                 }
+                    case "barchart" : {tmpComponent = new BarChart( tmpId );
+                                                         break;
+                                 }
+                            
+                    }
+                  if( tmpComponent != null )
+                  {
+                    tmpComponent.setArduinoName( tmp[i].arduino );
+                    tmpComponent.setComponentTitle( tmp[i].title );
+                    tmpComponent.setInput( tmp[i].input );
+                    tmpComponent.setRefreshRate( tmp[i].refreshRate );
+                    
+                    tmpComponent.init();
+                    
+                   
+                    $('#refreshSlider'+tmpId).slider("option","value",(tmp[i].refreshRate/1000));
+                    $('#value'+tmpId).html( tmp[i].refreshRate/1000 + "s");
+                    $('#pinSlider'+tmpId).slider("option","value",tmp[i].input);
+                    $('#pinValue'+tmpId).html("Pin " + tmp[i].input);
+                    
+                    if( tmp[i].arduino != "none" )
+                    {
+                     $('#arduinoName'+tmpId).html( tmp[i].arduino );
+                    }
+                    
+                    if( tmp[i].isActive == "true" )
+                    {
+                        tmpComponent.startScheduler();
+                    }
+                    
+                    components[tmpId] = tmpComponent;
+                  }
+               }
+                       
+         });
+         
+         
+ }
 });
 </script>
 </head>

@@ -139,7 +139,7 @@ Component.prototype.init = function(){
                   else
                   {
                     _self.message(
-                            "currently unable to delete component" );
+                            "currently unable to delete component" + data);
                     
                           
                   }

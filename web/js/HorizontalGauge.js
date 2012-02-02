@@ -20,7 +20,8 @@ HorizontalGauge.prototype.createContainer = function() {
              '<div id="refreshRate'+this.__componentId__+'" class="refreshpanel" ><label id="value'+this.__componentId__+'">1s</label><div id="refreshSlider'+this.__componentId__+'"></div></div>'
              +
              
-             '<div class="inputs" ><span id="inputArea'+this.__componentId__+'"></span><div id="pinPanel'+this.__componentId__+'" class="pinPanel"><label id="pinValue'+this.__componentId__+'">Pin 0</label><div id="pinSlider'+this.__componentId__+'"></div></div></div>'
+             '<div class="inputs" ><span id="inputArea'+this.__componentId__+'"><img id="inputIcon'+this.__componentId__+'" src="img/plug.png" style="margin-right:15px" /><span id="arduinoName'+this.__componentId__+'"></span></span><div id="pinPanel'+this.__componentId__+'" class="pinPanel"><label id="pinValue'+
+             this.__componentId__+'">Pin 0</label><div id="pinSlider'+this.__componentId__+'"></div></div></div>'
              
              +'</div>'
       

@@ -45,6 +45,9 @@ $(document).ready( function(){
 
      components = [];
      
+     restore();
+     
+     
      $('#componentButton').click( function(){
                      $('#header').toggle();
                      
@@ -211,7 +214,7 @@ function saveComponent( componentId )
                     title: "New Component",
                   text: "creating new component"
                   });      
-    $.post( "http://192.168.141.128/~gary/arduino/Arduino-Connect/web/persist.php", 
+    $.post( "persist.php", 
             {
              componentId: components[componentId].getId(),
              arduinoName: components[componentId].getArduinoName(),
@@ -234,7 +237,7 @@ function saveComponent( componentId )
                if( data != "ok" )
                {
                     $.gritter.add({
-                    title: "Component Creation Error",
+                    title: "Component Creation Error" + data,
                   text: "unable to access database to create component"
                   });      
                        
@@ -274,6 +277,72 @@ $('#components').dialog( {autoOpen: false, position:"left" });
     }
          
  });
+ 
+ 
+ function restore()
+ {
+         $.post("restore.php",function( data ){
+                         
+               var tmp = JSON.parse( data );
+               var tmpComponent;
+               var tmpId;
+               
+               for( var i = 0; i < tmp.length; i++)
+               {
+                    tmpId = tmp[i].id;
+                   // alert( tmp[i].id);
+                    switch( tmp[i].type )
+                    {
+                    case "horizontalgauge" : { tmpComponent = new HorizontalGauge( tmpId);
+                                               break;
+                                             } 
+                                     case "radialgauge" : {tmpComponent = new RadialGauge( tmpId );
+                                                           break;
+                                                          }
+                            
+                    }
+                      
+                    tmpComponent.setArduinoName( tmp[i].arduino );
+                    tmpComponent.setComponentTitle( tmp[i].title );
+                    tmpComponent.setInput( tmp[i].input );
+                    tmpComponent.setRefreshRate( tmp[i].refreshRate );
+                    
+                    tmpComponent.init();
+                    
+                   
+                    $('#refreshSlider'+tmpId).slider("option","value",(tmp[i].refreshRate/1000));
+                    $('#value'+tmpId).html( tmp[i].refreshRate/1000 + "s");
+                    
+                 //   if( tmp[i].arduino != "none" )
+                 //  {        
+                       $('#inputArea'+tmpId).html(
+                        '<img id="inputIcon'+tmpId+
+                         '" src="img/plug.png" style="margin-right:15px" />'+
+                        tmp[i].arduino);
+                       
+                         $('#inputIcon'+tmpId).click( function(){
+                             $('#pinPanel'+tmpId).toggle();           
+                                 
+                         if( $('#refreshRate'+tmpId).css('display') 
+                                 != 'none' &&
+                              $('#pinPanel'+tmpId).css('display')
+                                 != 'none')
+                               $('#refreshRate'+tmpId).toggle();
+                                       
+                        });
+                         
+                       $('#pinSlider'+tmpId).slider("option","value",tmp[i].input);
+                       $('#pinValue'+tmpId).html("Pin " + tmp[i].input);
+                       
+                //    }
+                    
+                    components[tmpId] = tmpComponent;
+               }
+                       
+         });
+         
+         
+ }
 });
 </script>
 </head>
