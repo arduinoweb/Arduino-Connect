@@ -41,13 +41,13 @@ public class SerialComm
       /** Constructor
       */
           
-    private TransferQueue< String > SERIAL_INPUT_QUEUE;   
+    private TransferQueue< Integer > SERIAL_INPUT_QUEUE;   
     private TransferQueue<Pin> SERIAL_OUTPUT_QUEUE;
     private SerialOutputProcessor serialOutputProcessor;
     
 
    public SerialComm( TransferQueue< Pin > SERIAL_OUTPUT_QUEUE,
-                      TransferQueue<String> SERIAL_INPUT_QUEUE )
+                      TransferQueue<Integer> SERIAL_INPUT_QUEUE )
     {
        super();
        this.SERIAL_OUTPUT_QUEUE = SERIAL_OUTPUT_QUEUE;
@@ -111,35 +111,33 @@ public class SerialComm
     public static class SerialReader implements SerialPortEventListener 
     {
         private InputStream in;
-        private byte[] buffer = new byte[1024];
-        private final TransferQueue< String > SERIAL_INPUT_QUEUE;
+  
+        private final TransferQueue< Integer > SERIAL_INPUT_QUEUE;
         private int len;
         
        public SerialReader ( InputStream in, 
-                             TransferQueue<String> SERIAL_INPUT_QUEUE )
+                             TransferQueue<Integer> SERIAL_INPUT_QUEUE )
        {
             this.in = in;
             this.SERIAL_INPUT_QUEUE =SERIAL_INPUT_QUEUE;
 
        }
         
-       public void serialEvent(SerialPortEvent arg0) 
+       public void serialEvent(SerialPortEvent event) 
        {
-            int data;
-            byte byteRead; 
-            len = 0;
+            
             try
             {
-               
-                while ( ( data = in.read()) > -1 )
+              if( event.getEventType() == SerialPortEvent.DATA_AVAILABLE )
+              {
+               len = in.available();
+                while ( len > 0 )
                 {
-                    if ( data == 'E' ) {
-                        break;
-                    }
-                    buffer[len++] = (byte) data;
+                      SERIAL_INPUT_QUEUE.add( in.read() );
+                      len--;           
                 }
-                
-                SERIAL_INPUT_QUEUE.add( new String( buffer, 0, len ) );
+              } 
+             
             }
             catch ( IOException e )
             {

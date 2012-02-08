@@ -1,15 +1,19 @@
 
 
-var pin10 = pins.get(new java.lang.Integer(10));
-var threshold = 127;
+var pin10 = PIN_MAP_COPY.get(new java.lang.Integer(1));
 
-
-var prevValue = state.get("10");
-  
-java.lang.System.out.println( "Running Script: Previous Value of pin 10  " + prevValue);
-java.lang.System.out.println( "                Current  Value of pin 10  " + pin10);
-  state.put("10", new java.lang.Integer( pin10 ) );
-
+  /*SESSION_MAP.put("10", new java.lang.Integer( pin10 ) );*/
+  java.lang.System.out.println( "In Script: Pin 10 " + pin10);
+if( pin10 == 190 )
+{
+    //    java.lang.System.out.println( "In Script: Pin 10 == 190");
+        messenger.sendMsg( "127.0.0.1", 10002, "W D 7 255 E");
+}
+else if ( pin10 == 2 )
+{
+    //            java.lang.System.out.println( "In Script: Pin 10 == 2");
+     messenger.sendMsg( "127.0.0.1", 10002, "W D 7 0 E");
+}
 //setLight( pin10);
 /**if( pin10 != prevValue ) 
   {

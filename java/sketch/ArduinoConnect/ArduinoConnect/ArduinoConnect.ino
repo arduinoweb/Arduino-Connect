@@ -51,11 +51,11 @@ int value9 = 10;
 
 void setup() {
   // initialize serial communications at 9600 bps:
- Serial.begin(9600); 
+ Serial.begin(115200); 
  pinMode( A0, INPUT );
 
 value2 = -1;
-value1 = -1;
+value1 = 0;
  
  
 }
@@ -88,47 +88,58 @@ void loop() {
 // readMsg();
   //delay( 100 );*/
   
- value1 = analogRead( A0 );
- value1 = map( value1, 0,1023,0,255);
+ //value1 = analogRead( A0 );
+ //value1 = map( value1, 0,1023,0,255);
   //delay( 1000);
   
-  if( value1 != value2 )
+/**  if( value1 != value2 )
  {
   sendMsg( 10, value1 );
  value2 = value1;
   }
   
-  //delay(2000);
-  readMsg();
+  //delay(2000);*/
+  
+  
+  
+  sendMsg( 1, value1);
+  value1++;
+  if( value1 == 255 )
+  {
+   value1 = 0; 
+    
+  }
+  
+ readMsg();
 }
 
  void sendMsg(int pin,   int msg )
  {
      
-     
+    // delay( 100 );
 
      //Serial.print(  WRITE_SYNC, BYTE );
-      Serial.write( WRITE_SYNC );
+      Serial.print( WRITE_SYNC);
      //waitForData();
      
       //if( Serial.peek() == WRITE_SYNC )
      // {
     //    Serial.read();
-      Serial.write( SPACE );
+      Serial.print( SPACE );
       Serial.print( pin, DEC);
      
    
       
       //Serial.print(SPACE, BYTE); 
-      Serial.write( SPACE );
+      Serial.print( SPACE );
    
       Serial.print( msg, DEC );
-      Serial.write( WRITE_SYNC );
+     
       //Serial.print( END_OF_MESSAGE, BYTE ); 
-      Serial.write( END_OF_MESSAGE);
-    //  }
-   //   else
-   //     Serial.read();
+      Serial.print( END_OF_MESSAGE);
+   //  }
+    // else
+    //   Serial.read();
       
      
       
@@ -168,8 +179,8 @@ void readMsg()
    // sendMsg( pinNum, pinValue );
     
   }
-  else
-    Serial.read();
+ else
+  Serial.read();
   
  
  
@@ -181,8 +192,8 @@ void waitForData()
   unsigned long startTime = millis();
   unsigned long currentTime = startTime;
   
-  while( ( currentTime - startTime ) < TIMEOUT
-          && Serial.available() == 0 )
+  while(  Serial.available() == 0 && ( currentTime - startTime ) < TIMEOUT
+           )
   {
     currentTime = millis();
   }

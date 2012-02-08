@@ -1,18 +1,20 @@
 package ucc.arduino.main;
 
+import ucc.arduino.main.KeyValue;
+
 import java.util.HashMap;
 import java.util.concurrent.TransferQueue;
-
+import java.util.AbstractMap.SimpleEntry;
 
 public class PinMap{
         
   private final HashMap<Integer, Integer> PIN_MAP;
-  private TransferQueue<HashMap<Integer,Integer>> scriptInvocationQueue;
+  private TransferQueue<KeyValue<Integer,Integer>> SCRIPT_INVOCATION_QUEUE;
   
   public PinMap( )
   {
     PIN_MAP = new HashMap<Integer, Integer>();
-    scriptInvocationQueue = null;
+    SCRIPT_INVOCATION_QUEUE = null;
   }
   
 public synchronized Integer update(final Integer pinNumber, final Integer pinValue  )
@@ -23,25 +25,25 @@ public synchronized Integer update(final Integer pinNumber, final Integer pinVal
         {
            return currentValue;
         }
-        else if( currentValue == null || ( currentValue.intValue() != pinValue.intValue() ) )
+        else 
         {
            PIN_MAP.put( pinNumber, pinValue );
-           currentValue = pinValue;
+         
            
-           if( scriptInvocationQueue != null )
+           if( SCRIPT_INVOCATION_QUEUE != null )
            {
-             scriptInvocationQueue.add( 
-                     new HashMap<Integer,Integer>( PIN_MAP ) );
+             SCRIPT_INVOCATION_QUEUE.add( 
+                     new KeyValue<Integer,Integer>(pinNumber, pinValue ) );
            }
         }  
         
         return pinValue;
   }
   
- public void enableScripting(TransferQueue<HashMap<Integer,Integer>> scriptInvocationQueue)
+ public void enableScripting(TransferQueue<KeyValue<Integer,Integer>> SCRIPT_INVOCATION_QUEUE)
  {
 
-    this.scriptInvocationQueue = scriptInvocationQueue;
+    this.SCRIPT_INVOCATION_QUEUE = SCRIPT_INVOCATION_QUEUE;
          
  }
         

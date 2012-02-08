@@ -17,7 +17,7 @@ import ucc.arduino.serial.SerialInputProcessor;
 import ucc.arduino.net.ClientConnection;
 import ucc.arduino.serial.SerialComm;
 
-import ucc.arduino.main.Pin;
+import ucc.arduino.main.KeyValue;
 import ucc.arduino.net.NetworkRegister;
 
 import java.net.ServerSocket;
@@ -63,10 +63,10 @@ public class Arduino{
     /** Thread that runs a user supplied script*/
     private static Scripter scripter;
     /**Queue that feeds Scripter class with details of pin changes*/
-    private static TransferQueue<HashMap<Integer,Integer>> 
-      SCRIPT_INVOCATION_QUEUE = new LinkedTransferQueue<HashMap<Integer,Integer>>();
+    private static TransferQueue<KeyValue<Integer,Integer>> 
+      SCRIPT_INVOCATION_QUEUE = new LinkedTransferQueue<KeyValue<Integer,Integer>>();
     /** Queue that stores the messages received via serial port from the Arduino*/
-    private static TransferQueue< String> SERIAL_INPUT_QUEUE = new LinkedTransferQueue< String >();
+    private static TransferQueue< Integer > SERIAL_INPUT_QUEUE = new LinkedTransferQueue< Integer >();
     /**A Queue of the write requests received from clients*/
     private static final TransferQueue<Pin> SERIAL_OUTPUT_QUEUE = new LinkedTransferQueue<Pin>();
     /** Thread that processes the messages in SERIAL_INPUT_QUEUE*/

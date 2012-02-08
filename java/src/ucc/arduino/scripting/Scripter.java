@@ -1,27 +1,24 @@
 package ucc.arduino.scripting;
 
-
-import ucc.arduino.main.Arduino;
 import ucc.arduino.net.Messenger;
-
+import ucc.arduino.main.KeyValue;
 
 import javax.script.*;
 
-import java.util.HashMap;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.FileReader;
 
 import java.util.HashMap;
-import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 
 public class Scripter implements Runnable {
         
    private boolean stayAlive;     
    private  final File SCRIPT;
-   private HashMap<String, Object> state;
+   private final HashMap<String, Object> SESSION_MAP;
    private final Messenger messenger;
    private ScriptEngineManager scriptEngineManager;
    private ScriptEngine scriptEngine;
@@ -29,17 +26,22 @@ public class Scripter implements Runnable {
    private Compilable compilable;
    private Bindings bindings;
    private long scriptLastModified;
-   private final TransferQueue<HashMap<Integer,Integer>> TRANSFER_QUEUE;
+   private final TransferQueue<KeyValue<Integer,Integer>> SCRIPT_INVOCATION_QUEUE;
+   private final HashMap< Integer, Integer> PIN_MAP_COPY;
    
-   public Scripter( File script, TransferQueue<HashMap<Integer,Integer>> transferQueue ) throws FileNotFoundException,
+   public Scripter( final File script, 
+                    final TransferQueue<KeyValue<Integer,Integer>> SCRIPT_INVOCATION_QUEUE ) 
+                                                  throws FileNotFoundException,
                                                          IOException,
                                                          ScriptException
    {
       super();
-      TRANSFER_QUEUE = transferQueue;
+      this.SCRIPT_INVOCATION_QUEUE = SCRIPT_INVOCATION_QUEUE;
       stayAlive = true;
       SCRIPT = script;
-      state = new HashMap<String, Object>();
+      PIN_MAP_COPY = new HashMap<Integer, Integer>();
+      
+      SESSION_MAP = new HashMap<String, Object>();
       messenger = new Messenger();
       scriptEngineManager = new ScriptEngineManager();
       scriptEngine = scriptEngineManager.getEngineByName("JavaScript");
@@ -48,8 +50,10 @@ public class Scripter implements Runnable {
       compilable = (Compilable) scriptEngine;    
      
       bindings.put( "messenger", messenger);
-      bindings.put( "state", state);
+      bindings.put( "SESSION_MAP", SESSION_MAP);
+     
       compiledScript = compilable.compile( new FileReader( SCRIPT ) );
+      
       compilable = null;
       scriptEngine = null;
       scriptEngineManager = null;
@@ -59,18 +63,16 @@ public class Scripter implements Runnable {
    
    public void run()
    {
-      HashMap<Integer,Integer> pinState;
+      KeyValue<Integer,Integer> updatedPin;
    
       
       while( stayAlive )
       {
       
-      //  if( (pinState = this.poll() ) != null )   
-       // {
-          
         try{
-           pinState = TRANSFER_QUEUE.take();
-           bindings.put("pins", pinState); 
+           updatedPin = SCRIPT_INVOCATION_QUEUE.take();
+           PIN_MAP_COPY.put( updatedPin.getKey(), updatedPin.getValue() );
+            bindings.put("PIN_MAP_COPY", PIN_MAP_COPY);
            compiledScript.eval( bindings);
         }catch( InterruptedException ie ){
                 System.err.println( ie );
@@ -78,12 +80,10 @@ public class Scripter implements Runnable {
            System.err.println(e);        
          }    
          finally{ 
-           pinState = null;       
+              
          }
-     //   }
-     
-     // pinState = null;
-     // Thread.yield();       
+       
+       updatedPin = null;
       }
    }
            

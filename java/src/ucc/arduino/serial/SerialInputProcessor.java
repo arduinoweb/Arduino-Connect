@@ -7,20 +7,28 @@ import java.util.concurrent.TransferQueue;
 public class SerialInputProcessor implements Runnable{
         
         
- private final TransferQueue< String > SERIAL_INPUT_QUEUE;
- private String inputReceived;
+ private final TransferQueue< Integer > SERIAL_INPUT_QUEUE;
+ private int inputReceived;
 
  private final PinMap PIN_MAP;
  private Integer pinNumber;
  private Integer pinValue;
  
- public SerialInputProcessor( final TransferQueue< String> SERIAL_INPUT_QUEUE,
+ private StringBuffer buffer; 
+ private String tmp;
+ private String[] msgComponents;
+ 
+ private boolean saveCharacter;
+ 
+ public SerialInputProcessor( final TransferQueue< Integer > SERIAL_INPUT_QUEUE,
                               final PinMap PIN_MAP )
  {
      this.SERIAL_INPUT_QUEUE = SERIAL_INPUT_QUEUE;
 
      this.PIN_MAP = PIN_MAP;
-     
+
+     saveCharacter = false;
+     buffer = new StringBuffer();
  }
      
  public void run()
@@ -30,51 +38,47 @@ public class SerialInputProcessor implements Runnable{
             try{    
                  inputReceived = SERIAL_INPUT_QUEUE.take();
                 
-                 int startIndex = -1;
-               
-                 for( int i = 0; i < inputReceived.length(); i++ )
+                 if( (char)inputReceived == 'W' )
                  {
-                   if( inputReceived.charAt( i ) == 'W' )
-                   {
-                  
-                   if( startIndex != -1)
-                   {
-                     String tmp = inputReceived.substring( startIndex+2, i );
-                     System.out.println( tmp );
-                     String[] tmpPin = tmp.split( " " );
-                     
-                     if( tmpPin.length == 2 )
-                     {
-                             try{
-                                  pinNumber = Integer.parseInt( tmpPin[0] );
-                                  pinValue = Integer.parseInt( tmpPin[1] );
-                                     
-                                  PIN_MAP.update( pinNumber, pinValue);
-                                   
-                             }catch( NumberFormatException nfe ){ }
-                             
-                         pinNumber = null;
-                         pinValue = null;
-                             
-                     }
-                     
-                     startIndex = -1;
-                     tmp = null;
-                     tmpPin = null;
-                           
-                   }
-                   else 
-                   {
-                      startIndex = i;       
-                           
-                   }
-                 }
-                   
-                  
+                   saveCharacter = true;      
                          
                  }
-                 System.out.println();
+                 else if( saveCharacter && (char)inputReceived == 'E' )
+                 {
+                  tmp = buffer.toString();
+                  tmp = tmp.trim();
+                  msgComponents = tmp.split(" ");
+
+                    if( msgComponents.length == 2 )
+                    {   
+                       try{
+                            pinNumber = Integer.parseInt( msgComponents[0] );
+                            pinValue = Integer.parseInt( msgComponents[1] );
+                            PIN_MAP.update( pinNumber, pinValue );
+                                    
+                            }catch(NumberFormatException nfe ){
+                                    
+                               System.err.println( nfe );       
+                            }
+                            
+                            pinNumber = null;
+                            pinValue = null;
+                    }
+                  
+                    saveCharacter = false;
+                    msgComponents = null;
+                    tmp = null;
+                    buffer = null;
+                    buffer = new StringBuffer();
+                              
+                 }
+                 else if( saveCharacter )
+                 {
+                 buffer.append( (char)inputReceived );
+                        
+                  }
                  
+      
             }catch( InterruptedException ie ){
                    System.err.println( ie );       
                  }
