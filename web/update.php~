@@ -66,7 +66,7 @@ require_once( './php/lib/String.php');
  }
  
  $dbConnection = new Db();
- if( $dbConnection )
+ if( $dbConnection->connect() )
  {
          $query = "UPDATE components SET " . $safeField ."={$safeValue} WHERE"
          . " id = {$safeComponentId}";

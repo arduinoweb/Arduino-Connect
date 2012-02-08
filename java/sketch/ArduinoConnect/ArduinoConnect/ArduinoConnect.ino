@@ -30,8 +30,8 @@ byte outputValue = 0;        // value output to the PWM (analog out)
 
 
 
-#define  WRITE_SYNC 'R'
-#define  READ_SYNC  'W'
+#define  WRITE_SYNC 'W'
+#define  READ_SYNC  'R'
 #define END_OF_MESSAGE 'E'
 #define NOTHING_TO_RECEIVE 'N'
 #define  ANALOG 'A'
@@ -54,8 +54,8 @@ void setup() {
  Serial.begin(9600); 
  pinMode( A0, INPUT );
 
- value1 = value2 = analogRead( A0 );
- sendMsg( 10, value1 );
+value2 = -1;
+value1 = -1;
  
  
 }
@@ -88,16 +88,17 @@ void loop() {
 // readMsg();
   //delay( 100 );*/
   
-  value1 = analogRead( A0 );
-  value1 = map( value1, 0,1023,0,255);
+ value1 = analogRead( A0 );
+ value1 = map( value1, 0,1023,0,255);
   //delay( 1000);
   
-  if( value2 != value1 )
-  {
+  if( value1 != value2 )
+ {
   sendMsg( 10, value1 );
-  value2 = value1;
+ value2 = value1;
   }
   
+  //delay(2000);
   readMsg();
 }
 
@@ -108,12 +109,12 @@ void loop() {
 
      //Serial.print(  WRITE_SYNC, BYTE );
       Serial.write( WRITE_SYNC );
-     waitForData();
+     //waitForData();
      
-      if( Serial.peek() == WRITE_SYNC )
-      {
-        Serial.read();
-      
+      //if( Serial.peek() == WRITE_SYNC )
+     // {
+    //    Serial.read();
+      Serial.write( SPACE );
       Serial.print( pin, DEC);
      
    
@@ -122,12 +123,12 @@ void loop() {
       Serial.write( SPACE );
    
       Serial.print( msg, DEC );
-  
+      Serial.write( WRITE_SYNC );
       //Serial.print( END_OF_MESSAGE, BYTE ); 
       Serial.write( END_OF_MESSAGE);
-      }
-      else
-        Serial.read();
+    //  }
+   //   else
+   //     Serial.read();
       
      
       
@@ -142,17 +143,17 @@ void readMsg()
   byte pinValue = -1;
   
   //Serial.print( READ_SYNC, BYTE );
-  Serial.write( READ_SYNC );
-  waitForData();
+ // Serial.write( READ_SYNC );
+  //waitForData();
   
-  if( Serial.peek() == READ_SYNC )
+  if( Serial.available() && Serial.peek() == READ_SYNC )
   {
     Serial.read();
-    waitForData();
+   waitForData();
     pinType = Serial.read();
-    waitForData();
+   waitForData();
     pinNum = Serial.read();
-    waitForData();
+   waitForData();
     pinValue = Serial.read();
     
     if( pinType == ANALOG )
@@ -164,14 +165,14 @@ void readMsg()
     {
       digitalWrite( pinNum, pinValue );
     }
-    sendMsg( pinNum, pinValue );
+   // sendMsg( pinNum, pinValue );
     
   }
   else
     Serial.read();
   
  
-  
+ 
     
 
 }

@@ -45,7 +45,7 @@ $(document).ready( function(){
 
      components = [];
      
-     restore();
+    
      
      
      $('#componentButton').click( function(){
@@ -79,12 +79,39 @@ appendTo: 'body'
                   drop: function(event, ui){
                     var name = $(ui.draggable).attr('alt');
                    
-                    if( name == "linechart")
+                    var id = generateId();
+                    var tmp = null;
+                    
+                    switch( name )
+                    {
+                    case "linechart" : { tmp = new LineChart( id ); break;}        
+                    case "barchart" : {tmp = new BarChart( id ); break;}
+                    case "horizontalgauge" : {tmp = new HorizontalGauge( id ); break;}
+                    case "verticalgauge" : {tmp = new VerticalGauge( id ); break;}
+                    case "radialgauge" : {tmp = new RadialGauge( id ); break; }
+                    case "lcd" : {tmp = new Lcd( id ); break;}
+                    case "pointergauge" : {tmp = new PointerGauge( id ); break;}        
+                    }
+                      
+                    if( tmp != null )
+                    {
+                        tmp.init();
+                        $('#componentContainer'+id).css("position","absolute");
+                        var tmpOffset = $('#componentContainer'+id).offset();
+                    
+                       
+                        components[ id ] = tmp;
+                        saveComponent( id );
+                    }
+                    
+                   /* if( name == "linechart")
                     {
                       var id = generateId();
                       var tmp= new LineChart( id );
-                     
+                     tmp.setOffsetLeft( ui.draggable.offset.left);
+                      tmp.setOffsetTop( ui.draggable.offset.top );
                       tmp.init();
+                      tmp.move();
                       components[ id ] = tmp;
                       saveComponent( id );
                       
@@ -150,10 +177,10 @@ appendTo: 'body'
                      components[ id ] = tmp;
                       saveComponent( id );
                             
-                    }
+                    }*/
                   }
   });
-   
+    restore();
 var radial1;
  var sections = [steelseries.Section(0, 25, 'rgba(0, 0, 220, 0.3)'),
                         steelseries.Section(25, 50, 'rgba(0, 220, 0, 0.3)'),
@@ -322,10 +349,12 @@ $('#components').dialog( {autoOpen: false, position:"left" });
                     tmpComponent.setComponentTitle( tmp[i].title );
                     tmpComponent.setInput( tmp[i].input );
                     tmpComponent.setRefreshRate( tmp[i].refreshRate );
-                    
+                  
                     tmpComponent.init();
-                    
-                   
+                    $('#componentContainer'+tmpId).css("position","absolute");
+                     tmpComponent.setOffsetLeft( tmp[i].left );
+                      tmpComponent.setOffsetTop( tmp[i].top );
+                    tmpComponent.move();
                     $('#refreshSlider'+tmpId).slider("option","value",(tmp[i].refreshRate/1000));
                     $('#value'+tmpId).html( tmp[i].refreshRate/1000 + "s");
                     $('#pinSlider'+tmpId).slider("option","value",tmp[i].input);
@@ -333,13 +362,15 @@ $('#components').dialog( {autoOpen: false, position:"left" });
                     
                     if( tmp[i].arduino != "none" )
                     {
-                     $('#arduinoName'+tmpId).html( tmp[i].arduino );
-                    }
-                    
-                    if( tmp[i].isActive == "true" )
+                       if( tmp[i].isActive == "true" )
                     {
                         tmpComponent.startScheduler();
                     }
+                     $('#arduinoName'+tmpId).html( tmp[i].arduino );
+                    }
+                    
+                   
+                  //  $('#componentContainer'+tmpId).css( "left", tmp
                     
                     components[tmpId] = tmpComponent;
                   }
@@ -355,36 +386,11 @@ $('#components').dialog( {autoOpen: false, position:"left" });
 
 <body>
 
-   <!-- Begin Wrapper -->
+
    <div id="wrapper">
-   	 <!-- Begin Navigation -->
-        <!-- <div id="navigation" class="shadowed">
-		 
-		    
-		 </div>-->
-		 <!-- End Navigation -->
-         <!-- Begin Header -->
-       <!--  <div id="header">
-		 
- 
-
-         <div style="display: inline; float:left;margin-right: 40px;margin-top: 40px;"><button class="next"><<</button></div>        
-         <div class="componentScroller shadowed"  style="width: 1000px;border: 1px solid black; padding:5px">
-
-
    
-   
-	</div>
-	<div style="position:absolute;display: inline; left:1040px; top: 100px;"><button class="prev">>></button></div>		   
-
- </div>-->
-		 <!-- End Header -->
-		 
-	
-		 
-		 <!-- Begin Left Column -->
 		 <div id="leftcolumn" >
-		   <!--<h3 class="ui-widget-header">Arduinos-->
+		 
 		 <a id="componentButton" href="#"><img src="img/tools.png" /></a> 
 		  <div id="components" style="height: 500px"> 
      <div id="accordion"> 
@@ -422,21 +428,14 @@ $('#components').dialog( {autoOpen: false, position:"left" });
    
    </div>
 
-		 
-		<!--   <div>
-		      <ul id="arduinoList">
-		        <li class="arduino greyblue">none available</li>
-		       
-		     </ul>
-		  </div>-->
-		 
+		
 		 
 		 </div>
 		 <!-- End Left Column -->
 		 
 		 <!-- Begin Right Column -->
-		 <div id="rightcolumn" class="shadowed">
-		       
+		 <div id="rightcolumn" class="shadowed" >
+		       <h3 class="prompt">drag and drop component here to create</h3>
 	        
 		 </div>
 		 <!-- End Right Column -->

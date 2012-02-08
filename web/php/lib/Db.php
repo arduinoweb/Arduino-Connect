@@ -44,11 +44,7 @@ class Db{
     {
          $result = array();
          
-            if( ! $this->connection )
-            {
-                    $this->connect();
-            }
-            
+     
             
             if( $this->connection )
             {
@@ -98,6 +94,20 @@ class Db{
         
         return $count;
         
+   }
+   
+   function close()
+   {
+      if( SQLITE_VERSION == 3 && $this->connection )
+      {
+          $this->connection->close();      
+              
+      }
+     // else
+     // {
+     //      sqlite_close( $connection );
+    //  }
+            
    }
 }
 

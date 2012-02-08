@@ -284,7 +284,21 @@ Component.prototype.init = function(){
             }
   });
   
- 
+ /*$('#inputArea'+_self.__componentId__).html(
+                '<img id="inputIcon'+_self.__componentId__+
+                '" src="img/plug.png" style="margin-right:15px" />'+
+                _self.__arduinoName__);*/
+                            
+            $('#inputIcon'+_self.__componentId__).click( function(){
+                  $('#pinPanel'+_self.__componentId__).toggle();           
+                                 
+                  if( $('#refreshRate'+_self.__componentId__).css('display') 
+                            != 'none' &&
+                      $('#pinPanel'+_self.__componentId__).css('display')
+                            != 'none')
+                        $('#refreshRate'+_self.__componentId__).toggle();
+                                       
+              });
  //Make the component droppable to allow dragging of arduinos on to it
  $('#componentContainer'+_self.__componentId__).droppable({
      accept: '.live',
@@ -303,13 +317,14 @@ Component.prototype.init = function(){
            if( data == "ok" ) 
            {     
            //_self.stopScheduler();
-           _self.__arduinoName__ = tmp;                 
-            $('#inputArea'+_self.__componentId__).html(
+           _self.__arduinoName__ = tmp;    
+           $('#arduinoName'+_self.__componentId__).html( _self.__arduinoName__);
+          /*  $('#inputArea'+_self.__componentId__).html(
                 '<img id="inputIcon'+_self.__componentId__+
                 '" src="img/plug.png" style="margin-right:15px" />'+
-                _self.__arduinoName__);
+                _self.__arduinoName__);*/
                             
-            $('#inputIcon'+_self.__componentId__).click( function(){
+           /* $('#inputIcon'+_self.__componentId__).click( function(){
                   $('#pinPanel'+_self.__componentId__).toggle();           
                                  
                   if( $('#refreshRate'+_self.__componentId__).css('display') 
@@ -318,7 +333,7 @@ Component.prototype.init = function(){
                             != 'none')
                         $('#refreshRate'+_self.__componentId__).toggle();
                                        
-              });
+              });*/
            }
            else
            {

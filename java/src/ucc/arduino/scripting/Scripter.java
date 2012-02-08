@@ -12,10 +12,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.FileReader;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.HashMap;
 
-public class Scripter extends ConcurrentLinkedQueue<HashMap<Integer,Integer>> implements Runnable {
+import java.util.HashMap;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.TransferQueue;
+
+public class Scripter implements Runnable {
         
    private boolean stayAlive;     
    private  final File SCRIPT;
@@ -27,12 +29,14 @@ public class Scripter extends ConcurrentLinkedQueue<HashMap<Integer,Integer>> im
    private Compilable compilable;
    private Bindings bindings;
    private long scriptLastModified;
-      
-   public Scripter( File script ) throws FileNotFoundException,
+   private final TransferQueue<HashMap<Integer,Integer>> TRANSFER_QUEUE;
+   
+   public Scripter( File script, TransferQueue<HashMap<Integer,Integer>> transferQueue ) throws FileNotFoundException,
                                                          IOException,
                                                          ScriptException
    {
       super();
+      TRANSFER_QUEUE = transferQueue;
       stayAlive = true;
       SCRIPT = script;
       state = new HashMap<String, Object>();
@@ -56,24 +60,30 @@ public class Scripter extends ConcurrentLinkedQueue<HashMap<Integer,Integer>> im
    public void run()
    {
       HashMap<Integer,Integer> pinState;
-      long lastModified;
+   
       
       while( stayAlive )
       {
       
-        if( (pinState = this.poll() ) != null )   
-        {
+      //  if( (pinState = this.poll() ) != null )   
+       // {
           
         try{
+           pinState = TRANSFER_QUEUE.take();
            bindings.put("pins", pinState); 
            compiledScript.eval( bindings);
+        }catch( InterruptedException ie ){
+                System.err.println( ie );
          }catch(ScriptException e ){ 
            System.err.println(e);        
          }    
-        }
+         finally{ 
+           pinState = null;       
+         }
+     //   }
      
-      pinState = null;
-      Thread.yield();       
+     // pinState = null;
+     // Thread.yield();       
       }
    }
            

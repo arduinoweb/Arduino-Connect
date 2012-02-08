@@ -64,13 +64,27 @@ require_once( './php/lib/String.php');
     $safeField = "input";
     $safeValue = String::safeSql( $_POST['input'] );
  }
- 
+ elseif( isset( $_POST['left'] ) && isset( $_POST['top'] ) )
+ {
+     $safeValue = array();
+    $safeValue['left'] = String::safeSql( $_POST['left'] );
+     $safeValue['top'] = String::safeSql( $_POST['top'] );
+    $safeField = "position";
+       
+ }
  $dbConnection = new Db();
  if( $dbConnection->connect() )
  {
+     if( $safeField == "position" )
+     {
+             $query = "UPDATE components SET left={$safeValue['left']}, top={$safeValue['top']} WHERE id={$safeComponentId}";
+              
+     }
+     else
+      {
          $query = "UPDATE components SET " . $safeField ."={$safeValue} WHERE"
          . " id = {$safeComponentId}";
-         
+      }  
         
          
  }

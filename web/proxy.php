@@ -48,7 +48,9 @@
       if( $currTime - $arduinoDetails['lastRegistered'] 
                <= ARDUINO_NETWORK_REGISTRATION_RATE )
       {
+         $arrOpt = array('l_onoff' => 0, 'l_linger' => 0);
          $sock = socket_create( AF_INET, SOCK_STREAM, 0 );
+         socket_set_option($sock, SOL_SOCKET, SO_LINGER, $arrOpt);
          
          if( ($success = socket_connect( $sock, $arduinoDetails['address'], 
                  $arduinoDetails['port'] ) ) )
@@ -66,6 +68,8 @@
               }
             }
          }
+         
+         socket_close( $sock );
       }
            
     }
@@ -76,6 +80,7 @@
       $query = "DELETE FROM registeredArduinos WHERE name ='{$arduinoName}'";
       $db->query( $query );       
     }
+   $db->close();
    
     echo $returnMsg;
 ?>

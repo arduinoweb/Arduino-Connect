@@ -5,6 +5,8 @@
 body {
  font-family: Arial, Helvetica, sans-serif;
  font-size: 13px;
+ scroll:auto;
+
 }
 #wrapper { 
  margin: 0 auto;
@@ -48,8 +50,9 @@ body {
 #rightcolumn { 
  float: right;
  color: #333;
- border: 1px solid #ccc;
-
+ //border: 1px solid #ccc;
+ border-bottom: none;
+ border-top: none;
  background: #FFFFF;
  margin: 0px 0px 0px 0px;
  margin-top: 20px;
@@ -58,7 +61,13 @@ body {
  width: 1020px;
  display: inline;
  scroll: auto;
+ background-color:#3366CC;
+// background-image:    -moz-linear-gradient(left, #3366CC, #FFFFFF);
+ border-radius: 4px;
+ color: #F0FFF0;
 }
+
+.prompt { font-size:15px; text-align:center; opacity:0.6;}
 #footer { 
  width: 1248px;
  clear: both;
@@ -72,7 +81,7 @@ body {
 .shadowed{
   -moz-box-shadow: 5px 5px 5px #ccc;
   -webkit-box-shadow: 5px 5px 5px #ccc;
-  box-shadow: 2px 2px 5px #ccc;
+  box-shadow: 4px 4px 5px #ccc;
         
 }
 
@@ -107,12 +116,12 @@ h3 { font-size: 25px;}
 
 .title { font-size: 20px; color: black;  height: 30px;}
 
-.componentContainer { border:4px; border-radius: 4px;padding: 10px; width: 600px; height: 280px;margin-bottom: 10px;}
+.componentContainer { background-color: #F0FFF0;border:4px; border-radius: 4px;padding: 10px; width: 600px; height: 280px;margin-bottom: 10px;}
 .graph { width: 600px; height: 200px; }
-.horizontalGaugeContainer{ border:4px; border-radius: 4px;padding: 10px; width: 320px; height: 240px;margin-bottom: 10px;}
-.verticalGaugeContainer{ border: 4px; border-radius: 4px; padding: 10px; width: 200px; height: 400px; margin-bottom: 10px;}
-.radialGaugeContainer{ border: 4px; border-radius: 4px; padding: 10px; width: 250px; height: 280px; margin-bottom: 10px;}
-.lcdGaugeContainer{ border: 4px; border-radius: 4px; padding: 10px; width: 250px; height: 130px; margin-bottom: 10px;}
+.horizontalGaugeContainer{ background-color: #F0FFF0;border:4px; border-radius: 4px;padding: 10px; width: 320px; height: 240px;margin-bottom: 10px;}
+.verticalGaugeContainer{ background-color: #F0FFF0;border: 4px; border-radius: 4px; padding: 10px; width: 200px; height: 400px; margin-bottom: 10px;}
+.radialGaugeContainer{ background-color: #F0FFF0; border: 4px; border-radius: 4px; padding: 10px; width: 250px; height: 280px; margin-bottom: 10px;}
+.lcdGaugeContainer{background-color: #F0FFF0; border: 4px; border-radius: 4px; padding: 10px; width: 250px; height: 130px; margin-bottom: 10px;}
 
         
 //.titlebar{ height: 20px; color: #A8B4C1; margin-bottom: 20px;padding-bottom:20px}
