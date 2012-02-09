@@ -119,10 +119,11 @@ public class Arduino{
      }
    
      
-     serialComm = new SerialComm( SERIAL_OUTPUT_QUEUE, SERIAL_INPUT_QUEUE);
-	
-         try{
-	     serialComm.connect( );
+    // serialComm = new SerialComm( SERIAL_OUTPUT_QUEUE, SERIAL_INPUT_QUEUE);
+	serialComm = new SerialComm( CONFIGURATION );
+         try{ 
+	     serialComm.connect(SERIAL_OUTPUT_QUEUE,
+	                        SERIAL_INPUT_QUEUE);
          
 
 	   }catch( Exception e ){

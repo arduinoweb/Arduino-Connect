@@ -33,12 +33,12 @@ public class SerialOutputProcessor implements Runnable{
               try{      
          writeToPin = SERIAL_OUTPUT_QUEUE.take();
          
-         System.out.println("Writing: Pin " + writeToPin.getName() + 
+         System.out.println("Writing: Pin " + writeToPin.getPinNumber() + 
                  " Mode: " + writeToPin.getMode() + " Value: " + writeToPin.getValue() );
          
-         message[1] = ( byte )writeToPin.getMode();
-         message[2] = ( byte )writeToPin.getName();
-         message[3] = (byte)writeToPin.getValue();
+         message[1] = writeToPin.getMode();
+         message[2] = ( byte )writeToPin.getPinNumber();
+         message[3] = (byte)writeToPin.getValue().intValue();
         
          try{
          SERIAL_OUT.write( message );
