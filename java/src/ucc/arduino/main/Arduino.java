@@ -12,7 +12,6 @@ import ucc.arduino.configuration.Configuration;
 import ucc.arduino.scripting.Scripter;
 
 import ucc.arduino.main.PinMap;
-import ucc.arduino.serial.SerialInputProcessor;
 
 import ucc.arduino.net.ClientConnection;
 import ucc.arduino.serial.SerialComm;
@@ -66,37 +65,40 @@ public class Arduino{
     private static TransferQueue<KeyValue<Integer,Integer>> 
       SCRIPT_INVOCATION_QUEUE = new LinkedTransferQueue<KeyValue<Integer,Integer>>();
     /** Queue that stores the messages received via serial port from the Arduino*/
-    private static TransferQueue< Integer > SERIAL_INPUT_QUEUE = new LinkedTransferQueue< Integer >();
+    private static TransferQueue< Integer > serialInputQueue;
     /**A Queue of the write requests received from clients*/
-    private static final TransferQueue<Pin> SERIAL_OUTPUT_QUEUE = new LinkedTransferQueue<Pin>();
-    /** Thread that processes the messages in SERIAL_INPUT_QUEUE*/
-    private final SerialInputProcessor SERIAL_INPUT_PROCESSOR;
+    private static TransferQueue<Pin> serialOutputQueue;
+
     
     /**Constructor*/
     public Arduino( File configurationFile ) throws Exception {
         CONFIGURATION = new Configuration( configurationFile );
         PIN_MAP = new PinMap( );
        
-        /** Property used by RxTx class*/
-        System.setProperty("gnu.io.rxtx.SerialPorts",
-                            CONFIGURATION.getSerialPort() );
-        
        
-        networkRegister = new NetworkRegister(
-                              CONFIGURATION.getArduinoNetworkName(),
+        
+       if( CONFIGURATION.getNetworkRegister().equals("yes") )
+       {
+         networkRegister = new NetworkRegister(
+                              CONFIGURATION.getNetworkName(),
                               
                               CONFIGURATION.getNetworkAddress().getHostAddress(),
                               CONFIGURATION.getNetworkPort(),
-                              CONFIGURATION.getDeviceRegistrationUrl() );
+                              CONFIGURATION.getWebServerUrl() );
         
-        serverSocket = new ServerSocket( CONFIGURATION.getNetworkPort(),
+        
+       registrationService = Executors.newScheduledThreadPool( 1 );
+	
+       
+       registrationService.scheduleWithFixedDelay( networkRegister,
+	  0, CONFIGURATION.getNetworkRegistrationRate(), TimeUnit.SECONDS 
+	                                           );
+       }
+       
+      serverSocket = new ServerSocket( CONFIGURATION.getNetworkPort(),
                                          CONFIGURATION.getNetworkQueueLength(),
                                          CONFIGURATION.getNetworkAddress() );
         
-        
-	SERIAL_INPUT_PROCESSOR = new SerialInputProcessor( SERIAL_INPUT_QUEUE, 
-	                                                             PIN_MAP );
-	new Thread( SERIAL_INPUT_PROCESSOR ).start();
 	
      scripter = null;
      
@@ -104,7 +106,8 @@ public class Arduino{
     {
      try{
         scripter = new Scripter(  new File( CONFIGURATION.getScriptName()), 
-                                                    SCRIPT_INVOCATION_QUEUE );
+                                                    SCRIPT_INVOCATION_QUEUE,
+                                  CONFIGURATION.getUseInvocationThread().equals("yes"));
          new Thread( scripter).start();
          PIN_MAP.enableScripting( SCRIPT_INVOCATION_QUEUE );
          
@@ -118,12 +121,21 @@ public class Arduino{
          }
      }
    
+     String serialPort = CONFIGURATION.getSerialPort();
      
-    // serialComm = new SerialComm( SERIAL_OUTPUT_QUEUE, SERIAL_INPUT_QUEUE);
-	serialComm = new SerialComm( CONFIGURATION );
+     
+     if( ! serialPort.equals("none") )
+     {        
+              /** Property used by RxTx class*/
+        System.setProperty("gnu.io.rxtx.SerialPorts",
+                            serialPort );
+       serialInputQueue = new LinkedTransferQueue< Integer >();
+       serialOutputQueue = new LinkedTransferQueue<Pin>();
+       serialComm = new SerialComm( CONFIGURATION );
          try{ 
-	     serialComm.connect(SERIAL_OUTPUT_QUEUE,
-	                        SERIAL_INPUT_QUEUE);
+	     serialComm.connect(serialOutputQueue,
+	                        serialInputQueue,
+	                        PIN_MAP);
          
 
 	   }catch( Exception e ){
@@ -132,13 +144,11 @@ public class Arduino{
 	     System.exit( 1 );
 	   }
 	
-	   
-	 registrationService = Executors.newScheduledThreadPool( 1 );
-	
-       
-       registrationService.scheduleWithFixedDelay( networkRegister,
-	  0, CONFIGURATION.getArduinoNetworkRegistrationRate(), TimeUnit.SECONDS 
-	                                           );
+     }
+    
+     
+     serialPort = null;
+
      }
    
   /** Main routine that waits for a client connection
@@ -157,7 +167,7 @@ public class Arduino{
              
             client.setSoTimeout( CONFIGURATION.getNetworkTimeout() );
             ClientConnection tmp = 
-                 new ClientConnection( client, PIN_MAP, SERIAL_OUTPUT_QUEUE );
+                 new ClientConnection( client, PIN_MAP, serialOutputQueue );
               
             EXECUTOR_SERVICE.execute( tmp );
                 

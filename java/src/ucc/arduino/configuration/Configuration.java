@@ -1,6 +1,7 @@
 package ucc.arduino.configuration;
 
 import ucc.arduino.configuration.DefaultConfiguration;
+import ucc.arduino.configuration.SerialConfiguration;
 
 import java.util.Properties;
 import java.io.File;
@@ -10,7 +11,7 @@ import java.io.IOException;
 
 import java.net.InetAddress;
 
-public class Configuration {
+public class Configuration  implements SerialConfiguration{
   /** Stores the configuration details */
   private Properties configuration;
   /** Stores the network address to bind to*/
@@ -42,13 +43,12 @@ public class Configuration {
      if( ! isInt( "NETWORK_PORT")                ||
          ! isInt( "NETWORK_TIMEOUT")             ||
          ! isInt( "SERIAL_BAUD_RATE")            ||
-         ! isInt( "SERIAL_TIMEOUT")              ||
          ! isInt( "SERIAL_DATA_BITS")            ||
          ! isInt( "SERIAL_STOP_BITS")            ||
          ! isInt( "SERIAL_PARITY")               ||
          ! isValidAddress( "NETWORK_ADDRESS")    ||
          ! hasProtocol( "WEB_SERVER_URL")   ||
-         ! isInt( "ARDUINO_NETWORK_REGISTRATION_RATE") ||
+         ! isInt( "NETWORK_REGISTRATION_RATE") ||
          ! isInt( "NETWORK_QUEUE_LENGTH") )
      {
         System.out.println("Please check your configuration file. Exiting...");
@@ -130,10 +130,6 @@ public class Configuration {
       return Integer.parseInt( configuration.getProperty( "SERIAL_BAUD_RATE"));
   }
 
-  public  Integer getSerialTimeout()
-  {
-     return Integer.parseInt( configuration.getProperty( "SERIAL_TIMEOUT") );
-  }
 
   public Integer getSerialDataBits()
   {
@@ -181,39 +177,37 @@ public class Configuration {
     
   }
   
-  public String getArduinoNetworkName()
+  public String getNetworkName()
   {
-    return configuration.getProperty("ARDUINO_NETWORK_NAME");       
+    return configuration.getProperty("NETWORK_NAME");       
           
   }
   
-  public String getArduinoNetworkPassword()
-  {
-    return configuration.getProperty("ARDUINO_NETWORK_PASSWORD");       
-  }
   
-  public Integer getArduinoNetworkRegistrationRate()
+  public Integer getNetworkRegistrationRate()
   {
       return Integer.parseInt( 
                     configuration.getProperty(
-                             "ARDUINO_NETWORK_REGISTRATION_RATE" ) );
+                             "NETWORK_REGISTRATION_RATE" ) );
           
   }
   
-  public String getDeviceListUrl()
-  {
-
-      return configuration.getProperty("WEB_SERVER_URL") + "/devicelist.php";      
-  }
-  
-  public String getDeviceRegistrationUrl()
-  {
-    return configuration.getProperty("WEB_SERVER_URL") + "/register.php";      
-      
-  }
+ 
   
   public String getScriptName()
   {
      return configuration.getProperty("SCRIPT");       
   }
+  
+  public String getNetworkRegister()
+  {
+     return configuration.getProperty( "NETWORK_REGISTER").toLowerCase();       
+  }
+  
+  public String getUseInvocationThread()
+  {
+     return configuration.getProperty( "USE_INVOCATION_THREAD").toLowerCase();       
+          
+  }
+  
 }

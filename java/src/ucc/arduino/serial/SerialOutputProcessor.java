@@ -1,6 +1,7 @@
 package ucc.arduino.serial;
 
 import ucc.arduino.main.Pin;
+import ucc.arduino.configuration.Protocol;
 
 import java.util.concurrent.TransferQueue;
 import java.io.OutputStream;
@@ -8,7 +9,7 @@ import java.io.IOException;
 
 public class SerialOutputProcessor implements Runnable{
         
-    private byte[] message = new byte[ 5 ];
+    private byte[] message = new byte[ 4 ];
     private final TransferQueue< Pin > SERIAL_OUTPUT_QUEUE;
     private final OutputStream SERIAL_OUT;
     
@@ -20,8 +21,8 @@ public class SerialOutputProcessor implements Runnable{
             
        this.SERIAL_OUTPUT_QUEUE = SERIAL_OUTPUT_QUEUE;       
        this.SERIAL_OUT = SERIAL_OUT; 
-       message[0] = (byte)'R';
-       message[4] = (byte)'E';
+       message[0] = Protocol.SERIAL_START_MESSAGE;
+    
     }
         
     
@@ -30,7 +31,7 @@ public class SerialOutputProcessor implements Runnable{
             
       while( true )
       {
-              try{      
+       try{      
          writeToPin = SERIAL_OUTPUT_QUEUE.take();
          
          System.out.println("Writing: Pin " + writeToPin.getPinNumber() + 

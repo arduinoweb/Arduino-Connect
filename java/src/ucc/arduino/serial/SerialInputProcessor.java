@@ -1,4 +1,7 @@
 package ucc.arduino.serial;
+
+import ucc.arduino.configuration.Protocol;
+
 import ucc.arduino.main.PinMap;
 import ucc.arduino.main.Pin;
 
@@ -8,7 +11,7 @@ public class SerialInputProcessor implements Runnable{
         
         
  private final TransferQueue< Integer > SERIAL_INPUT_QUEUE;
- private int inputReceived;
+ private int characterReceived;
 
  private final PinMap PIN_MAP;
  private Integer pinNumber;
@@ -36,15 +39,17 @@ public class SerialInputProcessor implements Runnable{
     while( true )
     {
             try{    
-                 inputReceived = SERIAL_INPUT_QUEUE.take();
+                 characterReceived = SERIAL_INPUT_QUEUE.take();
                 
-                 if( (char)inputReceived == 'W' )
+                 if( (char)characterReceived == Protocol.SERIAL_START_MESSAGE )
                  {
                    saveCharacter = true;      
                          
                  }
-                 else if( saveCharacter && (char)inputReceived == 'E' )
+                 else if( saveCharacter  )
                  {
+                   if( (char)characterReceived == Protocol.SERIAL_END_MESSAGE )
+                   {
                   tmp = buffer.toString();
                   tmp = tmp.trim();
                   msgComponents = tmp.split(" ");
@@ -70,13 +75,15 @@ public class SerialInputProcessor implements Runnable{
                     tmp = null;
                     buffer = null;
                     buffer = new StringBuffer();
-                              
+                   }
+                   else
+                   {
+                    buffer.append( (char) characterReceived );
+                           
+                   }          
+                   
                  }
-                 else if( saveCharacter )
-                 {
-                 buffer.append( (char)inputReceived );
-                        
-                  }
+                
                  
       
             }catch( InterruptedException ie ){

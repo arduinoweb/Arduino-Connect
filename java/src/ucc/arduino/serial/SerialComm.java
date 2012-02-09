@@ -4,11 +4,13 @@
 
 package ucc.arduino.serial;
 
+import ucc.arduino.main.PinMap;
 import ucc.arduino.main.Pin;
-import ucc.arduino.configuration.Configuration;
+import ucc.arduino.configuration.SerialConfiguration;
 
 
 import ucc.arduino.serial.SerialOutputProcessor;
+import ucc.arduino.serial.SerialInputProcessor;
 import ucc.arduino.serial.SerialReader;
 
 import gnu.io.CommPort;
@@ -20,26 +22,29 @@ import java.util.concurrent.TransferQueue;
 
 public class SerialComm 
 {
-    /** Communicator between USB and Arduino */
+
     private static SerialPort serialPort;
-    private final Configuration CONFIGURATION;
+    private final SerialConfiguration CONFIGURATION;
 
     
-    public SerialComm(Configuration CONFIGURATION ){
+    public SerialComm(final SerialConfiguration CONFIGURATION ){
          super();  
          this.CONFIGURATION = CONFIGURATION;                
     }
   
 
     public void connect ( final TransferQueue< Pin > SERIAL_OUTPUT_QUEUE,
-                          inal TransferQueue<Integer> SERIAL_INPUT_QUEUE) 
+                          final TransferQueue<Integer> SERIAL_INPUT_QUEUE,
+                          final PinMap PIN_MAP) 
                                           throws Exception
     {
         CommPortIdentifier portIdentifier = 
-                    CommPortIdentifier.getPortIdentifier(CONFIGURATION.getSerialPort());
-                    System.out.println("Trying to use serial port: " + 
-                                                         CONFIGURATION.getSerialPort());
-        if ( portIdentifier.isCurrentlyOwned() )
+            CommPortIdentifier.getPortIdentifier(CONFIGURATION.getSerialPort());
+                    
+         System.out.println("Trying to use serial port: " + 
+                                                 CONFIGURATION.getSerialPort());
+        
+         if ( portIdentifier.isCurrentlyOwned() )
         {
             System.out.println("Error: Port is currently in use");
         }
@@ -61,7 +66,11 @@ public class SerialComm
                                  new SerialOutputProcessor( SERIAL_OUTPUT_QUEUE,
                                                  serialPort.getOutputStream() );
            
+           SerialInputProcessor serialInputProcessor =
+                                 new SerialInputProcessor( SERIAL_INPUT_QUEUE,
+                                                           PIN_MAP );
            new Thread( serialOutputProcessor ).start();
+           new Thread( serialInputProcessor ).start();
            
            serialPort.addEventListener(
                    new SerialReader(serialPort.getInputStream(), 
@@ -69,6 +78,8 @@ public class SerialComm
            
            serialPort.notifyOnDataAvailable(true);
 
+           serialOutputProcessor = null;
+           serialInputProcessor = null;
            
 	  }
           else
@@ -82,9 +93,6 @@ public class SerialComm
        
     }
 	
-   
-   
-    
     private void close()
 	{
 	   try{

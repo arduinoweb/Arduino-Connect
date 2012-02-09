@@ -32,7 +32,8 @@ byte outputValue = 0;        // value output to the PWM (analog out)
 
 #define  WRITE_SYNC 'W'
 #define  READ_SYNC  'R'
-#define END_OF_MESSAGE 'E'
+#define SERIAL_START_MESSAGE 'S'
+#define SERIAL_END_MESSAGE 'E'
 #define NOTHING_TO_RECEIVE 'N'
 #define  ANALOG 'A'
 #define DIGITAL 'D'
@@ -119,7 +120,7 @@ void loop() {
     // delay( 100 );
 
      //Serial.print(  WRITE_SYNC, BYTE );
-      Serial.print( WRITE_SYNC);
+      Serial.print( SERIAL_START_MESSAGE );
      //waitForData();
      
       //if( Serial.peek() == WRITE_SYNC )
@@ -136,7 +137,7 @@ void loop() {
       Serial.print( msg, DEC );
      
       //Serial.print( END_OF_MESSAGE, BYTE ); 
-      Serial.print( END_OF_MESSAGE);
+      Serial.print( SERIAL_END_MESSAGE );
    //  }
     // else
     //   Serial.read();
@@ -157,7 +158,7 @@ void readMsg()
  // Serial.write( READ_SYNC );
   //waitForData();
   
-  if( Serial.available() && Serial.peek() == READ_SYNC )
+  if( Serial.available() && Serial.peek() == SERIAL_START_MESSAGE )
   {
     Serial.read();
    waitForData();

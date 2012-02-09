@@ -78,7 +78,6 @@ public class ClientConnection  implements Runnable{
     
       DATA_OUT = null;
       DATA_IN = null;
-     // DATA_OUT = null;
       SOCKET = null;
       message = null;
       stayAlive = false;
@@ -106,14 +105,14 @@ public class ClientConnection  implements Runnable{
          
        if( msgParts.length > 2 &&
                  (msgParts[msgParts.length - 1].equals( 
-                                           Protocol.END_OF_CLIENT_MESSAGE ) ) )
+                                           Protocol.NET_END_MESSAGE ) ) )
        {
-          if( msgParts[0].equals( Protocol.READ_MESSAGE ) )
+          if( msgParts[0].equals( Protocol.NET_READ_MESSAGE ) )
           {
                     
                  clientReply = processRead( msgParts );   
           }
-          else if( msgParts[0].equals( Protocol.WRITE_MESSAGE ) )
+          else if( msgParts[0].equals( Protocol.NET_WRITE_MESSAGE ) )
           {
                  clientReply = processWrite( msgParts );   
                     
@@ -189,24 +188,30 @@ public class ClientConnection  implements Runnable{
     boolean noError = true;
     String clientReply = Protocol.OK;
     int indexer = 1;
+    byte mode;
     
     while( indexer < msg.length - 1 && noError )
-     {      
+     {     
+        mode = (byte) msg[indexer].charAt(0);
         // Check if the message starts with a valid character
-        if( msg[indexer].equals( Protocol.DIGITAL_WRITE ) ||
-            msg[indexer].equals( Protocol.ANALOG_WRITE ) )
+        if( mode == Protocol.ANALOG_WRITE  ||
+            mode == Protocol.DIGITAL_WRITE ||
+            mode == Protocol.VIRTUAL_WRITE  )
         {
-            byte mode = (byte) msg[indexer].charAt( 0 );
-
             try{
               indexer++;    
               Integer pinNumber = Integer.parseInt(  msg[ indexer ] );
               indexer++;
               Integer pinValue = Integer.parseInt( msg[ indexer ] );
-              // If we have a valid message add it to the write queue
-              System.out.println("Adding: " + mode + " " + pinNumber + " "
-                                     + pinValue + " to serial write queue");
-            SERIAL_OUTPUT_QUEUE.add( new Pin( mode, pinNumber, pinValue) );       
+
+            if( mode == Protocol.VIRTUAL_WRITE )
+            {
+                PIN_MAP.update( pinNumber, pinValue );
+            }
+            else if( SERIAL_OUTPUT_QUEUE != null )
+            {
+            SERIAL_OUTPUT_QUEUE.add( new Pin( mode, pinNumber, pinValue) );
+            }
                     
             }catch( NumberFormatException nfe ){
                     noError = false;

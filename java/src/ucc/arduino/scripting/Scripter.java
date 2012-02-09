@@ -2,6 +2,7 @@ package ucc.arduino.scripting;
 
 import ucc.arduino.net.Messenger;
 import ucc.arduino.main.KeyValue;
+import ucc.arduino.scripting.Invocator;
 
 import javax.script.*;
 
@@ -13,46 +14,70 @@ import java.io.FileReader;
 
 import java.util.HashMap;
 import java.util.concurrent.TransferQueue;
+import java.util.concurrent.LinkedTransferQueue;
 
 public class Scripter implements Runnable {
         
    private boolean stayAlive;     
-   private  final File SCRIPT;
+  // private  final File SCRIPT;
    private final HashMap<String, Object> SESSION_MAP;
    private final Messenger messenger;
-   private ScriptEngineManager scriptEngineManager;
-   private ScriptEngine scriptEngine;
+ //  private ScriptEngineManager scriptEngineManager;
+ //  private ScriptEngine scriptEngine;
    private CompiledScript compiledScript;
-   private Compilable compilable;
+ //  private Compilable compilable;
    private Bindings bindings;
-   private long scriptLastModified;
+   private final Invocator INVOCATOR;
+   private final TransferQueue<Invocation> INVOCATOR_QUEUE;
+   
    private final TransferQueue<KeyValue<Integer,Integer>> SCRIPT_INVOCATION_QUEUE;
    private final HashMap< Integer, Integer> PIN_MAP_COPY;
+   private final boolean USE_INVOCATION_THREAD;
    
-   public Scripter( final File script, 
-                    final TransferQueue<KeyValue<Integer,Integer>> SCRIPT_INVOCATION_QUEUE ) 
+   public Scripter( final File SCRIPT, 
+                    final TransferQueue<KeyValue<Integer,Integer>> SCRIPT_INVOCATION_QUEUE,
+                    final boolean USE_INVOCATION_THREAD ) 
                                                   throws FileNotFoundException,
                                                          IOException,
                                                          ScriptException
    {
-      super();
+
+      //SCRIPT = script;   
+      messenger = new Messenger();
+      ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
+      ScriptEngine scriptEngine = scriptEngineManager.getEngineByName("JavaScript");
+      
+       
+      Compilable compilable = (Compilable) scriptEngine;
+      compiledScript = compilable.compile( new FileReader( SCRIPT ) );
+      
+      this.USE_INVOCATION_THREAD = USE_INVOCATION_THREAD;
       this.SCRIPT_INVOCATION_QUEUE = SCRIPT_INVOCATION_QUEUE;
-      stayAlive = true;
-      SCRIPT = script;
+      
       PIN_MAP_COPY = new HashMap<Integer, Integer>();
       
       SESSION_MAP = new HashMap<String, Object>();
-      messenger = new Messenger();
-      scriptEngineManager = new ScriptEngineManager();
-      scriptEngine = scriptEngineManager.getEngineByName("JavaScript");
-      bindings = scriptEngine.createBindings();
-       
-      compilable = (Compilable) scriptEngine;    
      
+      bindings = scriptEngine.createBindings();
       bindings.put( "messenger", messenger);
+    
+      if( USE_INVOCATION_THREAD )
+      {
+          INVOCATOR_QUEUE = new LinkedTransferQueue< Invocation >();
+          INVOCATOR = new Invocator( INVOCATOR_QUEUE );
+          new Thread( INVOCATOR ).start();
+          
+          bindings.put( "INVOCATOR_QUEUE", INVOCATOR_QUEUE );
+          
+      }
+      else
+      {
+         INVOCATOR = null;
+         INVOCATOR_QUEUE = null;
+      }
       bindings.put( "SESSION_MAP", SESSION_MAP);
      
-      compiledScript = compilable.compile( new FileReader( SCRIPT ) );
+     
       
       compilable = null;
       scriptEngine = null;
@@ -66,7 +91,7 @@ public class Scripter implements Runnable {
       KeyValue<Integer,Integer> updatedPin;
    
       
-      while( stayAlive )
+      while( true )
       {
       
         try{
@@ -87,12 +112,7 @@ public class Scripter implements Runnable {
       }
    }
            
-    
-  public synchronized void stop()
-  {
-      stayAlive = false;
-      bindings = null;
-  }
+
       
    }
    
