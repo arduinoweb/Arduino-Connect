@@ -1,0 +1,42 @@
+<html>
+<head>
+<script type="text/javascript" src="js/jquery/js/jquery-1.6.2.min.js"></script>
+<script>
+var websocket;
+
+$(document).ready( function(){
+        websocket = new MozWebSocket("ws://127.0.0.1:10004/~gary/arduino/Arduino-Connect/web/");
+                websocket.onopen = function(evt){
+                     alert("opened");
+                };
+                websocket.onerror= function( evt ){
+                     alert("web socket connection error");
+                };
+                websocket.onclose = function( evt ){
+                     alert( "web socket closed");
+                };     
+                     
+                     
+                     
+                        
+     
+});
+
+
+
+
+
+</script>
+</head>
+
+
+<body>
+
+<h1 id="test">hello</h1>
+
+
+</body>
+
+
+
+</html>

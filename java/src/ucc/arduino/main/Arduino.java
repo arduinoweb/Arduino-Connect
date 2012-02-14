@@ -10,6 +10,7 @@ package ucc.arduino.main;
 
 import ucc.arduino.configuration.Configuration;
 import ucc.arduino.scripting.Scripter;
+import ucc.arduino.net.WebSocketServer;
 
 import ucc.arduino.main.PinMap;
 
@@ -21,7 +22,7 @@ import ucc.arduino.net.NetworkRegister;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-
+import java.net.UnknownHostException;
 
 import java.io.IOException;
 import java.io.File;
@@ -149,6 +150,15 @@ public class Arduino{
      
      serialPort = null;
 
+     try{
+             
+      new Thread(new WebSocketServer(EXECUTOR_SERVICE )).start();       
+     }catch(UnknownHostException uhe ){
+             System.err.println( uhe );
+     }catch( IOException ioe ){
+             System.err.println( ioe );
+     }
+     
      }
    
   /** Main routine that waits for a client connection

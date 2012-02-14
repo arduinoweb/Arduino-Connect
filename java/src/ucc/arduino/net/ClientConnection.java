@@ -101,6 +101,7 @@ public class ClientConnection  implements Runnable{
 
        System.out.println("Message Received: " + message );
       
+    
        msgParts = message.split(" ");
          
        if( msgParts.length > 2 &&
@@ -121,7 +122,8 @@ public class ClientConnection  implements Runnable{
          }
                
        System.out.println( "Reply to client: " + clientReply );
-          sendMessage( clientReply ); 
+          sendMessage( clientReply );
+       
    }catch(SocketTimeoutException soe){
       System.err.println( soe.getMessage() );
     
