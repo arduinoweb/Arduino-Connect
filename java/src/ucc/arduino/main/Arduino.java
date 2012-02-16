@@ -10,7 +10,7 @@ package ucc.arduino.main;
 
 import ucc.arduino.configuration.Configuration;
 import ucc.arduino.scripting.Scripter;
-import ucc.arduino.net.WebSocketServer;
+import ucc.arduino.net.WebServerSocket;
 
 import ucc.arduino.main.PinMap;
 
@@ -150,14 +150,15 @@ public class Arduino{
      
      serialPort = null;
 
-     try{
+     new WebServerSocket( "127.0.0.1", 10004).start();
+    /** try{
              
       new Thread(new WebSocketServer(EXECUTOR_SERVICE )).start();       
      }catch(UnknownHostException uhe ){
              System.err.println( uhe );
      }catch( IOException ioe ){
              System.err.println( ioe );
-     }
+     }*/
      
      }
    

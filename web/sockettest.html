@@ -7,7 +7,8 @@ var websocket;
 $(document).ready( function(){
         websocket = new MozWebSocket("ws://127.0.0.1:10004/~gary/arduino/Arduino-Connect/web/");
                 websocket.onopen = function(evt){
-                     alert("opened");
+                     //alert("opened");
+                     ///websocket.send("x");
                 };
                 websocket.onerror= function( evt ){
                      alert("web socket connection error");
@@ -15,10 +16,15 @@ $(document).ready( function(){
                 websocket.onclose = function( evt ){
                      alert( "web socket closed");
                 };     
+                    
                      
                      
-                     
-                        
+       $('#sendButton').click( function(){
+            var msg= $('#data').val();
+            msg = $.trim( msg );
+            websocket.send( msg );
+                       
+       });
      
 });
 
@@ -32,7 +38,8 @@ $(document).ready( function(){
 
 <body>
 
-<h1 id="test">hello</h1>
+<input type="text" id="data" value="type some data here">
+<button id="sendButton">Send</button>
 
 
 </body>
