@@ -17,7 +17,12 @@ $(document).ready( function(){
                      alert( "web socket closed");
                 };     
                     
-                     
+                websocket.onmessage = function( evt ){
+                 var tmp = JSON.parse( evt.data );
+                 
+                 $('#messageArea').html( "Pin: " + tmp.pin + " Value: " + tmp.value);      
+                        
+                };
                      
        $('#sendButton').click( function(){
             var msg= $('#data').val();
@@ -40,7 +45,10 @@ $(document).ready( function(){
 
 <input type="text" id="data" value="type some data here">
 <button id="sendButton">Send</button>
+<div id="messageArea">
 
+
+</div>
 
 </body>
 

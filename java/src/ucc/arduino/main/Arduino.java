@@ -13,6 +13,7 @@ import ucc.arduino.scripting.Scripter;
 import ucc.arduino.net.WebServerSocket;
 
 import ucc.arduino.main.PinMap;
+import ucc.arduino.main.KeyValue;
 
 import ucc.arduino.net.ClientConnection;
 import ucc.arduino.serial.SerialComm;
@@ -70,6 +71,8 @@ public class Arduino{
     /**A Queue of the write requests received from clients*/
     private static TransferQueue<Pin> serialOutputQueue;
 
+    private final TransferQueue<KeyValue<Integer,Integer>> WEBSOCKET_OUT_QUEUE;
+    
     
     /**Constructor*/
     public Arduino( File configurationFile ) throws Exception {
@@ -149,8 +152,9 @@ public class Arduino{
     
      
      serialPort = null;
-
-     new WebServerSocket( "127.0.0.1", 10004).start();
+     WEBSOCKET_OUT_QUEUE = new LinkedTransferQueue< KeyValue<Integer,Integer>>();
+     PIN_MAP.enableWebSocketQueue( WEBSOCKET_OUT_QUEUE );
+     new WebServerSocket( "127.0.0.1", 10004, WEBSOCKET_OUT_QUEUE).start();
     /** try{
              
       new Thread(new WebSocketServer(EXECUTOR_SERVICE )).start();       
