@@ -12,16 +12,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public class WebSocketOutProcessor implements Runnable{
+public class WebSocketUpdateProcessor implements Runnable{
 
-  private final TransferQueue<KeyValue<Integer,Integer>> WEBSOCKET_OUT_QUEUE;
+  private final TransferQueue<KeyValue<Integer,Integer>> WEBSOCKET_UPDATE_QUEUE;
   private final 
    ConcurrentHashMap<Integer, CopyOnWriteArraySet<WebSocket>> REGISTERED_SOCKETS;
   
-  public WebSocketOutProcessor( 
-          final TransferQueue<KeyValue<Integer,Integer>> WEBSOCKET_OUT_QUEUE )
+  public WebSocketUpdateProcessor( 
+          final TransferQueue<KeyValue<Integer,Integer>> WEBSOCKET_UPDATE_QUEUE )
   {
-     this.WEBSOCKET_OUT_QUEUE = WEBSOCKET_OUT_QUEUE;       
+     this.WEBSOCKET_UPDATE_QUEUE = WEBSOCKET_UPDATE_QUEUE;       
      REGISTERED_SOCKETS = new ConcurrentHashMap< Integer, 
                               CopyOnWriteArraySet<WebSocket>>();        
   }
@@ -37,7 +37,7 @@ public class WebSocketOutProcessor implements Runnable{
       {
        try{
          
-         updatedPin = WEBSOCKET_OUT_QUEUE.take();
+         updatedPin = WEBSOCKET_UPDATE_QUEUE.take();
          System.out.println("WebSocketOutProcessor: Value taken from queue");
          if( ( tmpSet = REGISTERED_SOCKETS.get( updatedPin.getKey() ) ) != null )
          {

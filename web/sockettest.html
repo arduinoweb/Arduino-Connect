@@ -20,7 +20,7 @@ $(document).ready( function(){
                 websocket.onmessage = function( evt ){
                  var tmp = JSON.parse( evt.data );
                  
-                 $('#messageArea').html( "Pin: " + tmp.pin + " Value: " + tmp.value);      
+                 $('#messageArea').append( "Pin: " + tmp.pin + " Value: " + tmp.value);      
                         
                 };
                      

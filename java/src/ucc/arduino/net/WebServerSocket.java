@@ -1,6 +1,9 @@
 package ucc.arduino.net;
 
 import ucc.arduino.main.KeyValue;
+import ucc.arduino.net.MessageFormatChecker;
+
+
 import net.tootallnate.websocket.Handshakedata;
 import net.tootallnate.websocket.WebSocket;
 import net.tootallnate.websocket.WebSocketServer;
@@ -12,19 +15,22 @@ import java.util.concurrent.TransferQueue;
 
 public class WebServerSocket extends WebSocketServer{
         
-  private WebSocketOutProcessor WEBSOCKET_OUT_PROCESSOR;
+  private WebSocketUpdateProcessor WEBSOCKET_UPDATE_PROCESSOR;
+  
+  private final MessageFormatChecker messageFormatChecker;
   
   public WebServerSocket( String address, int port, 
-        final TransferQueue<KeyValue<Integer,Integer>> WEBSOCKET_OUT_QUEUE) 
+        final TransferQueue<KeyValue<Integer,Integer>> WEBSOCKET_UPDATE_QUEUE) 
                                               throws UnknownHostException
   {
           
       super( new InetSocketAddress( InetAddress.getByName( address ), port ) );
     //  WebSocket.DEBUG = true;
-       WEBSOCKET_OUT_PROCESSOR = 
-           new WebSocketOutProcessor( WEBSOCKET_OUT_QUEUE );
+       WEBSOCKET_UPDATE_PROCESSOR = 
+           new WebSocketUpdateProcessor( WEBSOCKET_UPDATE_QUEUE );
                                   
-       new Thread( WEBSOCKET_OUT_PROCESSOR ).start();  
+      new Thread( WEBSOCKET_UPDATE_PROCESSOR ).start();
+      messageFormatChecker = new MessageFormatChecker();
   }
         
         
@@ -46,7 +52,28 @@ public class WebServerSocket extends WebSocketServer{
          System.out.println("message received " + message  + " from "
                                 + tmp.getAddress().getHostAddress() 
                                 + " " + tmp.getPort());
-         WEBSOCKET_OUT_PROCESSOR.registerSocket( 10, webSocket );
+         
+
+          if( messageFormatChecker.isValidMessageFormat( message ) )
+          {
+             if( messageFormatChecker.isRegisterMessage() )
+             {
+                 System.out.println( "Read message received" );
+                 int[] pins = messageFormatChecker.getPinsToRegister();
+                 System.out.println("Pins to read: " );
+                 for( int pin : pins )
+                 {
+                    System.out.print( pin + " ");
+                    WEBSOCKET_UPDATE_PROCESSOR.registerSocket( pin, webSocket );
+                 }
+                 
+                 System.out.println();
+             }
+             else if( messageFormatChecker.isWriteMessage() )
+             {
+                 System.out.println("Write message received" );       
+             }
+          }
  }
  
  @Override
