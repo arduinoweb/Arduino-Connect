@@ -7,6 +7,9 @@ package ucc.arduino.net;
 
 import ucc.arduino.main.Pin;
 import ucc.arduino.main.PinMap;
+import ucc.arduino.net.MessageProcessor;
+
+import ucc.arduino.net.MessageFormatChecker;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -29,11 +32,10 @@ public class ClientConnection  implements Runnable{
    private  Socket         SOCKET;
    /** The message received from the client via the inputstream */
    private String message;
-   /** Indicates whether to keep the thread alive or not*/
-   private boolean stayAlive;
 
    private  PinMap PIN_MAP;
    private  TransferQueue< Pin > SERIAL_OUTPUT_QUEUE;
+  
    
    /** Constructor
      * @param: socket - the client socket 
@@ -46,10 +48,9 @@ public class ClientConnection  implements Runnable{
       DATA_OUT = new PrintWriter( socket.getOutputStream(), true );
       SOCKET = socket;
       message = null;  
-      stayAlive = true;
       PIN_MAP = pinMap;
       this.SERIAL_OUTPUT_QUEUE = SERIAL_OUTPUT_QUEUE;
-    
+      
    }
    
  
@@ -62,6 +63,52 @@ public class ClientConnection  implements Runnable{
         close(); 
    }
    
+
+   
+ public void run()
+ {
+   
+   String clientReply = "{}";
+   try{
+       message = DATA_IN.readLine();
+       message = message.trim();
+  
+       MessageFormatChecker messageFormatChecker =
+                             new MessageFormatChecker();
+     
+       if( messageFormatChecker.isValidMessageFormat( message ) )
+       {
+           message = message.substring( 2, message.length() - 1 );    
+           if( messageFormatChecker.isReadMessage() )
+           {
+              clientReply = 
+                 MessageProcessor.processRead(message, PIN_MAP );
+           }
+           else if( messageFormatChecker.isWriteMessage() )
+           {
+              clientReply =     
+                 MessageProcessor.processWrite( message,  
+                                               PIN_MAP, SERIAL_OUTPUT_QUEUE );
+           }
+               
+               
+       }
+       
+    messageFormatChecker = null;
+       
+    sendMessage( clientReply );
+       
+   }catch(SocketTimeoutException soe){
+      System.err.println( soe.getMessage() );
+    
+   }catch( IOException ioe ){
+      System.err.println( ioe.getMessage() );   
+     
+   }
+
+   clientReply = null;
+   
+ }
    /** Shuts down the client and terminate the thread */
    public  void close( )
    {
@@ -80,157 +127,8 @@ public class ClientConnection  implements Runnable{
       DATA_IN = null;
       SOCKET = null;
       message = null;
-      stayAlive = false;
       PIN_MAP = null;
       SERIAL_OUTPUT_QUEUE = null;
    }
-   
- /** Waits for client to send a message or an exception occurs,
-   * at the moment we only wait for one message then close
-   * the connection, the thread is kept alive in case the
-   * thread Executor tries to reclaim and use the thread
-   * before we've had a chance to retreive the message
-   */
- public void run()
- {
-   String[] msgParts = null;
-   String clientReply = Protocol.BAD_MESSAGE_FORMAT;
-   try{
-        message = DATA_IN.readLine();
-       message = message.trim();
-
-       System.out.println("Message Received: " + message );
-      
-    
-       msgParts = message.split(" ");
-         
-       if( msgParts.length > 2 &&
-                 (msgParts[msgParts.length - 1].equals( 
-                                           Protocol.NET_END_MESSAGE ) ) )
-       {
-          if( msgParts[0].equals( Protocol.NET_READ_MESSAGE ) )
-          {
-                    
-                 clientReply = processRead( msgParts );   
-          }
-          else if( msgParts[0].equals( Protocol.NET_WRITE_MESSAGE ) )
-          {
-                 clientReply = processWrite( msgParts );   
-                    
-          }
-         
-         }
-               
-       System.out.println( "Reply to client: " + clientReply );
-          sendMessage( clientReply );
-       
-   }catch(SocketTimeoutException soe){
-      System.err.println( soe.getMessage() );
-    
-   }catch( IOException ioe ){
-      System.err.println( ioe.getMessage() );   
-     
-   }
-
-   msgParts = null;
-   clientReply = null;
-   
- }
-
-
-
- private String processRead( String[] msg )
-  {
-    Integer pinValue = 1 ;
-    String clientReply = Protocol.BAD_MESSAGE_FORMAT;
-    StringBuffer replyBuilder = new StringBuffer();
-    int indexer = 1;
-   System.out.println("In processRead");
-    while( indexer < msg.length -1 && pinValue != null )
-    {
-	                            
-       try{
-	    Integer pinNumber = Integer.parseInt( msg[ indexer ] );
-	                             
-	    pinValue = PIN_MAP.update( pinNumber, null );
-	    System.out.println( "Process Read pinValue: " + pinValue );
-            // If we don't have a record of the pin requested
-            // mark it's place in the reply with a 'x'                              
-	    if( pinValue == null )
-	    {
-	       //clientReply = Protocol.UNKNOWN_PIN; 
-               replyBuilder.append( Protocol.UNKNOWN_PIN + " " );
-	    }
-	    else
-	    {
-	       replyBuilder.append( pinValue + " " );
-	    }
-	                             
-	    indexer++;
-	                             
-	}catch( NumberFormatException nfe ){
-	     pinValue = null;   
-	     System.err.println( nfe );
-	}
-    }
-     
-    	                       
-    if( pinValue != null )
-    {
-        clientReply = replyBuilder.toString().trim();
-    }
-	                            
-    return clientReply;      
-  }
-
-  
- private String processWrite( String[] msg )
-  {
-
-    boolean noError = true;
-    String clientReply = Protocol.OK;
-    int indexer = 1;
-    byte mode;
-    
-    while( indexer < msg.length - 1 && noError )
-     {     
-        mode = (byte) msg[indexer].charAt(0);
-        // Check if the message starts with a valid character
-        if( mode == Protocol.ANALOG_WRITE  ||
-            mode == Protocol.DIGITAL_WRITE ||
-            mode == Protocol.VIRTUAL_WRITE  )
-        {
-            try{
-              indexer++;    
-              Integer pinNumber = Integer.parseInt(  msg[ indexer ] );
-              indexer++;
-              Integer pinValue = Integer.parseInt( msg[ indexer ] );
-
-            if( mode == Protocol.VIRTUAL_WRITE )
-            {
-                PIN_MAP.update( pinNumber, pinValue );
-            }
-            else if( SERIAL_OUTPUT_QUEUE != null )
-            {
-            SERIAL_OUTPUT_QUEUE.add( new Pin( mode, pinNumber, pinValue) );
-            }
-                    
-            }catch( NumberFormatException nfe ){
-                    noError = false;
-                    clientReply = Protocol.BAD_MESSAGE_FORMAT;
-            }
-        }
-        else
-        {
-          noError = false;
-          clientReply = Protocol.BAD_MESSAGE_FORMAT;
-        }
-        
-        indexer++;
-             
-     }
-   
-     return clientReply;
-  }
 
 }

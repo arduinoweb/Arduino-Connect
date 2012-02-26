@@ -1,7 +1,11 @@
 package ucc.arduino.net;
 
 import ucc.arduino.main.KeyValue;
+import ucc.arduino.main.PinMap;
+import ucc.arduino.main.Pin;
+
 import ucc.arduino.net.MessageFormatChecker;
+import ucc.arduino.net.MessageProcessor;
 
 
 import net.tootallnate.websocket.Handshakedata;
@@ -16,10 +20,14 @@ import java.util.concurrent.TransferQueue;
 public class WebServerSocket extends WebSocketServer{
         
   private WebSocketUpdateProcessor WEBSOCKET_UPDATE_PROCESSOR;
+  private final PinMap PIN_MAP;
+  private final TransferQueue< Pin > SERIAL_OUTPUT_QUEUE;
   
   private final MessageFormatChecker messageFormatChecker;
   
   public WebServerSocket( String address, int port, 
+        final PinMap PIN_MAP,
+        final TransferQueue<Pin> SERIAL_OUTPUT_QUEUE,
         final TransferQueue<KeyValue<Integer,Integer>> WEBSOCKET_UPDATE_QUEUE) 
                                               throws UnknownHostException
   {
@@ -31,6 +39,8 @@ public class WebServerSocket extends WebSocketServer{
                                   
       new Thread( WEBSOCKET_UPDATE_PROCESSOR ).start();
       messageFormatChecker = new MessageFormatChecker();
+      this.PIN_MAP = PIN_MAP;
+      this.SERIAL_OUTPUT_QUEUE = SERIAL_OUTPUT_QUEUE;
   }
         
         
@@ -47,33 +57,43 @@ public class WebServerSocket extends WebSocketServer{
  @Override
  public void onClientMessage( WebSocket webSocket, String message )
  {
-         //System.out.println("mesage received: " + message );
-         InetSocketAddress tmp = webSocket.getRemoteSocketAddress();
-         System.out.println("message received " + message  + " from "
-                                + tmp.getAddress().getHostAddress() 
-                                + " " + tmp.getPort());
-         
-
-          if( messageFormatChecker.isValidMessageFormat( message ) )
-          {
+     InetSocketAddress tmp = webSocket.getRemoteSocketAddress();
+     String clientReply = "{}";
+      if( messageFormatChecker.isValidMessageFormat( message ) )
+      {
+             message = message.substring( 2, message.length() - 1 );
+             
              if( messageFormatChecker.isRegisterMessage() )
              {
-                 System.out.println( "Read message received" );
-                 int[] pins = messageFormatChecker.getPinsToRegister();
-                 System.out.println("Pins to read: " );
+                
+                int[] pins = MessageProcessor.extractPinNumbers(
+                                  message );
+                 
                  for( int pin : pins )
-                 {
-                    System.out.print( pin + " ");
+                 { 
                     WEBSOCKET_UPDATE_PROCESSOR.registerSocket( pin, webSocket );
                  }
                  
-                 System.out.println();
+              MessageProcessor.processRead( message, PIN_MAP );
+              clientReply = "{\"OK\"}";                
              }
              else if( messageFormatChecker.isWriteMessage() )
              {
-                 System.out.println("Write message received" );       
+                 clientReply = MessageProcessor.processWrite( message,
+                                                PIN_MAP,
+                                                SERIAL_OUTPUT_QUEUE );
+                 
              }
-          }
+       }
+       
+       try{
+            webSocket.send( clientReply );   
+       }catch(InterruptedException ie ){
+               System.err.println( ie );
+       }
+       
+       clientReply = null;
+       
  }
  
  @Override

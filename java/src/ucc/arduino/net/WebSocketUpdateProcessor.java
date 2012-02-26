@@ -39,7 +39,7 @@ public class WebSocketUpdateProcessor implements Runnable{
          
          updatedPin = WEBSOCKET_UPDATE_QUEUE.take();
          System.out.println("WebSocketOutProcessor: Value taken from queue");
-         if( ( tmpSet = REGISTERED_SOCKETS.get( updatedPin.getKey() ) ) != null )
+        if( ( tmpSet = REGISTERED_SOCKETS.get( updatedPin.getKey() ) ) != null )
          {
                  message = "{\"pin\":"+updatedPin.getKey()+",\"value\":"
                  +updatedPin.getValue()+"}";

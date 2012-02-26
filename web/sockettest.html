@@ -5,7 +5,7 @@
 var websocket;
 
 $(document).ready( function(){
-        websocket = new MozWebSocket("ws://127.0.0.1:10004/~gary/arduino/Arduino-Connect/web/");
+        websocket = new MozWebSocket("ws://192.168.1.105:10004/~gary/arduino/Arduino-Connect/web/");
                 websocket.onopen = function(evt){
                      //alert("opened");
                      ///websocket.send("x");

@@ -7,9 +7,7 @@ public class MessageFormatChecker{
         
  private boolean isReadMessage;
  private boolean isWriteMessage;
- 
- private int[] pinsToRead = null;
- 
+
  private final String pattern = 
       "^((R (\\d{1,3} )+)|(W ((A|D|V) (\\d{1,3}+) (\\d{1,3}+) )+))E$"; 
  
@@ -22,44 +20,22 @@ public class MessageFormatChecker{
  {
      isReadMessage = false;
      isWriteMessage = false;
-     pinsToRead = null;
-     
+   
      matcher = compiledPattern.matcher( message );    
          
      if( matcher.matches() )
      {
         switch( message.charAt(0) ){
-            case 'R' : { isReadMessage = true; 
-                          
-                         
-                         message = message.substring( 2, message.length()-1);
-                        
-                         String[] msgParts = message.split(" ");
-                         pinsToRead = new int[ msgParts.length ];
-                         System.out.println("PinsToRead.length " + pinsToRead.length );
-                         System.out.println("MsgParts length: " + msgParts.length);    
-                         for( int i = 0; i < pinsToRead.length; i++ )
-                         {
-                             pinsToRead[i] = Integer.parseInt( msgParts[i] );        
-                                 
-                         }
-            
-                         msgParts = null;
-                         message = null;
-                         
-                       break; 
-                       }
-                       
+            case 'R' : { isReadMessage = true; break; }
             case 'W' : { isWriteMessage = true; break;}
         }
              
      }
      
-     matcher = null;
+    matcher = null;
      
-     return ( isReadMessage || isWriteMessage );
-
- }
+    return ( isReadMessage || isWriteMessage );
+}
  
  public boolean isRegisterMessage()
  {
@@ -77,14 +53,7 @@ public class MessageFormatChecker{
    return isWriteMessage;       
  }
  
- public int[] getPinsToRead()
- {
-    return pinsToRead;       
-         
- }
- public int[] getPinsToRegister()
- {
-    return pinsToRead;       
- }
+
+
  
 }
