@@ -38,34 +38,19 @@ public class WebSocketUpdateProcessor implements Runnable{
        try{
          
          updatedPin = WEBSOCKET_UPDATE_QUEUE.take();
-      
+         System.out.println("WebSocketOutProcessor: Value taken from queue");
         if( ( tmpSet = REGISTERED_SOCKETS.get( updatedPin.getKey() ) ) != null )
          {
                  message = "{\"pin\":"+updatedPin.getKey()+",\"value\":"
                  +updatedPin.getValue()+"}";
-
+         //  message = "{ {'"+updatedPin.getKey() + "','"+updatedPin.getValue()+"'}}";      
+           System.out.println("WebSocketOutProcessor Updated Received " +
+                               message );
            for( WebSocket tmpWebSocket : tmpSet )
            {
              try{       
-             	  if( tmpWebSocket.isClosed() )
-             	  {
-             	    if( tmpSet.remove( tmpWebSocket ) )
-             	    {
-             	      System.out.println("Socket in set - now removed");
-             	    }
-             	    else
-             	    {
-             	      System.out.println("Socket not in Set");
-             	    }
-                  }
-             	  else
-             	  {
-             	    tmpWebSocket.send( message );
-             	  }
-                  
-             	  tmpWebSocket = null;
-             	  
-             }catch( Exception ie ){
+                  tmpWebSocket.send( message );
+             }catch( InterruptedException ie ){
                      System.err.println( ie );
              }
            }
@@ -90,7 +75,7 @@ public class WebSocketUpdateProcessor implements Runnable{
         System.out.println("In registerSocket" );
         if( existingSet == null )
         {
-           System.out.println("Existing set is null");
+           
           tmpSet = new CopyOnWriteArraySet<WebSocket>();
           tmpSet.add( webSocket );
           REGISTERED_SOCKETS.put( pinNumber, tmpSet );
@@ -99,12 +84,11 @@ public class WebSocketUpdateProcessor implements Runnable{
         }
         else
         {
-          System.out.println("Set exists");
           existingSet.add( webSocket );
         }
         
         existingSet = null;
         tmpSet = null;
-        System.out.println("Leaving Register Socket");  
+          
   }
 }

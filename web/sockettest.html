@@ -5,9 +5,9 @@
 var websocket;
 
 $(document).ready( function(){
-        websocket = new MozWebSocket("ws://192.168.1.105:10004/~gary/arduino/Arduino-Connect/web/");
+        websocket = new MozWebSocket("ws://192.168.1.103:10004/~gary/arduino/Arduino-Connect/web/");
                 websocket.onopen = function(evt){
-                     //alert("opened");
+                    // alert("opened");
                      ///websocket.send("x");
                 };
                 websocket.onerror= function( evt ){
@@ -20,8 +20,8 @@ $(document).ready( function(){
                 websocket.onmessage = function( evt ){
                  var tmp = JSON.parse( evt.data );
                  
-                 $('#messageArea').append( "Pin: " + tmp.pin + " Value: " + tmp.value);      
-                        
+                $('#messageArea').html( "Pin: " + tmp.pin + " Value: " + tmp.value);      
+                //  $('#messageArea').html( "<p>hello</p>");      
                 };
                      
        $('#sendButton').click( function(){

@@ -51,9 +51,7 @@ public class WebServerSocket extends WebSocketServer{
  @Override 
  public void onError( WebSocket webSocket, Exception exception)
  {
-         System.err.println( exception );
-         System.err.println("Error occurred");
-         webSocket.closeConnection( 1, "goodbye", false );
+         
  }
  
  @Override
