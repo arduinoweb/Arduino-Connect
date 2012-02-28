@@ -154,7 +154,7 @@ public class Arduino{
      serialPort = null;
      WEBSOCKET_UPDATE_QUEUE = new LinkedTransferQueue< KeyValue<Integer,Integer>>();
      PIN_MAP.enableWebSocketQueue( WEBSOCKET_UPDATE_QUEUE );
-     new WebServerSocket( "192.168.1.103", 10004, PIN_MAP, 
+     new WebServerSocket( "127.0.0.1", 10004, PIN_MAP, 
                            serialOutputQueue,WEBSOCKET_UPDATE_QUEUE).start();
     /** try{
              
