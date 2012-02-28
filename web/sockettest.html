@@ -30,6 +30,14 @@ $(document).ready( function(){
             websocket.send( msg );
                        
        });
+       
+       $('#scriptButton').click( function(){
+          var scriptContents = $('#scriptText').val();
+          scriptContents = $.trim( scriptContents );
+          scriptContents = "<script>"+scriptContents+'<\/script>';
+          websocket.send( scriptContents);
+                       
+       });
      
 });
 
@@ -50,6 +58,14 @@ $(document).ready( function(){
 
 </div>
 
+<div id="scriptArea" >
+<textarea id="scriptText"cols="100" rows="40" >
+enter script here
+
+</textarea>
+<br />
+<button id="scriptButton">Upload Script</script>
+</div>
 </body>
 
 

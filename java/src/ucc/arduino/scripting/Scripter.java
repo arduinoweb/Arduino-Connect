@@ -33,7 +33,12 @@ public class Scripter implements Runnable {
    private final TransferQueue<KeyValue<Integer,Integer>> SCRIPT_INVOCATION_QUEUE;
    private final HashMap< Integer, Integer> PIN_MAP_COPY;
    private final boolean USE_INVOCATION_THREAD;
+   private final Object LOCK;
    
+   private String script;
+   private String uploadedScript;
+   private boolean scriptUploaded;
+  
    public Scripter( final File SCRIPT, 
                     final TransferQueue<KeyValue<Integer,Integer>> SCRIPT_INVOCATION_QUEUE,
                     final boolean USE_INVOCATION_THREAD ) 
@@ -41,15 +46,24 @@ public class Scripter implements Runnable {
                                                          IOException,
                                                          ScriptException
    {
-
-      //SCRIPT = script;   
-      messenger = new Messenger();
-      ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-      ScriptEngine scriptEngine = scriptEngineManager.getEngineByName("JavaScript");
+      LOCK = new Object();
       
-       
-      Compilable compilable = (Compilable) scriptEngine;
-      compiledScript = compilable.compile( new FileReader( SCRIPT ) );
+      messenger = new Messenger();
+      uploadedScript = null;
+      scriptUploaded = false;
+      
+      FileReader fr = new FileReader( SCRIPT );
+      int character = -1;
+      
+      StringBuffer fileContents = new StringBuffer();
+      
+      while( (character = fr.read() )!= -1 )
+      {
+           fileContents.append( (char)character );
+      }
+      
+      fr.close();
+     
       
       this.USE_INVOCATION_THREAD = USE_INVOCATION_THREAD;
       this.SCRIPT_INVOCATION_QUEUE = SCRIPT_INVOCATION_QUEUE;
@@ -58,16 +72,15 @@ public class Scripter implements Runnable {
       
       SESSION_MAP = new HashMap<String, Object>();
      
-      bindings = scriptEngine.createBindings();
-      bindings.put( "messenger", messenger);
-    
-      if( USE_INVOCATION_THREAD )
+      
+     
+        if( USE_INVOCATION_THREAD )
       {
           INVOCATOR_QUEUE = new LinkedTransferQueue< Invocation >();
           INVOCATOR = new Invocator( INVOCATOR_QUEUE );
           new Thread( INVOCATOR ).start();
           
-          bindings.put( "INVOCATOR_QUEUE", INVOCATOR_QUEUE );
+          
           
       }
       else
@@ -75,13 +88,11 @@ public class Scripter implements Runnable {
          INVOCATOR = null;
          INVOCATOR_QUEUE = null;
       }
-      bindings.put( "SESSION_MAP", SESSION_MAP);
+       script = fileContents.toString();
+       System.out.println("Script: " + script);
+       compileScript( script );
+       
      
-     
-      
-      compilable = null;
-      scriptEngine = null;
-      scriptEngineManager = null;
    }
    
    
@@ -94,7 +105,17 @@ public class Scripter implements Runnable {
       while( true )
       {
       
+        
+
         try{
+           
+           if( scriptUploaded )
+           {
+             scriptUploaded = false;
+             compileScript( script );
+            
+           }
+           
            updatedPin = SCRIPT_INVOCATION_QUEUE.take();
            PIN_MAP_COPY.put( updatedPin.getKey(), updatedPin.getValue() );
             bindings.put("PIN_MAP_COPY", PIN_MAP_COPY);
@@ -109,10 +130,48 @@ public class Scripter implements Runnable {
          }
        
        updatedPin = null;
+     
       }
+    
    }
            
+   private void compileScript( String script ) throws ScriptException
+   {
 
+      compiledScript = null;
+      
+      ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
+      ScriptEngine scriptEngine = scriptEngineManager.getEngineByName("JavaScript");
+           
+      Compilable compilable = (Compilable) scriptEngine;
+      compiledScript = compilable.compile( script );     
+           
+      bindings = scriptEngine.createBindings();
+      bindings.put( "messenger", messenger);
+    
+     
+      bindings.put( "SESSION_MAP", SESSION_MAP);
+      
+      if( INVOCATOR_QUEUE != null )
+      {
+        bindings.put( "INVOCATOR_QUEUE", INVOCATOR_QUEUE );
+      }
+        
+      compilable = null;
+      scriptEngine = null;
+      scriptEngineManager = null;
+         
+   }
+   
+   
+   public synchronized void changeScript( String script )
+   {
+      
+       scriptUploaded = true;
+       this.script = script; 
+      
+           
+   }
       
    }
    

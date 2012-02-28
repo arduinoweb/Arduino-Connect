@@ -3,6 +3,7 @@ package ucc.arduino.net;
 import ucc.arduino.main.KeyValue;
 import ucc.arduino.main.PinMap;
 import ucc.arduino.main.Pin;
+import ucc.arduino.scripting.Scripter;
 
 import ucc.arduino.net.MessageFormatChecker;
 import ucc.arduino.net.MessageProcessor;
@@ -17,18 +18,22 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.TransferQueue;
 
+import java.net.InetAddress;
+
 public class WebServerSocket extends WebSocketServer{
         
   private WebSocketUpdateProcessor WEBSOCKET_UPDATE_PROCESSOR;
   private final PinMap PIN_MAP;
   private final TransferQueue< Pin > SERIAL_OUTPUT_QUEUE;
+  private final Scripter SCRIPTER;
   
   private final MessageFormatChecker messageFormatChecker;
   
   public WebServerSocket( String address, int port, 
         final PinMap PIN_MAP,
         final TransferQueue<Pin> SERIAL_OUTPUT_QUEUE,
-        final TransferQueue<KeyValue<Integer,Integer>> WEBSOCKET_UPDATE_QUEUE) 
+        final TransferQueue<KeyValue<Integer,Integer>> WEBSOCKET_UPDATE_QUEUE,
+        final Scripter SCRIPTER ) 
                                               throws UnknownHostException
   {
           
@@ -41,11 +46,10 @@ public class WebServerSocket extends WebSocketServer{
       messageFormatChecker = new MessageFormatChecker();
       this.PIN_MAP = PIN_MAP;
       this.SERIAL_OUTPUT_QUEUE = SERIAL_OUTPUT_QUEUE;
+      this.SCRIPTER = SCRIPTER;
+      
   }
         
-        
-        
-   
         
         
  @Override 
@@ -63,6 +67,17 @@ public class WebServerSocket extends WebSocketServer{
      String clientReply = "{}";
       if( messageFormatChecker.isValidMessageFormat( message ) )
       {
+              
+          if( messageFormatChecker.isScriptMessage() )
+          {
+                  
+            System.out.println("Script Received: " + message.substring(8, 
+                                                     message.length()-9));  
+            SCRIPTER.changeScript( message.substring(8, message.length()-9));
+                  
+          }
+          else
+          {
              message = message.substring( 2, message.length() - 1 );
              
              if( messageFormatChecker.isRegisterMessage() )
@@ -86,6 +101,7 @@ public class WebServerSocket extends WebSocketServer{
                                                 SERIAL_OUTPUT_QUEUE );
                  
              }
+          }  
        }
        
        try{
@@ -114,5 +130,6 @@ public class WebServerSocket extends WebSocketServer{
          
          
  }
-        
+   
+ 
 }

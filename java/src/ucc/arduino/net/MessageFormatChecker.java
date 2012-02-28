@@ -7,21 +7,23 @@ public class MessageFormatChecker{
         
  private boolean isReadMessage;
  private boolean isWriteMessage;
-
- private final String pattern = 
+ private boolean isScriptMessage;
+ 
+ private final String messageFormat = 
       "^((R (\\d{1,3} )+)|(W ((A|D|V) (\\d{1,3}+) (\\d{1,3}+) )+))E$"; 
+
  
- private final Pattern compiledPattern = Pattern.compile( pattern );
- 
+ private final Pattern messagePattern = Pattern.compile( messageFormat );
  private Matcher matcher;
- 
  
  public boolean isValidMessageFormat( String message )
  {
      isReadMessage = false;
      isWriteMessage = false;
-   
-     matcher = compiledPattern.matcher( message );    
+     isScriptMessage = false;
+     
+     
+     matcher = messagePattern.matcher( message );    
          
      if( matcher.matches() )
      {
@@ -31,10 +33,16 @@ public class MessageFormatChecker{
         }
              
      }
+     else if( message.startsWith( "<script>") &&
+              message.endsWith("</script>") )
+     { 
+       isScriptMessage = true;
+
+     }
      
     matcher = null;
-     
-    return ( isReadMessage || isWriteMessage );
+    
+    return ( isReadMessage || isWriteMessage || isScriptMessage );
 }
  
  public boolean isRegisterMessage()
@@ -53,7 +61,11 @@ public class MessageFormatChecker{
    return isWriteMessage;       
  }
  
-
+ public boolean isScriptMessage()
+ {
+    return isScriptMessage;       
+         
+ }
 
  
 }

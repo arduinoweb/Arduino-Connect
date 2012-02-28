@@ -23,7 +23,9 @@ public class DefaultConfiguration extends Properties{
       this.setProperty( "SERIAL_STOP_BITS", "1" );
       this.setProperty( "SERIAL_PARITY", "0");
       this.setProperty( "USE_INVOCATION_THREAD","no");
-      
+      this.setProperty( "WEBSOCKET_ADDRESS","127.0.0.1");
+      this.setProperty( "WEBSOCKET_PORT","10004");
+   
       
    }
 
