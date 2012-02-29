@@ -1,11 +1,19 @@
 <html>
 <head>
+<link rel="stylesheet" href="js/CodeMirror-2.22/lib/codemirror.css" />
 <script type="text/javascript" src="js/jquery/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="js/CodeMirror-2.22/lib/codemirror.js"></script>
+<script type="text/javascript" src="js/CodeMirror-2.22/mode/javascript/javascript.js"></script>
+
 <script>
 var websocket;
 
 $(document).ready( function(){
-                
+          var myScriptText = document.getElementById( "scriptText",
+                  { lineNumbers : true, fixedGutter: true, matchBrackets: true, lineWrapping: true, gutter: true});
+
+var myCodeMirror = CodeMirror.fromTextArea(myScriptText);  
+//myCodeMirror.lineNumbers( true);
      //   netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
        //         var file = Components.classes["@mozilla.org/file/local;1"].
          //  createInstance(Components.interfaces.nsILocalFile);
@@ -14,12 +22,15 @@ $(document).ready( function(){
                 websocket.onopen = function(evt){
                     // alert("opened");
                      ///websocket.send("x");
+                     $('#socketMessages').html( "websocket opened");
                 };
                 websocket.onerror= function( evt ){
-                     alert("web socket connection error");
+                     //alert("web socket connection error");
+                     $('#socketMessages').html("web socket error");
                 };
                 websocket.onclose = function( evt ){
-                     alert( "web socket closed");
+                     //alert( "web socket closed");
+                     $('#socketMessages').html("web socket closed");
                 };     
                     
                 websocket.onmessage = function( evt ){
@@ -37,10 +48,11 @@ $(document).ready( function(){
        });
        
        $('#scriptButton').click( function(){
-          var scriptContents = $('#scriptText').val();
+          var scriptContents = myCodeMirror.getValue();
           scriptContents = $.trim( scriptContents );
-          scriptContents = "<script>"+scriptContents+'<\/script>';
-          websocket.send( scriptContents);
+         scriptContents = "<script>"+scriptContents+'<\/script>';
+ 
+         websocket.send( scriptContents);
                        
        });
      
@@ -56,23 +68,29 @@ $(document).ready( function(){
 
 <body>
 
-<input type="text" id="data" value="type some data here">
+<div style="border: solid 1px #ccc; padding: 10px; width:350px;box-shadow: 10px 10px 5px #888;
+  -moz-box-shadow: 10px 10px 5px #888;">
+  
+<input type="text" id="data" value="send values here">
 <button id="sendButton">Send</button>
-<div id="messageArea">
+</div>
+
+<div id="messageArea" style="border: solid 1px #ccc; padding: 10px; width:350px;box-shadow: 10px 10px 5px #888;
+  -moz-box-shadow: 10px 10px 5px #888;margin-top: 20px">
 
 
 </div>
 
-<div id="scriptArea" >
-<textarea id="scriptText"cols="100" rows="40" >
-enter script here
 
-</textarea>
+<div id="scriptArea" style="border: solid 1px #ccc; margin-top: 40px;box-shadow: 10px 10px 5px #888;
+  -moz-box-shadow: 10px 10px 5px #888;">
+<textarea id="scriptText"></textarea>
+
+</div>
 <br />
-<button id="scriptButton">Upload Script</script>
-</div>
+<button id="scriptButton">Upload Script</button>
 </body>
-
+<p id="socketMessages"></p>
 
 
 </html>
