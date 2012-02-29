@@ -108,17 +108,18 @@ public class Scripter implements Runnable {
         
 
         try{
+             
+           updatedPin = SCRIPT_INVOCATION_QUEUE.take();
            
-           if( scriptUploaded )
+            if( scriptUploaded )
            {
              scriptUploaded = false;
              compileScript( script );
             
            }
            
-           updatedPin = SCRIPT_INVOCATION_QUEUE.take();
            PIN_MAP_COPY.put( updatedPin.getKey(), updatedPin.getValue() );
-            bindings.put("PIN_MAP_COPY", PIN_MAP_COPY);
+           
            compiledScript.eval( bindings);
         }catch( InterruptedException ie ){
                 System.err.println( ie );
@@ -147,8 +148,8 @@ public class Scripter implements Runnable {
       compiledScript = compilable.compile( script );     
            
       bindings = scriptEngine.createBindings();
-      bindings.put( "messenger", messenger);
-    
+      bindings.put( "MESSENGER", messenger);
+      bindings.put("PIN_MAP_COPY", PIN_MAP_COPY);
      
       bindings.put( "SESSION_MAP", SESSION_MAP);
       
