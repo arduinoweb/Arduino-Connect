@@ -71,7 +71,7 @@ public class Arduino{
     /**A Queue of the write requests received from clients*/
     private static TransferQueue<Pin> serialOutputQueue;
 
-    private final TransferQueue<KeyValue<Integer,Integer>> WEBSOCKET_UPDATE_QUEUE;
+   // private final TransferQueue<KeyValue<Integer,Integer>> WEBSOCKET_UPDATE_QUEUE;
     
     
     /**Constructor*/
@@ -153,12 +153,12 @@ public class Arduino{
      
      serialPort = null;
     
-     WEBSOCKET_UPDATE_QUEUE = new LinkedTransferQueue< KeyValue<Integer,Integer>>();
+  /**   WEBSOCKET_UPDATE_QUEUE = new LinkedTransferQueue< KeyValue<Integer,Integer>>();
      PIN_MAP.enableWebSocketQueue( WEBSOCKET_UPDATE_QUEUE );
      new WebServerSocket( CONFIGURATION.getWebsocketAddress(), 
                           CONFIGURATION.getWebsocketPort(), PIN_MAP, 
                            serialOutputQueue,WEBSOCKET_UPDATE_QUEUE,
-                           scripter).start();
+                           scripter).start();*/
     /** try{
              
       new Thread(new WebSocketServer(EXECUTOR_SERVICE )).start();       
@@ -186,7 +186,7 @@ public class Arduino{
              
             client.setSoTimeout( CONFIGURATION.getNetworkTimeout() );
             ClientConnection tmp = 
-                 new ClientConnection( client, PIN_MAP, serialOutputQueue );
+                 new ClientConnection( client, PIN_MAP, scripter,serialOutputQueue );
               
             EXECUTOR_SERVICE.execute( tmp );
                 

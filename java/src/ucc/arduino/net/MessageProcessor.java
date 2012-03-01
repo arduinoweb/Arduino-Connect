@@ -8,28 +8,29 @@ import java.util.concurrent.TransferQueue;
 
 public class MessageProcessor{
                        
- public static String processRead( final String MESSAGE,
+ public static String processRead( String message,
                                    final PinMap PIN_MAP )
  {
-   String[] msgParts = MESSAGE.split( " " );
+   message = message.substring(2,message.length()-1);
+   
+   String[] msgParts = message.split( " " );
     
    int pinNumber = -1;
     
    Integer pinValue = null;
     
-   StringBuffer tmpReply = new StringBuffer( "{" );
+   StringBuffer tmpReply = new StringBuffer( "{");
     
    int count = 0;
     
    for( String pin : msgParts )
-    {
+   {
        pinNumber = Integer.parseInt( pin );
        
        pinValue = PIN_MAP.update( pinNumber, null );
        
-       tmpReply.append( "{\"pin"+pin+"\":\""+pinValue+"\"}");
-       
-       if( count < msgParts.length - 1 )
+       tmpReply.append("\""+pinNumber+"\":\""+pinValue+"\"");
+      if( count < msgParts.length - 1 )
        {
           tmpReply.append(",");       
        }
@@ -48,12 +49,13 @@ public class MessageProcessor{
  
  
  public static String processWrite( 
-                                 final String MESSAGE,
+                                 String message,
                                  final PinMap PIN_MAP,
                                  final TransferQueue< Pin > SERIAL_OUTPUT_QUEUE
                                     )
  {
-    String[] msgParts = MESSAGE.split( " " );     
+    message = message.substring( 2, message.length()-1);
+    String[] msgParts = message.split( " " );     
   
     int index = 0;
     byte mode = -1;
@@ -82,17 +84,22 @@ public class MessageProcessor{
     return "{\"OK\"}";       
  }
  
- public static int[] extractPinNumbers( final String message )
+ public static int[] extractPinNumbers( String message )
  {
+    message = message.substring( 2, message.length() -1 );
     String[] msgParts = message.split( " " );
+
     int[] pins = new int[msgParts.length];
     
     for( int i = 0; i < pins.length; i++ )
     {
+       try{    
          pins[i] = Integer.parseInt( msgParts[i] );
-            
+            }catch( NumberFormatException nfe ){ System.err.println(nfe);}
     }
-         
+     
+    msgParts = null;
+    
     return pins;
  }
  

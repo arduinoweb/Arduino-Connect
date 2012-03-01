@@ -503,8 +503,8 @@ Component.prototype.startScheduler = function(){
                   
      var response = JSON.parse( data );
      
-     var tmpValue = parseInt( response.msg );
-     
+     var tmpValue = parseInt( response.pinValue );
+     alert( response );
      if( isNaN( tmpValue ) )
      {
          _self.message(  "An error ocurred retreiving data. Retrying..."); 

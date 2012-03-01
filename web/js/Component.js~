@@ -9,7 +9,8 @@ function Component( id )
   this.__input__=0;
   this.__component__=null;
   this.__type__="";
-  
+  this.__top__=0;
+  this.__left__=0;
  
 }
 
@@ -72,6 +73,25 @@ Component.prototype.getType = function(){
         
 }
 
+Component.prototype.setOffsetLeft = function( leftOffset)
+{
+   
+    this.__left__=leftOffset;
+        
+}
+
+Component.prototype.setOffsetTop = function( topOffset)
+{
+    this.__top__=topOffset;
+        
+}
+
+Component.prototype.move = function()
+{
+    $('#componentContainer'+this.__componentId__).css( "left", this.__left__);     
+    $('#componentContainer'+this.__componentId__).css( "top", this.__top__); 
+    
+}
 
 Component.prototype.offsetLeft = function(){
     
@@ -109,8 +129,20 @@ Component.prototype.init = function(){
    
     //Make the component draggable
    $('#componentContainer'+_self.__componentId__).draggable({
-         containment: '#rightcolumn',
-         scroll: true
+        // containment: 'document',
+         scroll: true,
+         scrollSensitivity:10,
+         stack: ".componentContainer",
+         stop: function( event, ui){
+                 _self.message( "Location: " + ui.position.left + ", " + ui.position.top);  
+                 
+                 $.post("update.php", {componentId:_self.__componentId__, left:ui.position.left,top:ui.position.top},
+                         function( data ){
+                                 _self.message(data);
+                                 
+                         });
+         }
+        
    });
    
    //Make the component closeable

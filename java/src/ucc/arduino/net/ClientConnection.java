@@ -8,6 +8,7 @@ package ucc.arduino.net;
 import ucc.arduino.main.Pin;
 import ucc.arduino.main.PinMap;
 import ucc.arduino.net.MessageProcessor;
+import ucc.arduino.scripting.Scripter;
 
 import ucc.arduino.net.MessageFormatChecker;
 
@@ -35,13 +36,15 @@ public class ClientConnection  implements Runnable{
 
    private  PinMap PIN_MAP;
    private  TransferQueue< Pin > SERIAL_OUTPUT_QUEUE;
-  
+   private  final Scripter SCRIPTER;
+   
    
    /** Constructor
      * @param: socket - the client socket 
      */
    public ClientConnection( final Socket socket, 
                             final PinMap pinMap,
+                            final Scripter SCRIPTER,
                             final TransferQueue< Pin> SERIAL_OUTPUT_QUEUE ) throws IOException
    {
       DATA_IN =  new BufferedReader( new InputStreamReader( socket.getInputStream() ) );
@@ -50,7 +53,7 @@ public class ClientConnection  implements Runnable{
       message = null;  
       PIN_MAP = pinMap;
       this.SERIAL_OUTPUT_QUEUE = SERIAL_OUTPUT_QUEUE;
-      
+      this.SCRIPTER = SCRIPTER;   
    }
    
  
@@ -75,20 +78,29 @@ public class ClientConnection  implements Runnable{
   
        MessageFormatChecker messageFormatChecker =
                              new MessageFormatChecker();
+       
      
        if( messageFormatChecker.isValidMessageFormat( message ) )
        {
-           message = message.substring( 2, message.length() - 1 );    
-           if( messageFormatChecker.isReadMessage() )
+         if( messageFormatChecker.isReadMessage() )
            {
-              clientReply = 
-                 MessageProcessor.processRead(message, PIN_MAP );
+              
+              int[] pins = MessageProcessor.extractPinNumbers( message );
+
+              clientReply = MessageProcessor.processRead( message, PIN_MAP );
+    
            }
            else if( messageFormatChecker.isWriteMessage() )
            {
               clientReply =     
                  MessageProcessor.processWrite( message,  
                                                PIN_MAP, SERIAL_OUTPUT_QUEUE );
+           }
+           else if( messageFormatChecker.isScriptMessage() )
+           {
+               SCRIPTER.changeScript( message.substring( 8, message.length()-9));
+               clientReply="{\"OK\"}";
+                   
            }
                
                

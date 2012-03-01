@@ -48,14 +48,18 @@
      while( $tmpArray = $dbConnection->fetchArray( $queryResult ) )
      {
      
-       if( $currTime - $tmpArray['lastRegistered'] <=
-               ARDUINO_NETWORK_REGISTRATION_RATE )
-       {
-        $result[] = $tmpArray['name'];
-       }     
-     }
+     //  if( $currTime - $tmpArray['lastRegistered'] <=
+     //          ARDUINO_NETWORK_REGISTRATION_RATE )
+     //  {
+        $name = $tmpArray['name'];
+        //$result[] = $tmpArray['name'];
+        $result[$name]['address'] = $tmpArray['address'];
+        $result[$name]['port']= $tmpArray['port'];
+   //  }     
+   }
      
      echo json_encode( $result );
+    //echo print_r( $result );
  }
  else
  {
