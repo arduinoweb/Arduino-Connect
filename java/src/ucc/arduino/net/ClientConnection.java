@@ -9,6 +9,9 @@ import ucc.arduino.main.Pin;
 import ucc.arduino.main.PinMap;
 import ucc.arduino.net.MessageProcessor;
 import ucc.arduino.scripting.Scripter;
+import ucc.arduino.scripting.ScriptCompiler;
+import javax.script.*;
+import sun.misc.BASE64Decoder;
 
 import ucc.arduino.net.MessageFormatChecker;
 
@@ -70,12 +73,22 @@ public class ClientConnection  implements Runnable{
    
  public void run()
  {
-   
+  
    String clientReply = "{}";
    try{
-       message = DATA_IN.readLine();
-       message = message.trim();
-  
+       
+           
+       message = DATA_IN.readLine(); 
+      
+       if( message.startsWith("base64" ) )
+       {
+           BASE64Decoder decoder = new BASE64Decoder( );
+           byte[] bytes = decoder.decodeBuffer(message.substring(6,message.length()) );
+           message = new String(bytes);
+           
+           decoder = null;
+       }
+       
        MessageFormatChecker messageFormatChecker =
                              new MessageFormatChecker();
        
@@ -87,27 +100,35 @@ public class ClientConnection  implements Runnable{
               
               int[] pins = MessageProcessor.extractPinNumbers( message );
 
-              clientReply = MessageProcessor.processRead( message, PIN_MAP );
-    
+             clientReply = MessageProcessor.processRead( message, PIN_MAP );
+            
            }
            else if( messageFormatChecker.isWriteMessage() )
            {
+              
               clientReply =     
                  MessageProcessor.processWrite( message,  
                                                PIN_MAP, SERIAL_OUTPUT_QUEUE );
            }
            else if( messageFormatChecker.isScriptMessage() )
            {
-               SCRIPTER.changeScript( message.substring( 8, message.length()-9));
-               clientReply="{\"OK\"}";
-                   
+               SCRIPTER.changeScript( message.substring(8, message.length()-9) );
+               clientReply = "OK";
+          
            }
+              
+              
                
                
        }
+       else
+       {
+         clientReply = "invalid message format";
+         
+       }
        
     messageFormatChecker = null;
-       
+      
     sendMessage( clientReply );
        
    }catch(SocketTimeoutException soe){

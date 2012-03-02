@@ -108,15 +108,15 @@ public class Scripter implements Runnable {
         
 
         try{
-             
-           updatedPin = SCRIPT_INVOCATION_QUEUE.take();
-           
             if( scriptUploaded )
            {
              scriptUploaded = false;
              compileScript( script );
             
            }
+           updatedPin = SCRIPT_INVOCATION_QUEUE.take();
+           
+           
            
            PIN_MAP_COPY.put( updatedPin.getKey(), updatedPin.getValue() );
            
@@ -124,7 +124,8 @@ public class Scripter implements Runnable {
         }catch( InterruptedException ie ){
                 System.err.println( ie );
          }catch(ScriptException e ){ 
-           System.err.println(e);        
+           System.err.println(e);  
+           System.out.println("Exception happened during evaluation");
          }    
          finally{ 
               

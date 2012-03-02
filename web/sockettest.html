@@ -12,6 +12,8 @@
 <script type="text/javascript" src="js/CodeMirror-2.22/lib/codemirror.js"></script>
 <script type="text/javascript" src="js/CodeMirror-2.22/mode/javascript/javascript.js"></script>
 <script type="text/javascript" src="js/gritter/js/jquery.gritter.js"></script>
+<script type="text/javascript" src="js/writearduino.js"></script>
+
 <style type="text/css">
 
 
@@ -85,6 +87,9 @@ margin-top: 0;
 	#monitorTarget { width: 200px; height:30px;  
 	  text-align: center; 
 	   font-size: 12px; overflow: hidden; margin: 10px; }
+	   #sendTarget  { width: 200px; height:30px;  
+	  text-align: center; 
+	   font-size: 12px; overflow: hidden; margin: 10px; }
 	#arduinoList { width: 150px; height: 150px; border: 1px #ccc;border-radius: 2px; 
 	}
 	.arduino { border-color: #76EE00;background-color: #CFCFCF;color:#FAFAFA; padding: 10px; margin: 5px;
@@ -126,7 +131,7 @@ $(document).ready( function(){
   
              
        $.extend($.gritter.options, { 
-        position: 'bottom-right', // defaults to 'top-right' but can be 'bottom-left', 'bottom-right', 'top-left', 'top-right' (added in 1.7.1)
+        position: 'bottom-left', // defaults to 'top-right' but can be 'bottom-left', 'bottom-right', 'top-left', 'top-right' (added in 1.7.1)
 	fade_in_speed: 'fast', // how fast notifications fade in (string or int)
 	fade_out_speed: 1000, // how fast the notices fade out
 	time: 2500,
@@ -180,17 +185,11 @@ $(document).ready( function(){
 		                              $(ui.draggable).attr('title')+'</td></tr>');
 		        }
 		});
-		        $('#scriptTarget').droppable({       
-			drop: function( event, ui ) {
-		              var id = $(ui.draggable).attr('id');
-		              $('#scriptTarget').html( id );
-		             $('#scriptTarget').attr( 'title', $(ui.draggable).attr('title'));
-		             $('#uploadButton').button("option","disabled", false);
-		        }
-		});
+		      
 	});
 	 
 	 $('#uploadButton').button({disabled:false});
+	
 	 $('#uploadButton').click( function(){
 
 	        var target = $('#scriptTarget').html();
@@ -235,8 +234,32 @@ $(document).ready( function(){
 	                               port:ipaddressTarget[1],
 	               script:scriptContents}, function( data ){
 	                       
-	                    //   alert( data );
-	                 $('#scriptTarget').html("drag and drop to upload script");      
+	                       alert( data );
+	                       try{
+	                        data = JSON.parse( data );        
+	                            
+	                        if( data.reply == "error" )
+	                        {
+	                             $.gritter.add({
+	                                             title: "Uploading Script: Error",
+	                                 text: "..unable to connect to Arduino"
+                                    });    
+	                                      
+	                        }
+	                        else if( data.reply == "OK" )
+	                        {
+	                           $.gritter.add({
+	                                  title: "Uploading Script",
+	                                 text: "..script uploaded."
+                                    });      
+	                                
+	                        }
+	                       
+	                       }catch( err ){
+	                          console.log( err );
+	                       }
+	                 
+	              // $('#scriptTarget').html("drag and drop to upload script");      
 	              
 	                       
 	                       
@@ -503,7 +526,7 @@ $(document).ready( function(){
 <div class="innertube">
 
   <div id="monitorTarget" style="border: solid 1px #ccc; margin-left:0; border-radius: 2px;">
-  drag'n'drop to monitor arduino</div>
+ monitor arduino</div>
   <div>
     <table id="monitorTable">
     
@@ -523,6 +546,7 @@ $(document).ready( function(){
 </div>
 
 <div id="contentcolumn" >
+<hr style="margin-bottom: 20px">
 <div style="margin-bottom:20px">
 Name: 
   <input type="text" id="fileName" value="" maxlength="40" size="27" />
@@ -533,7 +557,9 @@ Name:
   </select>
 
 </div>
+
 <div class="innertube">
+
   <div id="scriptEditorContainer"   class="shadowed">
   <textarea id="scriptEditor"  ></textarea>
   </div>
@@ -543,6 +569,16 @@ Name:
   <span id="saveButton">save</span>
   <span id="clearButton">clear</span>
   <span style="float:right" id="deleteButton">delete</span>
+  
+  </div>
+ 
+  <hr style="margin-top:20px;"/>
+  <div style="margin-top:40px;margin-left:10px">
+  <div id="sendTarget" style="border: solid 1px #ccc;margin-left:0px;border-radius: 2px;">write to arduino</div>
+      <input type="text" id="sendCommand" value="" maxlength="40"; size="40" />
+       <span style="" id="sendButton">write</span>
+  
+  </div>
   
   </div>
 </div>

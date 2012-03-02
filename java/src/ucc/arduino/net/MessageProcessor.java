@@ -19,7 +19,7 @@ public class MessageProcessor{
     
    Integer pinValue = null;
     
-   StringBuffer tmpReply = new StringBuffer( "{");
+   StringBuffer tmpReply = new StringBuffer( "{ \"pins\" : [");
     
    int count = 0;
     
@@ -29,7 +29,7 @@ public class MessageProcessor{
        
        pinValue = PIN_MAP.update( pinNumber, null );
        
-       tmpReply.append("\""+pinNumber+"\":\""+pinValue+"\"");
+       tmpReply.append("{\"pin\":\""+pinNumber+"\", \"value\" : \""+pinValue+"\"}");
       if( count < msgParts.length - 1 )
        {
           tmpReply.append(",");       
@@ -38,7 +38,7 @@ public class MessageProcessor{
        count++;
     }
          
-    tmpReply.append( "} ");
+    tmpReply.append( "] }");
     
     msgParts = null;
     pinValue = null;
@@ -81,7 +81,7 @@ public class MessageProcessor{
            
     }
          
-    return "{\"OK\"}";       
+    return "OK";       
  }
  
  public static int[] extractPinNumbers( String message )

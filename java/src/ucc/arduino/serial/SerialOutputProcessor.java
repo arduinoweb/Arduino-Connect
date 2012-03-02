@@ -40,7 +40,7 @@ public class SerialOutputProcessor implements Runnable{
          message[1] = writeToPin.getMode();
          message[2] = ( byte )writeToPin.getPinNumber();
          message[3] = (byte)writeToPin.getValue().intValue();
-        
+         
          try{
          SERIAL_OUT.write( message );
          SERIAL_OUT.flush();
