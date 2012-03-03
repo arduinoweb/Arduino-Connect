@@ -2,17 +2,27 @@
 <head>
 <link rel="stylesheet" href="js/CodeMirror-2.22/lib/codemirror.css" />
 <link rel="stylesheet" href="js/CodeMirror-2.22/theme/elegant.css" />
-<link rel="stylesheet" type="text/css" href="css/Aristo/Aristo.css" />
+<!--<link rel="stylesheet" type="text/css" href="css/Aristo/Aristo.css" />-->
+<link rel="stylesheet" type="text/css" href="css/table.css" />
 <link rel="stylesheet" type="text/css" href="js/gritter/css/jquery.gritter.css" />
-<!--<link rel="stylesheet" type="text/css" href="js/jquery/css/flick/jquery-ui-1.8.16.custom.css" />-->
+<link rel="stylesheet" type="text/css" href="js/jquery/css/flick/jquery-ui-1.8.16.custom.css" />
 
 <script type="text/javascript" src="js/jquery/js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery/js/jquery-ui-1.8.16.custom.min.js"></script>
 
 <script type="text/javascript" src="js/CodeMirror-2.22/lib/codemirror.js"></script>
+<!--<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>-->
+
 <script type="text/javascript" src="js/CodeMirror-2.22/mode/javascript/javascript.js"></script>
 <script type="text/javascript" src="js/gritter/js/jquery.gritter.js"></script>
+<script type="text/javascript" src="js/jquery.jeditable.js"></script>
+
 <script type="text/javascript" src="js/writearduino.js"></script>
+<script type="text/javascript" src="js/IdGenerator.js"></script>
+<script type="text/javascript" src="js/TableEntry.js"></script>
+<script type="text/javascript" src="js/Monitor.js"></script>
+<script type="text/javascript" src="js/monitorarduino.js"></script>
+
 
 <style type="text/css">
 
@@ -44,7 +54,7 @@ width: 100%;
 }
 
 #rightcolumn{
-margin: 0 52% 0 15%; /*Margins for right column. Should be "0 contentcolumnWidth 0 rightcolumnWidth*/
+margin: 1.5% 30% 0 12%; /*Margins for right column. Should be "0 contentcolumnWidth 0 rightcolumnWidth*/
 //background: #FDE95E;
 }
 
@@ -79,7 +89,7 @@ margin: 10px; /*Margins for inner DIV inside each column (to provide padding)*/
 margin-top: 0;
 }
 
-
+   
 
 	#scriptTarget { width: 200px; height: 30px;  
 	  text-align: center; 
@@ -90,9 +100,9 @@ margin-top: 0;
 	   #sendTarget  { width: 200px; height:30px;  
 	  text-align: center; 
 	   font-size: 12px; overflow: hidden; margin: 10px; }
-	#arduinoList { width: 150px; height: 150px; border: 1px #ccc;border-radius: 2px; 
+	#arduinoList { width: 150px; height: 150px; margin-top: 50px;border: 1px #ccc;border-radius: 2px; 
 	}
-	.arduino { border-color: #76EE00;background-color: #CFCFCF;color:#FAFAFA; padding: 10px; margin: 5px;
+	.arduino { border-color: #76EE00;background-color: #47003D;color:white; padding: 10px; margin: 5px;
 	           font-size: 12px; font-weight: bold;
 	          box-shadow: 2px 2px 2px #888;
 	          -webkit-box-shadow: 2px 2px 2px #888;
@@ -114,14 +124,15 @@ margin-top: 0;
                     #createMonitor{ width: 150px; height: 20px;  padding-top: 10px;
 	  text-align: center; 
 	            font-size: 12px; overflow: hidden; margin: 10px;}
-	        
+	            #monitor-table { font-size: 10px;}  
+	            .highlight { background-color: #EBF7FF;}
 	            
 </style>
 <script>
 
 var scriptEditor;
 var scripts = new Array();
-
+var tableEntries = new Array();
 
 $(document).ready( function(){
 
@@ -161,7 +172,7 @@ $(document).ready( function(){
          $(function() {
                        
 		$( "#scriptTarget" ).droppable({
-		        activeClass: 'ui-state-highlight', 
+		        activeClass: 'highlight', 
 		        accept: '.arduino',
 		        tolerance: 'pointer',
 		        
@@ -175,16 +186,7 @@ $(document).ready( function(){
 			}
 		});
 		
-		$( "#monitorTarget" ).droppable({
-		        activeClass: 'ui-state-highlight', 
-		        accept: '.arduino',
-		        tolerance: 'pointer',
-		        drop: function( event, ui ){
-		                
-		           $('#monitorTable').append('<tr><td>'+$(ui.draggable).attr('id')+'</td><td>'+
-		                              $(ui.draggable).attr('title')+'</td></tr>');
-		        }
-		});
+		
 		      
 	});
 	 
@@ -522,16 +524,39 @@ $(document).ready( function(){
 <div id="topsection"><div class="innertube"></div></div>
 
 <div id="columnwrapper">
+<hr />
 <div id="rightcolumn"  >
+
 <div class="innertube">
 
   <div id="monitorTarget" style="border: solid 1px #ccc; margin-left:0; border-radius: 2px;">
  monitor arduino</div>
   <div>
-    <table id="monitorTable">
-    
-    
-    </table>
+   <table cellpadding="0"  cell-spacing="1px"  id="monitorTable" width="100%" >
+
+	<thead>
+	
+		<tr>
+			<th>Name</th>
+			<th>Location</th>
+			<th>Pin</th>
+			<th>Value</th>
+			<th>Monitor</th>
+			<th></th>
+
+		</tr>
+	</thead>
+	<tbody>
+
+		
+        
+	</tbody>
+	<tfoot>
+
+	
+	</tfoot>
+</table>
+	
   
   
   </div>
@@ -541,6 +566,7 @@ $(document).ready( function(){
 </div>
 
 <div id="leftcolumn" >
+
 <div class="innertube"><div id="arduinoList" > </div></div>
 
 </div>

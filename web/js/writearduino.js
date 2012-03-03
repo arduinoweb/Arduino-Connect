@@ -3,7 +3,7 @@ $(document).ready( function(){
   $('#sendButton').button( {disabled:false});     
                 
   $('#sendTarget').droppable({  
-     activeClass: 'ui-state-highlight', 
+     activeClass: 'highlight', 
      accept: '.arduino',
      tolerance: 'pointer',
      drop: function( event, ui ) {
