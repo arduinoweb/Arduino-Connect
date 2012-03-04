@@ -45,9 +45,9 @@ IdGenerator.prototype.getNextId = function() {
 }
 
 
-IdGenerator.prototype.removeId = function( pin ){ 
+IdGenerator.prototype.removeId = function( id ){ 
 
-this.assignedId[pin] = null;
+this.assignedId[id] = null;
 
 } 
         

@@ -2,10 +2,10 @@
 <head>
 <link rel="stylesheet" href="js/CodeMirror-2.22/lib/codemirror.css" />
 <link rel="stylesheet" href="js/CodeMirror-2.22/theme/elegant.css" />
-<!--<link rel="stylesheet" type="text/css" href="css/Aristo/Aristo.css" />-->
+<link rel="stylesheet" type="text/css" href="css/Aristo/Aristo.css" />
 <link rel="stylesheet" type="text/css" href="css/table.css" />
 <link rel="stylesheet" type="text/css" href="js/gritter/css/jquery.gritter.css" />
-<link rel="stylesheet" type="text/css" href="js/jquery/css/flick/jquery-ui-1.8.16.custom.css" />
+<!--<link rel="stylesheet" type="text/css" href="js/jquery/css/flick/jquery-ui-1.8.16.custom.css" />-->
 
 <script type="text/javascript" src="js/jquery/js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery/js/jquery-ui-1.8.16.custom.min.js"></script>
@@ -54,7 +54,7 @@ width: 100%;
 }
 
 #rightcolumn{
-margin: 1.5% 30% 0 12%; /*Margins for right column. Should be "0 contentcolumnWidth 0 rightcolumnWidth*/
+margin: 1.5% 45% 0 12%; /*Margins for right column. Should be "0 contentcolumnWidth 0 rightcolumnWidth*/
 //background: #FDE95E;
 }
 
@@ -124,8 +124,18 @@ margin-top: 0;
                     #createMonitor{ width: 150px; height: 20px;  padding-top: 10px;
 	  text-align: center; 
 	            font-size: 12px; overflow: hidden; margin: 10px;}
-	            #monitor-table { font-size: 10px;}  
+	            #monitor-table { font-size: 10px; border-collapse:collapse;}  
 	            .highlight { background-color: #EBF7FF;}
+	            .deleteRow{ font-size: 12;  padding: 3px;
+	                    background-color: white; color:white; width: 20px;
+	                    color: black; font-weight: bold;
+	         
+	            }
+	            
+	            .deleteRow:hover { background-color: black; color: white;
+	            cursor: pointer}
+	 .deleteContainer { background-color: white}
+	 
 	            
 </style>
 <script>
@@ -196,7 +206,7 @@ $(document).ready( function(){
 
 	        var target = $('#scriptTarget').html();
 	        
-	        if( target == "drag and drop to upload script" )
+	        if( target == "upload script" )
 	        {
 	          $.gritter.add({
 	               title: "Upload Script",
@@ -236,7 +246,7 @@ $(document).ready( function(){
 	                               port:ipaddressTarget[1],
 	               script:scriptContents}, function( data ){
 	                       
-	                       alert( data );
+	                   
 	                       try{
 	                        data = JSON.parse( data );        
 	                            
@@ -261,7 +271,7 @@ $(document).ready( function(){
 	                          console.log( err );
 	                       }
 	                 
-	              // $('#scriptTarget').html("drag and drop to upload script");      
+	              // $('#scriptTarget').html("upload script");      
 	              
 	                       
 	                       
@@ -532,7 +542,7 @@ $(document).ready( function(){
   <div id="monitorTarget" style="border: solid 1px #ccc; margin-left:0; border-radius: 2px;">
  monitor arduino</div>
   <div>
-   <table cellpadding="0"  cell-spacing="1px"  id="monitorTable" width="100%" >
+   <table cellpadding="0"  cell-spacing="0"  id="monitorTable" width="100%" >
 
 	<thead>
 	
@@ -560,7 +570,10 @@ $(document).ready( function(){
   
   
   </div>
-
+ <hr style="margin-top: 50px;"/>
+  
+ <div id="startButton" style="margin-top: 50px;">start</div>
+ <div id="stopButton" style="float:right;margin-top:50px;">stop</div>
 </div>
 </div>
 </div>
@@ -590,7 +603,7 @@ Name:
   <textarea id="scriptEditor"  ></textarea>
   </div>
 
-  <div id="scriptTarget" style="border: solid 1px #ccc; margin-left:0; border-radius: 2px;">drag and drop to upload script</div>
+  <div id="scriptTarget" style="border: solid 1px #ccc; margin-left:0; border-radius: 2px;">upload script</div>
   <span id="uploadButton" >upload</span>
   <span id="saveButton">save</span>
   <span id="clearButton">clear</span>

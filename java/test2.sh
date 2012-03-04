@@ -5,6 +5,14 @@ x=1
 while [ 1 ]
 do
 
-echo "R 1 2 3 4 E" | nc 192.168.141.131 10002
+ let x=x+1
+
+
+ if [ $x -eq 256 ]
+ then
+   let x=0
+ fi
+
+ echo "W V 2 "$x" E" | nc 192.168.141.131 10003 
  
 done

@@ -3,8 +3,10 @@ var idGenerator = new IdGenerator();
 $(document).ready( function(){
                 
                 
-                
-                  
+    $('#startButton').button();
+    $('#stopButton').button();
+     $('#startButton').click( startReading);
+     $('#stopButton').click(stopReading);             
                 
     $( "#monitorTarget" ).droppable({
 		        activeClass: 'highlight', 
@@ -21,6 +23,53 @@ $(document).ready( function(){
 		}); 
     
     
+    function stopReading()
+    {
+       var arduino = null;
+            
+       for( i in tableEntries )
+       {
+          arduino = tableEntries[i];
+               
+          arduino.stop();     
+               
+       }
+         $.gritter.add({
+	        title: "Stop",
+                text: "Stopping all monitoring",
+           });      
+    }
+    
+    
+    function startReading()
+    {
+       var pin = null;
+       var name = null;
+       var id = null;
+       var monitor = null;
+       for( i in tableEntries )
+       {
+               monitor = tableEntries[i];
+               name = monitor.getName();    
+               monitor.clear();
+               
+               $("tr").each( function(){
+                  
+                  var tmp = $(this).attr('class');
+                  var id = $(this).attr('id');
+              
+                if( tmp != undefined && tmp.substring(1) == name )
+                  {
+                      monitor.addPin( $('#pin'+id).html() );      
+                          
+                  }
+                               
+               });
+              
+               monitor.start();
+       }
+            
+    }
     
     function addRow( name, ipaddress, port )
     {    
@@ -39,18 +88,20 @@ $(document).ready( function(){
     
        var html = constructRowHtml( name, ipaddress, port, id );
      
-       monitor.addRow( new TableEntry( id, -1, false) );
+      // monitor.addRow( new TableEntry( id, -1, false) );
        $('#monitorTable').append( html );   
-    //   $('#status'+id).button();
-       
+     
        $('#pin'+id).editable( handlePinChange);
+       $('#delete'+id).click( handleDelete );
+                   
+     
     }
     
     function constructRowHtml( name, ipaddress, port, id )
     {
             var html = '<tr class=".'+name+'" id="'+id+'"><td>'+name+'</td>';
             html+='<td>'+ipaddress+':'+port+'</td><td id="pin'+id+'">-1</td><td id="value'+id+'">-</td>';
-            html+='<td><input id="status'+id+'" type="checkbox" /><label for="status'+id+'"></label></td></tr>';
+            html+='<td class="deleteContainer" ><span id="delete'+id+'" title="delete" class="deleteRow">x</span></td></tr>';
             
             return html;
               
@@ -71,46 +122,43 @@ $(document).ready( function(){
     {
        value = parseInt( value );
             
-       if( isNaN(value ) || value < 0 )
+       if( isNaN(value )  )
        {
-         displayMsg("Only positive pin values wll be monitored");
+         displayMsg("Numbers only");
          value=-1;
         }
-        else
-        {
-          var arduinoName = $(this).parent().attr("class");
-          var id = $(this).parent().attr("id");
-          var arduino = tableEntries[ arduinoName.substring(1) ];
-          var tableRow = arduino.getRow( id );
-          var currentPin = tableRow.getPin();
-          var isMonitored = arduino.isPinMonitored( value );
-          
-          if( currentPin == -1  && ! isMonitored )
-          {
-             tableRow.setPin( value );
-              displayMsg( "Pin Number Changed");    
-          }
-          else 
-          {
-              if( isMonitored )
-              {        
-                displayMsg( "You are already monitoring this pin");
-                value=-1;
-              }
-              else
-              {
-                tableRow.setPin( value );
-                displayMsg( "Pin Number Changed");
-                
-              }
-          }
+       
         
 
         
-       }
+      
                        
     return(value);              
            
     }
+    
+    
+   
+    
+    function handleDelete()
+    {
+          var id = $(this).parent().parent().attr( "id");
+       
+          $('#'+id).css( { "color":"red","background-color":"white","font-size":"13px"});
+          $('#'+id).fadeOut('slow', function(){
+                          
+             $(this).remove();               
+          });
+       
+
+          
+
+
+          idGenerator.removeId( id );
+          
+            
+    }
+            
+           
 });
 
