@@ -1,15 +1,13 @@
 package ucc.arduino.scripting;
 
-import ucc.arduino.scripting.Invocation;
-
 import java.util.concurrent.TransferQueue;
 
 public class Invocator implements Runnable{
 
-  private final TransferQueue< Invocation> INVOCATION_QUEUE;
-  private Invocation invocationObject;
+  private final TransferQueue< Runnable > INVOCATION_QUEUE;
+  private Runnable invocationObject;
   
-  public Invocator( final TransferQueue< Invocation> INVOCATION_QUEUE )
+  public Invocator( final TransferQueue< Runnable > INVOCATION_QUEUE )
   {
       this.INVOCATION_QUEUE = INVOCATION_QUEUE;          
       invocationObject = null;
@@ -24,7 +22,7 @@ public class Invocator implements Runnable{
        
         invocationObject = INVOCATION_QUEUE.take();
         
-        invocationObject.invoke();
+        invocationObject.run();
        }catch( InterruptedException ie ){
            System.err.println( ie );
        }

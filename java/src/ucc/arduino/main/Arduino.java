@@ -10,7 +10,6 @@ package ucc.arduino.main;
 
 import ucc.arduino.configuration.Configuration;
 import ucc.arduino.scripting.Scripter;
-import ucc.arduino.net.WebServerSocket;
 
 import ucc.arduino.main.PinMap;
 import ucc.arduino.main.KeyValue;
@@ -39,7 +38,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import java.util.Properties;
-import javax.script.*;
+import javax.script.ScriptException;
 
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
@@ -71,7 +70,6 @@ public class Arduino{
     /**A Queue of the write requests received from clients*/
     private static TransferQueue<Pin> serialOutputQueue;
 
-   // private final TransferQueue<KeyValue<Integer,Integer>> WEBSOCKET_UPDATE_QUEUE;
     
     
     /**Constructor*/
@@ -152,21 +150,7 @@ public class Arduino{
     
      
      serialPort = null;
-    
-  /**   WEBSOCKET_UPDATE_QUEUE = new LinkedTransferQueue< KeyValue<Integer,Integer>>();
-     PIN_MAP.enableWebSocketQueue( WEBSOCKET_UPDATE_QUEUE );
-     new WebServerSocket( CONFIGURATION.getWebsocketAddress(), 
-                          CONFIGURATION.getWebsocketPort(), PIN_MAP, 
-                           serialOutputQueue,WEBSOCKET_UPDATE_QUEUE,
-                           scripter).start();*/
-    /** try{
-             
-      new Thread(new WebSocketServer(EXECUTOR_SERVICE )).start();       
-     }catch(UnknownHostException uhe ){
-             System.err.println( uhe );
-     }catch( IOException ioe ){
-             System.err.println( ioe );
-     }*/
+
      
      }
    

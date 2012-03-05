@@ -28,7 +28,7 @@ public class Scripter implements Runnable {
  //  private Compilable compilable;
    private Bindings bindings;
    private final Invocator INVOCATOR;
-   private final TransferQueue<Invocation> INVOCATOR_QUEUE;
+   private final TransferQueue<Runnable> INVOCATOR_QUEUE;
    
    private final TransferQueue<KeyValue<Integer,Integer>> SCRIPT_INVOCATION_QUEUE;
    private final HashMap< Integer, Integer> PIN_MAP_COPY;
@@ -76,7 +76,7 @@ public class Scripter implements Runnable {
      
         if( USE_INVOCATION_THREAD )
       {
-          INVOCATOR_QUEUE = new LinkedTransferQueue< Invocation >();
+          INVOCATOR_QUEUE = new LinkedTransferQueue< Runnable >();
           INVOCATOR = new Invocator( INVOCATOR_QUEUE );
           new Thread( INVOCATOR ).start();
           

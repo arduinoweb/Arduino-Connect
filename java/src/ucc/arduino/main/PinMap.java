@@ -10,7 +10,7 @@ public class PinMap{
         
   private final HashMap<Integer, Integer> PIN_MAP;
   private TransferQueue<KeyValue<Integer,Integer>> scriptInvocationQueue;
-  private TransferQueue<KeyValue<Integer,Integer>> webSocketUpdateQueue;
+
   
   public PinMap( )
   {
@@ -38,11 +38,7 @@ public synchronized Integer update(final Integer pinNumber, final Integer pinVal
              scriptInvocationQueue.add( updatedPin );
            }
            
-           if( webSocketUpdateQueue != null )
-           {
-              webSocketUpdateQueue.add( updatedPin );       
-                   
-           }
+
         }  
         
         updatedPin = null;
@@ -58,11 +54,6 @@ public synchronized Integer update(final Integer pinNumber, final Integer pinVal
          
  }
  
- public void enableWebSocketQueue( TransferQueue<KeyValue<Integer,Integer>>
-                                           webSocketUpdateQueue )
- {
-    this.webSocketUpdateQueue = webSocketUpdateQueue;
-               
- }
+
         
 }

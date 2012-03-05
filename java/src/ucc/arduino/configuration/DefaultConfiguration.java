@@ -13,7 +13,7 @@ public class DefaultConfiguration extends Properties{
       this.setProperty( "NETWORK_PORT", "10002" );
       this.setProperty( "NETWORK_QUEUE_LENGTH", "50");
       this.setProperty( "NETWORK_TIMEOUT", "60000");
-      this.setProperty( "NETWORK_REGISTRATION_RATE", "60");
+      this.setProperty( "NETWORK_REGISTRATION_RATE", "10");
       this.setProperty( "NETWORK_REGISTER","no");
       //Default Serial Port Properties
       this.setProperty( "SERIAL_PORT", "none");
@@ -23,8 +23,7 @@ public class DefaultConfiguration extends Properties{
       this.setProperty( "SERIAL_STOP_BITS", "1" );
       this.setProperty( "SERIAL_PARITY", "0");
       this.setProperty( "USE_INVOCATION_THREAD","no");
-      this.setProperty( "WEBSOCKET_ADDRESS","127.0.0.1");
-      this.setProperty( "WEBSOCKET_PORT","10004");
+
    
       
    }

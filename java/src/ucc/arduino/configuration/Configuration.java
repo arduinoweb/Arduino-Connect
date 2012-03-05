@@ -47,8 +47,6 @@ public class Configuration  implements SerialConfiguration{
          ! isInt( "SERIAL_STOP_BITS")            ||
          ! isInt( "SERIAL_PARITY")               ||
          ! isValidAddress( "NETWORK_ADDRESS")    ||
-         ! isValidAddress( "WEBSOCKET_ADDRESS")  ||
-         ! isInt( "WEBSOCKET_PORT")              ||
          ! hasProtocol( "WEB_SERVER_URL")   ||
          ! isInt( "NETWORK_REGISTRATION_RATE") ||
          ! isInt( "NETWORK_QUEUE_LENGTH") )
@@ -165,23 +163,7 @@ public class Configuration  implements SerialConfiguration{
  
      return iAddress;  
   }
-
-  
-  public String getWebsocketAddress()
-  {
-    return  configuration.getProperty( "WEBSOCKET_ADDRESS" );
-
-  }
-  
-  public int getWebsocketPort()
-  {
-     return Integer.parseInt(configuration.getProperty( "WEBSOCKET_PORT") );     
-            
-  }
-
-          
-          
-          
+        
           
 
   public Integer getNetworkQueueLength()

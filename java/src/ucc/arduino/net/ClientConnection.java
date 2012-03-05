@@ -4,6 +4,7 @@
 
 package ucc.arduino.net;
 
+import org.apache.commons.codec.binary.Base64;
 
 import ucc.arduino.main.Pin;
 import ucc.arduino.main.PinMap;
@@ -11,7 +12,7 @@ import ucc.arduino.net.MessageProcessor;
 import ucc.arduino.scripting.Scripter;
 import ucc.arduino.scripting.ScriptCompiler;
 import javax.script.*;
-import sun.misc.BASE64Decoder;
+//import sun.misc.BASE64Decoder;
 
 import ucc.arduino.net.MessageFormatChecker;
 
@@ -82,11 +83,11 @@ public class ClientConnection  implements Runnable{
       
        if( message.startsWith("base64" ) )
        {
-           BASE64Decoder decoder = new BASE64Decoder( );
-           byte[] bytes = decoder.decodeBuffer(message.substring(6,message.length()) );
-           message = new String(bytes);
-           
-           decoder = null;
+            Base64 base64 = new Base64();
+            byte[] bytes = base64.decode( message.substring(6, message.length() ));
+            message = new String( bytes );
+            System.out.println(message);
+            base64 = null;
        }
        
        MessageFormatChecker messageFormatChecker =

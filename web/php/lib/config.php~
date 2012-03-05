@@ -1,8 +1,8 @@
 <?php
 
  define( "HTTPS_URL", FALSE);
- 
- define( "DATABASE_FILE", "http://192.168.141.128/~gary/arduino/Arduino-Connect/web/db/arduino.db");
+ define( "SQLITE_VERSION", 3); 
+ define( "DATABASE_FILE", "db/arduino.db");
  
  define( "ARDUINO_NETWORK_REGISTRATION_RATE", 30 );
 

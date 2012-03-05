@@ -1,83 +1,59 @@
 $(document).ready( function(){
                 
+  
+           
+                
+  function getArduinoList()
+  {
+          
+          
+    $.post("arduinolist.php", function( data ){
+                        
+       var response = "";
+      
+       try{
+       var response = JSON.parse( data );
+       }catch( e ){
+           console.log;
+       }
+       
+       
+       var len = response.length;
+       var count = 0;
+       
+       $('.arduino').remove();
+       $('#noArduinoMessage').remove();
+         for( name in response )
+           {
+             $('#arduinoList').append('<p id="'+name+'" class="arduino bordered" title="'+ response[name].address+':'+response[name].port+'">'+name+'</p>');
+             $('#'+name).draggable({ helper:'clone', revert:'invalid', zIndex:2700,
+                    cursor: "move", cursorAt: { top: 20, left: 46 }});
+              count++;
+              }
+          
               
-                
- var arduinoListIsRefreshing = false;
-
-                
- function refreshArduinoList()
- {
-       arduinoListIsRefreshing= true;
-    
-       
-       $('#arduinoListRefresh').attr('src','img/ajax-loader.gif');         
-                      
-                       $.post("arduinolist.php", function( data ){
-                        
-                       var response = JSON.parse( data );
-                       
-                       var len = response.length;
-                        $('.arduino').remove();
-                       if( len == 0 )
-                       {   
-                       $('#arduinoList').append('<li class="arduino greyblue">none available</li>');
-                       }
-                       else if( len == 1  && response[0] == 'dberror')
-                       {
-                          $('#arduinoList').append(
-                           '<li class="arduino error">unable to connect to database</li>'       
-                                  
-                          );
-                       }
-                       else
-                       {
-                         for( var i = 0; i < len; i++ )
-                         {
-                           $('#arduinoList').append(
-                              '<li class="arduino live" id="'+response[i]+'">' +
-                               response[i] + '<img src="img/greenlight.png" /></li>' );
-                           
-                           $('#'+response[i]).draggable({
-                                           helper: 'clone',
-                                           revert: 'true',
-                                           scroll: false,
-                                           containment: 'window',
-                                           appendTo: 'body'
-                                           
-                           });
-                                   
-                                 
-                         }
-                               
-                       }
-                       
-                       })
-                       .error( function(){ 
-                           $('.arduino').remove();
-                          $('#arduinoList').append(
-                              '<li class="arduino error">an error has occurred contacting the server</li>');
-                              arduinoListIsRefreshing= false;
-                          
-                       })
-                       .complete( function(){
-                            $('#arduinoListRefresh').attr('src','img/reload.png'); 
-                            arduinoListIsRefreshing= false;
-                          
-                       });                  
-                        
- }
-       
- function automateArduinoListRefresh()
- {
-     if( !  arduinoListIsRefreshing )
-     {
-        refreshArduinoList();
-     }
-         
- }
- $('#arduinoListRefresh').click( refreshArduinoList );
- 
- refreshArduinoList();
- 
- window.setInterval( automateArduinoListRefresh , 30000,"JAVASCRIPT" );
+          if( count == 0 )
+          {
+            $.gritter.add({
+	       title: "Active Arduinos",
+               text: "none detected will try again in " + arduinoListRetrievalRate + " seconds"
+             });     
+              
+            $('#arduinoList').append('<p id="noArduinoMessage" style="color: #ccc"> no arduino available at the moment</p>');
+          }
+    }).error( function(){
+          $.gritter.add({
+	       title: "Active Arduinos",
+               text: "Network error: unable to contact server, trying again in" + arduinoListRetrievalRate + " seconds"
+             });     
+            
+    });
+              
+      
+  
+  }
+// alert( arduinoListRetrievalRate * 1000);
+  getArduinoList();
+  setInterval( getArduinoList, ( arduinoListRetrievalRate * 1000));
+  
 });
